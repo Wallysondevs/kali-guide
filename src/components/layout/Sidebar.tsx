@@ -1,159 +1,249 @@
 import { Link, useLocation } from "wouter";
-import { cn } from "@/lib/utils";
-import {
-  BookOpen, Terminal, Shield, Settings, FileText, Users,
-  Network, X, Package, Code, FolderOpen, Key,
-  Globe, Wrench, ChevronRight, Search, Layers, Wifi,
-  Lock, HardDrive, Zap, Bug, Eye, Radio, Database,
-  Server, AlertTriangle, Award, FileSearch, Cpu
-} from "lucide-react";
+  import { useHashLocation } from "wouter/use-hash-location";
+  import { cn } from "@/lib/utils";
+  import {
+    BookOpen, Terminal, Shield, Settings, FileText, Users,
+    Network, X, Package, Code, FolderOpen, Key,
+    Globe, Wrench, ChevronRight, Search, Layers, Wifi,
+    Lock, HardDrive, Zap, Bug, Eye, Radio, Database,
+    Server, AlertTriangle, Award, FileSearch, Cpu,
+    Crosshair, Map, Fingerprint, Biohazard, ShieldAlert,
+    Flame, Skull, Target, Activity, Swords, Brain,
+    MonitorSmartphone, Container, BookMarked, Trophy,
+    Telescope, Link2, Radar, Scan, GitBranch, Binary
+  } from "lucide-react";
 
-const NAVIGATION = [
-  {
-    title: "Introdução",
-    items: [
-      { path: "/", label: "Início", icon: BookOpen },
-      { path: "/historia", label: "O que é Kali Linux", icon: Shield },
-      { path: "/instalacao", label: "Instalação", icon: HardDrive },
-      { path: "/interface", label: "Interface & Desktop", icon: Layers },
-    ]
-  },
-  {
-    title: "Terminal & Sistema",
-    items: [
-      { path: "/terminal", label: "Terminal Essencial", icon: Terminal },
-      { path: "/filesystem", label: "Sistema de Arquivos", icon: FolderOpen },
-      { path: "/permissoes", label: "Permissões", icon: Lock },
-    ]
-  },
-  {
-    title: "Gerenciamento",
-    items: [
-      { path: "/pacotes", label: "Gerência de Pacotes", icon: Package },
-      { path: "/usuarios", label: "Usuários e Grupos", icon: Users },
-      { path: "/servicos", label: "Serviços (systemd)", icon: Server },
-    ]
-  },
-  {
-    title: "Redes",
-    items: [
-      { path: "/redes", label: "Redes no Kali", icon: Network },
-      { path: "/nmap", label: "Nmap", icon: Search },
-      { path: "/wireshark", label: "Wireshark", icon: Eye },
-      { path: "/ssh", label: "SSH", icon: Key },
-    ]
-  },
-  {
-    title: "Pentest Web",
-    items: [
-      { path: "/burpsuite", label: "Burp Suite", icon: Globe },
-      { path: "/sqlmap", label: "SQLMap", icon: Database },
-      { path: "/nikto", label: "Nikto", icon: AlertTriangle },
-      { path: "/gobuster", label: "Gobuster", icon: Search },
-    ]
-  },
-  {
-    title: "Quebra de Senhas",
-    items: [
-      { path: "/hydra", label: "Hydra", icon: Zap },
-      { path: "/john", label: "John the Ripper", icon: Key },
-      { path: "/hashcat", label: "Hashcat", icon: Cpu },
-    ]
-  },
-  {
-    title: "Exploração",
-    items: [
-      { path: "/metasploit", label: "Metasploit", icon: Bug },
-      { path: "/msfvenom", label: "MSFVenom", icon: Code },
-    ]
-  },
-  {
-    title: "Wireless",
-    items: [
-      { path: "/aircrack", label: "Aircrack-ng", icon: Wifi },
-      { path: "/wifiphisher", label: "Wifiphisher", icon: Radio },
-    ]
-  },
-  {
-    title: "Anonimato",
-    items: [
-      { path: "/proxychains", label: "Proxychains", icon: Network },
-      { path: "/tor", label: "Tor & Anonimato", icon: Shield },
-    ]
-  },
-  {
-    title: "Avançado",
-    items: [
-      { path: "/forense", label: "Forense Digital", icon: FileSearch },
-      { path: "/ctf", label: "CTF — Dicas", icon: Award },
-      { path: "/relatorios", label: "Relatórios de Pentest", icon: FileText },
-      { path: "/referencias", label: "Referências", icon: BookOpen },
-    ]
+  const NAVIGATION = [
+    {
+      title: "Introdução",
+      items: [
+        { path: "/", label: "Início", icon: BookOpen },
+        { path: "/historia", label: "O que é Kali Linux", icon: Shield },
+        { path: "/instalacao", label: "Instalação", icon: HardDrive },
+        { path: "/interface", label: "Interface & Desktop", icon: Layers },
+        { path: "/metodologia", label: "Metodologia de Pentest", icon: Map },
+      ]
+    },
+    {
+      title: "Terminal & Sistema",
+      items: [
+        { path: "/terminal", label: "Terminal Essencial", icon: Terminal },
+        { path: "/filesystem", label: "Sistema de Arquivos", icon: FolderOpen },
+        { path: "/permissoes", label: "Permissões", icon: Lock },
+      ]
+    },
+    {
+      title: "Gerenciamento",
+      items: [
+        { path: "/pacotes", label: "Gerência de Pacotes", icon: Package },
+        { path: "/usuarios", label: "Usuários e Grupos", icon: Users },
+        { path: "/servicos", label: "Serviços (systemd)", icon: Server },
+      ]
+    },
+    {
+      title: "OSINT & Reconhecimento",
+      items: [
+        { path: "/osint", label: "OSINT — Visão Geral", icon: Telescope },
+        { path: "/theharvester", label: "theHarvester", icon: Search },
+        { path: "/shodan", label: "Shodan", icon: Radar },
+        { path: "/google-dorks", label: "Google Dorks (GHDB)", icon: Globe },
+        { path: "/recon-ng", label: "Recon-ng", icon: Network },
+        { path: "/maltego", label: "Maltego", icon: Link2 },
+        { path: "/dnsenum", label: "DNSenum & DNSrecon", icon: Database },
+      ]
+    },
+    {
+      title: "Varredura & Enumeração",
+      items: [
+        { path: "/redes", label: "Redes no Kali", icon: Network },
+        { path: "/nmap", label: "Nmap", icon: Search },
+        { path: "/masscan", label: "Masscan", icon: Scan },
+        { path: "/netcat", label: "Netcat", icon: Activity },
+        { path: "/wireshark", label: "Wireshark", icon: Eye },
+        { path: "/enum4linux", label: "Enum4linux (SMB)", icon: Fingerprint },
+        { path: "/whatweb", label: "WhatWeb", icon: Globe },
+        { path: "/ssh", label: "SSH", icon: Key },
+      ]
+    },
+    {
+      title: "Pentest Web",
+      items: [
+        { path: "/owasp-top10", label: "OWASP Top 10", icon: ShieldAlert },
+        { path: "/burpsuite", label: "Burp Suite", icon: Globe },
+        { path: "/zap", label: "OWASP ZAP", icon: Zap },
+        { path: "/sqlmap", label: "SQLMap", icon: Database },
+        { path: "/xss", label: "XSS Manual", icon: Code },
+        { path: "/lfi-rfi", label: "LFI & RFI", icon: FolderOpen },
+        { path: "/nikto", label: "Nikto", icon: AlertTriangle },
+        { path: "/gobuster", label: "Gobuster", icon: Search },
+        { path: "/beef", label: "BeEF", icon: Biohazard },
+      ]
+    },
+    {
+      title: "Quebra de Senhas",
+      items: [
+        { path: "/hydra", label: "Hydra", icon: Zap },
+        { path: "/john", label: "John the Ripper", icon: Key },
+        { path: "/hashcat", label: "Hashcat", icon: Cpu },
+        { path: "/crunch", label: "Crunch & CeWL", icon: FileText },
+      ]
+    },
+    {
+      title: "Exploração",
+      items: [
+        { path: "/metasploit", label: "Metasploit", icon: Bug },
+        { path: "/msfvenom", label: "MSFVenom", icon: Code },
+        { path: "/searchsploit", label: "Searchsploit", icon: Search },
+        { path: "/buffer-overflow", label: "Buffer Overflow", icon: Binary },
+        { path: "/pos-exploracao", label: "Pós-Exploração", icon: Skull },
+        { path: "/set", label: "SET (Eng. Social)", icon: Brain },
+      ]
+    },
+    {
+      title: "Escalação de Privilégios",
+      items: [
+        { path: "/privesc-linux", label: "PrivEsc — Linux", icon: Flame },
+        { path: "/privesc-windows", label: "PrivEsc — Windows", icon: ShieldAlert },
+      ]
+    },
+    {
+      title: "Redes & MITM",
+      items: [
+        { path: "/arp-spoofing", label: "ARP Spoofing & MITM", icon: Swords },
+        { path: "/ettercap", label: "Ettercap", icon: Activity },
+        { path: "/responder", label: "Responder (NTLM)", icon: Target },
+      ]
+    },
+    {
+      title: "Active Directory",
+      items: [
+        { path: "/bloodhound", label: "BloodHound", icon: Crosshair },
+        { path: "/impacket", label: "Impacket", icon: Code },
+        { path: "/kerberoasting", label: "Kerberoasting & PtH", icon: Key },
+      ]
+    },
+    {
+      title: "Pivoting & Tunelamento",
+      items: [
+        { path: "/ssh-tunneling", label: "SSH Tunneling & Chisel", icon: GitBranch },
+        { path: "/proxychains", label: "Proxychains", icon: Network },
+        { path: "/tor", label: "Tor & Anonimato", icon: Shield },
+      ]
+    },
+    {
+      title: "Wireless",
+      items: [
+        { path: "/aircrack", label: "Aircrack-ng", icon: Wifi },
+        { path: "/wifiphisher", label: "Wifiphisher", icon: Radio },
+        { path: "/reaver", label: "Reaver (WPS)", icon: Lock },
+      ]
+    },
+    {
+      title: "Forense Digital",
+      items: [
+        { path: "/forense", label: "Forense — Visão Geral", icon: FileSearch },
+        { path: "/autopsy", label: "Autopsy (Disco)", icon: HardDrive },
+        { path: "/volatility", label: "Volatility (RAM)", icon: Cpu },
+        { path: "/steganografia", label: "Esteganografia", icon: Eye },
+      ]
+    },
+    {
+      title: "Scripting & Automação",
+      items: [
+        { path: "/bash-pentest", label: "Bash para Pentest", icon: Terminal },
+        { path: "/python-hacking", label: "Python para Hacking", icon: Code },
+      ]
+    },
+    {
+      title: "Kali Avançado",
+      items: [
+        { path: "/nethunter", label: "Kali NetHunter (Mobile)", icon: MonitorSmartphone },
+        { path: "/docker-kali", label: "Docker & Labs", icon: Container },
+      ]
+    },
+    {
+      title: "Referências & Carreira",
+      items: [
+        { path: "/cve", label: "Pesquisa de CVEs", icon: AlertTriangle },
+        { path: "/bug-bounty", label: "Bug Bounty", icon: Trophy },
+        { path: "/ctf", label: "CTF — Dicas", icon: Award },
+        { path: "/relatorios", label: "Relatórios de Pentest", icon: FileText },
+        { path: "/referencias", label: "Referências", icon: BookMarked },
+      ]
+    }
+  ];
+
+  interface SidebarProps {
+    isOpen: boolean;
+    setIsOpen: (open: boolean) => void;
   }
-];
 
-interface SidebarProps {
-  isOpen: boolean;
-  setIsOpen: (v: boolean) => void;
-}
+  export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
+    const [location] = useHashLocation();
 
-export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
-  const [location] = useLocation();
+    return (
+      <>
+        {/* Mobile overlay */}
+        {isOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            onClick={() => setIsOpen(false)}
+          />
+        )}
 
-  return (
-    <>
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 lg:hidden"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
-
-      <aside className={cn(
-        "fixed top-0 bottom-0 left-0 z-50 w-72 bg-card border-r border-border transition-transform duration-300 ease-in-out lg:translate-x-0 overflow-y-auto",
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
-        <div className="p-6">
-          <div className="flex items-center justify-between lg:justify-center mb-8">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                <Shield className="w-5 h-5 text-primary" />
+        {/* Sidebar */}
+        <aside
+          className={cn(
+            "fixed left-0 top-0 h-full w-72 bg-card border-r border-border z-50 overflow-y-auto transition-transform duration-300",
+            isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          )}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-border sticky top-0 bg-card z-10">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                <Shield className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
-                <h2 className="text-lg font-bold mt-0 mb-0 pb-0 border-0 leading-tight">Kali Linux</h2>
+                <h1 className="font-bold text-sm leading-tight">Kali Linux</h1>
                 <p className="text-xs text-muted-foreground">Guia Completo</p>
               </div>
-            </Link>
-            <button className="lg:hidden p-2 text-muted-foreground hover:text-foreground" onClick={() => setIsOpen(false)}>
-              <X className="w-5 h-5" />
+            </div>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="lg:hidden p-1 rounded hover:bg-accent"
+            >
+              <X className="w-4 h-4" />
             </button>
           </div>
 
-          <nav className="space-y-8">
-            {NAVIGATION.map((section, idx) => (
-              <div key={idx}>
-                <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-3 mt-0 border-0 pb-0">
+          {/* Navigation */}
+          <nav className="p-3 space-y-4">
+            {NAVIGATION.map((section) => (
+              <div key={section.title}>
+                <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-1">
                   {section.title}
-                </h4>
-                <ul className="space-y-1">
-                  {section.items.map((item, i) => {
+                </h2>
+                <ul className="space-y-0.5">
+                  {section.items.map((item) => {
                     const isActive = location === item.path;
                     const Icon = item.icon;
                     return (
-                      <li key={i}>
-                        <Link
-                          href={item.path}
-                          onClick={() => setIsOpen(false)}
-                          className={cn(
-                            "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200",
-                            isActive
-                              ? "bg-primary/10 text-primary font-medium"
-                              : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                          )}
-                        >
-                          <Icon className={cn("w-4 h-4", isActive ? "text-primary" : "opacity-70")} />
-                          {item.label}
-                          {isActive && <ChevronRight className="w-3 h-3 ml-auto text-primary" />}
+                      <li key={item.path}>
+                        <Link href={item.path}>
+                          <a
+                            className={cn(
+                              "flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors",
+                              isActive
+                                ? "bg-primary text-primary-foreground font-medium"
+                                : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                            )}
+                            onClick={() => setIsOpen(false)}
+                          >
+                            <Icon className="w-4 h-4 flex-shrink-0" />
+                            <span className="flex-1 leading-tight">{item.label}</span>
+                            {isActive && <ChevronRight className="w-3 h-3" />}
+                          </a>
                         </Link>
                       </li>
                     );
@@ -162,8 +252,18 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               </div>
             ))}
           </nav>
-        </div>
-      </aside>
-    </>
-  );
-}
+
+          {/* Footer */}
+          <div className="p-4 border-t border-border mt-4">
+            <p className="text-xs text-muted-foreground text-center">
+              Guia Completo de Kali Linux
+            </p>
+            <p className="text-xs text-muted-foreground text-center">
+              73 tópicos • Pentest Profissional
+            </p>
+          </div>
+        </aside>
+      </>
+    );
+  }
+  
