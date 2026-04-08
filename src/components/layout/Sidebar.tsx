@@ -10,7 +10,8 @@ import { Link, useLocation } from "wouter";
     Crosshair, Map, Fingerprint, Biohazard, ShieldAlert,
     Flame, Skull, Target, Activity, Swords, Brain,
     MonitorSmartphone, Container, BookMarked, Trophy,
-    Telescope, Link2, Radar, Scan, GitBranch, Binary
+    Telescope, Link2, Radar, Scan, GitBranch, Binary,
+    Cloud, Smartphone, Hash, FileCode, Webhook
   } from "lucide-react";
 
   const NAVIGATION = [
@@ -77,19 +78,26 @@ import { Link, useLocation } from "wouter";
         { path: "/nikto", label: "Nikto", icon: AlertTriangle },
         { path: "/gobuster", label: "Gobuster", icon: Search },
         { path: "/beef", label: "BeEF", icon: Biohazard },
-      ]
-    },
-    {
-      title: "Quebra de Senhas",
+          { path: "/ssrf", label: "SSRF", icon: Globe },
+          { path: "/csrf", label: "CSRF", icon: ShieldAlert },
+          { path: "/command-injection", label: "Command Injection", icon: Terminal },
+          { path: "/webshells", label: "Web Shells", icon: FileCode },
+          { path: "/api-pentest", label: "Pentest de APIs", icon: Webhook },
+          { path: "/deserialization", label: "Deserialization", icon: Code },
+        ]
+      },
+      {
+        title: "Quebra de Senhas",
       items: [
         { path: "/hydra", label: "Hydra", icon: Zap },
         { path: "/john", label: "John the Ripper", icon: Key },
         { path: "/hashcat", label: "Hashcat", icon: Cpu },
         { path: "/crunch", label: "Crunch & CeWL", icon: FileText },
-      ]
-    },
-    {
-      title: "Exploração",
+          { path: "/seclists", label: "SecLists & Wordlists", icon: Hash },
+        ]
+      },
+      {
+        title: "Exploração",
       items: [
         { path: "/metasploit", label: "Metasploit", icon: Bug },
         { path: "/msfvenom", label: "MSFVenom", icon: Code },
@@ -97,10 +105,12 @@ import { Link, useLocation } from "wouter";
         { path: "/buffer-overflow", label: "Buffer Overflow", icon: Binary },
         { path: "/pos-exploracao", label: "Pós-Exploração", icon: Skull },
         { path: "/set", label: "SET (Eng. Social)", icon: Brain },
-      ]
-    },
-    {
-      title: "Escalação de Privilégios",
+          { path: "/phishing", label: "Phishing Avançado", icon: Target },
+          { path: "/payload-obfuscation", label: "Evasão de AV", icon: Shield },
+        ]
+      },
+      {
+        title: "Escalação de Privilégios",
       items: [
         { path: "/privesc-linux", label: "PrivEsc — Linux", icon: Flame },
         { path: "/privesc-windows", label: "PrivEsc — Windows", icon: ShieldAlert },
@@ -120,10 +130,11 @@ import { Link, useLocation } from "wouter";
         { path: "/bloodhound", label: "BloodHound", icon: Crosshair },
         { path: "/impacket", label: "Impacket", icon: Code },
         { path: "/kerberoasting", label: "Kerberoasting & PtH", icon: Key },
-      ]
-    },
-    {
-      title: "Pivoting & Tunelamento",
+          { path: "/crackmapexec", label: "CrackMapExec / NetExec", icon: Crosshair },
+        ]
+      },
+      {
+        title: "Pivoting & Tunelamento",
       items: [
         { path: "/ssh-tunneling", label: "SSH Tunneling & Chisel", icon: GitBranch },
         { path: "/proxychains", label: "Proxychains", icon: Network },
@@ -136,33 +147,40 @@ import { Link, useLocation } from "wouter";
         { path: "/aircrack", label: "Aircrack-ng", icon: Wifi },
         { path: "/wifiphisher", label: "Wifiphisher", icon: Radio },
         { path: "/reaver", label: "Reaver (WPS)", icon: Lock },
-      ]
-    },
-    {
-      title: "Forense Digital",
+          { path: "/bluetooth", label: "Bluetooth Hacking", icon: Radio },
+        ]
+      },
+      {
+        title: "Forense Digital",
       items: [
         { path: "/forense", label: "Forense — Visão Geral", icon: FileSearch },
         { path: "/autopsy", label: "Autopsy (Disco)", icon: HardDrive },
         { path: "/volatility", label: "Volatility (RAM)", icon: Cpu },
         { path: "/steganografia", label: "Esteganografia", icon: Eye },
-      ]
-    },
-    {
-      title: "Scripting & Automação",
+          { path: "/anti-forense", label: "Anti-Forense", icon: Flame },
+        ]
+      },
+      {
+        title: "Scripting & Automação",
       items: [
         { path: "/bash-pentest", label: "Bash para Pentest", icon: Terminal },
         { path: "/python-hacking", label: "Python para Hacking", icon: Code },
-      ]
-    },
-    {
-      title: "Kali Avançado",
+          { path: "/powershell-pentest", label: "PowerShell Ofensivo", icon: Terminal },
+        ]
+      },
+      {
+        title: "Kali Avançado",
       items: [
         { path: "/nethunter", label: "Kali NetHunter (Mobile)", icon: MonitorSmartphone },
         { path: "/docker-kali", label: "Docker & Labs", icon: Container },
-      ]
-    },
-    {
-      title: "Referências & Carreira",
+          { path: "/openvas", label: "OpenVAS / GVM", icon: Bug },
+          { path: "/cloud-pentest", label: "Cloud Pentest", icon: Cloud },
+          { path: "/mobile-pentest", label: "Mobile Pentest", icon: Smartphone },
+          { path: "/reverse-engineering", label: "Engenharia Reversa", icon: Binary },
+        ]
+      },
+      {
+        title: "Referências & Carreira",
       items: [
         { path: "/cve", label: "Pesquisa de CVEs", icon: AlertTriangle },
         { path: "/bug-bounty", label: "Bug Bounty", icon: Trophy },
@@ -259,7 +277,7 @@ import { Link, useLocation } from "wouter";
               Guia Completo de Kali Linux
             </p>
             <p className="text-xs text-muted-foreground text-center">
-              73 tópicos • Pentest Profissional
+              90 tópicos • Pentest Profissional
             </p>
           </div>
         </aside>

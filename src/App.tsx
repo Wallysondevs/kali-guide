@@ -109,6 +109,24 @@ import { useState, useEffect } from "react";
   import BugBounty from "@/pages/BugBounty";
 
   import NotFound from "@/pages/not-found";
+    // NOVAS PÁGINAS — Expansão
+    import OpenVAS from "@/pages/OpenVAS";
+    import SSRF from "@/pages/SSRF";
+    import CSRF from "@/pages/CSRF";
+    import CommandInjection from "@/pages/CommandInjection";
+    import WebShells from "@/pages/WebShells";
+    import APIPentest from "@/pages/APIPentest";
+    import CloudPentest from "@/pages/CloudPentest";
+    import MobilePentest from "@/pages/MobilePentest";
+    import CrackMapExec from "@/pages/CrackMapExec";
+    import Seclists from "@/pages/Seclists";
+    import PayloadObfuscation from "@/pages/PayloadObfuscation";
+    import AntiForense from "@/pages/AntiForense";
+    import Phishing from "@/pages/Phishing";
+    import Deserialization from "@/pages/Deserialization";
+    import PowershellPentest from "@/pages/PowershellPentest";
+    import ReverseEngineering from "@/pages/ReverseEngineering";
+    import WirelessBluetooth from "@/pages/WirelessBluetooth";
 
   const queryClient = new QueryClient();
 
@@ -240,7 +258,26 @@ import { useState, useEffect } from "react";
           <Route path="/metodologia" component={Metodologia} />
           <Route path="/bug-bounty" component={BugBounty} />
 
-          <Route component={NotFound} />
+
+            {/* Novas páginas — Expansão */}
+            <Route path="/openvas" component={OpenVAS} />
+            <Route path="/ssrf" component={SSRF} />
+            <Route path="/csrf" component={CSRF} />
+            <Route path="/command-injection" component={CommandInjection} />
+            <Route path="/webshells" component={WebShells} />
+            <Route path="/api-pentest" component={APIPentest} />
+            <Route path="/cloud-pentest" component={CloudPentest} />
+            <Route path="/mobile-pentest" component={MobilePentest} />
+            <Route path="/crackmapexec" component={CrackMapExec} />
+            <Route path="/seclists" component={Seclists} />
+            <Route path="/payload-obfuscation" component={PayloadObfuscation} />
+            <Route path="/anti-forense" component={AntiForense} />
+            <Route path="/phishing" component={Phishing} />
+            <Route path="/deserialization" component={Deserialization} />
+            <Route path="/powershell-pentest" component={PowershellPentest} />
+            <Route path="/reverse-engineering" component={ReverseEngineering} />
+            <Route path="/bluetooth" component={WirelessBluetooth} />
+            <Route component={NotFound} />
         </Switch>
       </Layout>
     );
