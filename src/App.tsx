@@ -8,6 +8,9 @@ import { useState, useEffect } from "react";
 
   // Páginas existentes
   import Home from "@/pages/Home";
+  import ComeceAqui from "@/pages/ComeceAqui";
+  import PrimeirosArquivos from "@/pages/PrimeirosArquivos";
+  import AvisoLegal from "@/pages/AvisoLegal";
   import Historia from "@/pages/Historia";
   import Instalacao from "@/pages/Instalacao";
   import Interface from "@/pages/Interface";
@@ -158,6 +161,9 @@ import { useState, useEffect } from "react";
         <Switch>
           {/* Existentes */}
           <Route path="/" component={Home} />
+          <Route path="/comece-aqui" component={ComeceAqui} />
+          <Route path="/primeiros-arquivos" component={PrimeirosArquivos} />
+          <Route path="/aviso-legal" component={AvisoLegal} />
           <Route path="/historia" component={Historia} />
           <Route path="/instalacao" component={Instalacao} />
           <Route path="/interface" component={Interface} />

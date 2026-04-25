@@ -16,9 +16,17 @@ import { Link, useLocation } from "wouter";
 
   const NAVIGATION = [
     {
-      title: "Introdução",
+      title: "🚀 Comece Aqui",
       items: [
         { path: "/", label: "Início", icon: BookOpen },
+        { path: "/aviso-legal", label: "Aviso Legal & Ética", icon: ShieldAlert },
+        { path: "/comece-aqui", label: "Do Zero Absoluto", icon: Zap },
+        { path: "/primeiros-arquivos", label: "Primeiros Arquivos", icon: FileText },
+      ]
+    },
+    {
+      title: "Introdução",
+      items: [
         { path: "/historia", label: "O que é Kali Linux", icon: Shield },
         { path: "/instalacao", label: "Instalação", icon: HardDrive },
         { path: "/interface", label: "Interface & Desktop", icon: Layers },
