@@ -22,6 +22,7 @@ import { Link, useLocation } from "wouter";
         { path: "/aviso-legal", label: "Aviso Legal & Ética", icon: ShieldAlert },
         { path: "/comece-aqui", label: "Do Zero Absoluto", icon: Zap },
         { path: "/primeiros-arquivos", label: "Primeiros Arquivos", icon: FileText },
+        { path: "/personalizacao-setup", label: "Personalização & Uso Diário", icon: Settings },
       ]
     },
     {

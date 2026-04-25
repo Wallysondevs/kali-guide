@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
   import Home from "@/pages/Home";
   import ComeceAqui from "@/pages/ComeceAqui";
   import PrimeirosArquivos from "@/pages/PrimeirosArquivos";
+  import PersonalizacaoSetup from "@/pages/PersonalizacaoSetup";
   import AvisoLegal from "@/pages/AvisoLegal";
   import Historia from "@/pages/Historia";
   import Instalacao from "@/pages/Instalacao";
@@ -163,6 +164,7 @@ import { useState, useEffect } from "react";
           <Route path="/" component={Home} />
           <Route path="/comece-aqui" component={ComeceAqui} />
           <Route path="/primeiros-arquivos" component={PrimeirosArquivos} />
+          <Route path="/personalizacao-setup" component={PersonalizacaoSetup} />
           <Route path="/aviso-legal" component={AvisoLegal} />
           <Route path="/historia" component={Historia} />
           <Route path="/instalacao" component={Instalacao} />
