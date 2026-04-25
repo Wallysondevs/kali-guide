@@ -24,7 +24,8 @@ export default function PrimeirosArquivos() {
       <p>
         Nunca crie arquivos de teste em qualquer lugar. Crie uma{" "}
         <strong>pasta dedicada</strong> dentro da sua pasta pessoal. Assim,
-        quando quiser jogar tudo fora, é um <code>rm -rf</code> só.
+        quando quiser limpar tudo, você apaga só essa pasta — sem risco de
+        derrubar arquivo importante por engano.
       </p>
       <CodeBlock
         language="bash"
@@ -268,24 +269,38 @@ cp -r lab lab_copia
 mv nota_backup.txt backup_da_nota.txt
 mv backup_da_nota.txt /tmp/      # move para outra pasta
 
-# Apagar — irreversível, sem lixeira!
-rm vazio.txt
+# Apagar arquivo — irreversível, sem lixeira!
+# Use -i para o sistema PERGUNTAR antes de apagar (recomendado para iniciante)
+rm -i vazio.txt
 
-# Apagar pasta vazia
+# Apagar pasta vazia (só funciona se estiver vazia mesmo)
 rmdir pasta_vazia
 
-# Apagar pasta com conteúdo (CUIDADO!)
-rm -r lab_copia
+# Apagar pasta com conteúdo — sempre com -i para confirmar cada arquivo
+rm -ri lab_copia
 
-# Apagar sem perguntar nada (CUIDADO REDOBRADO!)
-rm -rf lab_copia`}
+# Quando ganhar confiança, pode usar -r sem -i:
+# rm -r lab_copia
+#
+# A flag -f ("force") pula TODAS as perguntas e ignora erros.
+# NÃO use -f como iniciante. Erros com -rf são irreversíveis.`}
       />
 
-      <AlertBox type="danger" title="rm é definitivo">
-        Não existe lixeira no terminal. Um <code>rm</code> bem-sucedido apaga
-        para sempre. Antes de usar <code>rm -rf</code>, leia o caminho duas
-        vezes. Existem casos famosos de pessoas que rodaram{" "}
-        <code>rm -rf /</code> e destruíram o sistema inteiro.
+      <AlertBox type="danger" title="Por que esta página NÃO ensina rm -rf">
+        <p>
+          Não existe lixeira no terminal. Um <code>rm</code> bem-sucedido apaga
+          <strong> para sempre</strong>. A combinação <code>-rf</code> apaga
+          tudo recursivamente <strong>sem perguntar nada</strong> e sem parar
+          em erros.
+        </p>
+        <p>
+          Como iniciante, use sempre <code>rm -i</code> (pergunta antes de cada
+          arquivo) ou <code>rm -ri</code> para pastas. Existem casos famosos de
+          gente que rodou <code>rm -rf /</code> e destruiu o sistema inteiro,
+          ou que apagou anos de trabalho com um espaço a mais no caminho. Você
+          aprenderá <code>-rf</code> mais tarde, quando souber o que está
+          fazendo.
+        </p>
       </AlertBox>
 
       <h2>5. Uma estrutura de pastas mais séria</h2>

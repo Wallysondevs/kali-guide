@@ -94,10 +94,12 @@ export default function Home() {
           <p className="text-sm text-foreground/90 leading-relaxed m-0">
             Este guia ensina técnicas reais de <strong>segurança ofensiva</strong>.
             Usá-las em sistemas que não são seus, sem autorização escrita, é{" "}
-            <strong className="text-red-300">crime no Brasil</strong> (Lei
-            12.737/2012, Lei Carolina Dieckmann), com pena de{" "}
-            <strong>1 a 5 anos</strong> de reclusão. A LGPD, o Marco Civil e a
-            Lei 14.155/2021 também se aplicam. Lá fora as penas chegam a 10 anos.
+            <strong className="text-red-300">crime no Brasil</strong>: o{" "}
+            <strong>Art. 154-A do Código Penal</strong> (incluído pela Lei
+            12.737/2012, "Carolina Dieckmann") prevê reclusão e a Lei
+            14.155/2021 aumentou as penas, podendo chegar a vários anos com
+            agravantes. A LGPD e o Marco Civil também se aplicam. Lá fora as
+            penas chegam a 10 anos.
           </p>
           <p className="text-sm text-foreground/90 leading-relaxed m-0">
             Pratique <strong>somente</strong> em laboratório isolado (VMs

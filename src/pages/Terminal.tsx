@@ -84,9 +84,9 @@ cd -                # voltar ao diretório anterior
 cd                  # sem nada também volta para a home`}
       />
 
-      <h3>ls — todas as flags úteis (não só -la)</h3>
+      <h3>ls — principais flags úteis (não só -la)</h3>
       <ParamsTable
-        title="ls — listar arquivos com todas as flags"
+        title="ls — flags mais usadas no dia a dia"
         params={[
           {
             flag: "-l",
