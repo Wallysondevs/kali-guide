@@ -269,7 +269,7 @@ doc:3`,
             out: `FLAG{xampp_e_kali_e_amor}
 adminPassword=
 admin:Welcome2025!
-secret_key=AKIAIOSFODNN7EXAMPLE`,
+secret_key=AKIA<EXEMPLO_FAKE_1>`,
             outType: "warning",
           },
           {

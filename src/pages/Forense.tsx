@@ -183,7 +183,7 @@ https://wormhole.app/transfer/...`,
           {
             comment: "buscar coordenadas GPS / chaves AWS / private SSH",
             cmd: "grep -aE '(AKIA[0-9A-Z]{16}|-----BEGIN.*PRIVATE KEY-----|[+-]?[0-9]{1,3}\\.[0-9]{4,}, *[+-]?[0-9]{1,3}\\.[0-9]{4,})' evidencia.dd | head",
-            out: `AKIAQABCDEFGH123456                       (AWS access key ID)
+            out: `AKIA<EXEMPLO_FAKE_6>                       (AWS access key ID)
 -----BEGIN OPENSSH PRIVATE KEY-----        (chave privada exposta)
 -23.5453,-46.6428                          (coordenadas, São Paulo)`,
             outType: "error",
