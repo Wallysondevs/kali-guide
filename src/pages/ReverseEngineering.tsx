@@ -1,310 +1,427 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
 import { AlertBox } from "@/components/ui/AlertBox";
+import { CodeBlock } from "@/components/ui/CodeBlock";
+import { CommandTable } from "@/components/ui/CommandTable";
+import { OutputBlock } from "@/components/ui/OutputBlock";
+import { PracticeBox } from "@/components/ui/PracticeBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function ReverseEngineering() {
   return (
     <PageContainer
-      title="Engenharia Reversa — Análise de Binários"
-      subtitle="Fundamentos de engenharia reversa com Ghidra, radare2, GDB e ltrace. Inclui análise estática e dinâmica, identificação de vulnerabilidades em binários, e bypass de proteções."
+      title="Engenharia reversa"
+      subtitle="ELF/PE, file/strings, Ghidra, radare2, gdb-pwndbg, IDA Free, decompiladores. Análise estática + dinâmica."
       difficulty="avancado"
-      timeToRead="30 min"
+      timeToRead="20 min"
+      prompt="re/main"
     >
-      <h2>O que é Engenharia Reversa?</h2>
-      <p>
-        <strong>Engenharia reversa</strong> é o processo de analisar um programa compilado (binário)
-        para entender seu funcionamento interno sem acesso ao código-fonte. Em pentest, é usada para:
-        encontrar vulnerabilidades em software (buffer overflow, format string), analisar malware,
-        entender protocolos proprietários, e bypass de proteções (serial key, DRM, anti-cheat).
-      </p>
-
-      <h2>Ferramentas Essenciais</h2>
-      <CodeBlock
-        title="Instalar e configurar as principais ferramentas"
-        code={`# ═══════════════════════════════════════════════════
-# GHIDRA — Disassembler/Decompiler (NSA)
-# ═══════════════════════════════════════════════════
-# Ghidra é GRATUITO, poderoso, e possui decompiler
-# (converte assembly → pseudo-C legível!)
-sudo apt install ghidra
-# Ou baixar: https://ghidra-sre.org/
-
-# Iniciar:
-ghidra &
-# 1. File → New Project → (nome) → OK
-# 2. File → Import File → selecionar binário
-# 3. Analisar automaticamente (Yes)
-# 4. Double-click no programa → abre Code Browser
-#
-# Interface do Code Browser:
-# ┌──────┬──────────────┬────────────────┐
-# │ Left │   Center     │     Right      │
-# │      │              │                │
-# │Symbol│ Listing      │ Decompiler     │
-# │Tree  │ (Assembly)   │ (Pseudo-C)     │
-# │      │              │                │
-# │Func  │ 0040120a MOV │ void main() {  │
-# │List  │ 0040120f CALL│   if (x == 5)  │
-# │      │ 00401214 CMP │     system(cmd)│
-# └──────┴──────────────┴────────────────┘
-# Esquerda: lista de funções e símbolos
-# Centro: código assembly (disassembly)
-# Direita: código C decompilado (Ghidra gera automaticamente!)
-
-# ═══════════════════════════════════════════════════
-# RADARE2 — Disassembler de linha de comando
-# ═══════════════════════════════════════════════════
-sudo apt install radare2
-
-# Abrir binário para análise:
-r2 -A programa
-# -A = analisar automaticamente (funções, refs, etc.)
-
-# Comandos essenciais do r2:
-# afl         = listar todas as funções encontradas
-# afl~main    = buscar função "main"
-# s main      = ir para a função main
-# pdf         = print disassembly da função atual
-# pdf @main   = disassembly da main
-# axt main    = quem chama main? (cross-references TO)
-# axf main    = o que main chama? (cross-references FROM)
-# iz          = listar todas as strings
-# iz~password = buscar strings com "password"
-# px 100      = hexdump de 100 bytes na posição atual
-# V           = modo visual (interface TUI)
-# VV          = modo visual de grafos (fluxo de controle)
-# q           = sair
-
-# ═══════════════════════════════════════════════════
-# GDB — Debugger
-# ═══════════════════════════════════════════════════
-sudo apt install gdb gdb-peda
-# gdb-peda = plugin que melhora o GDB com cores e comandos extras
-
-# Iniciar debug:
-gdb ./programa
-
-# Comandos GDB essenciais:
-# run (r)             = executar o programa
-# break main (b main) = breakpoint na função main
-# break *0x401234     = breakpoint no endereço
-# continue (c)        = continuar execução até próximo break
-# next (n)            = executar próxima instrução (step over)
-# step (s)            = executar próxima instrução (step into)
-# info registers (i r)= mostrar todos os registradores
-# x/20x $rsp          = examinar 20 words na stack (hex)
-# x/s 0x401234        = examinar como string
-# print $rax          = ver valor do registrador RAX
-# disas main          = disassembly da main
-# set {int}0x601040=5 = escrever valor na memória
-# quit (q)            = sair
-
-# ═══════════════════════════════════════════════════
-# FERRAMENTAS AUXILIARES
-# ═══════════════════════════════════════════════════
-
-# file — identificar tipo de binário:
-file programa
-# programa: ELF 64-bit LSB executable, x86-64, dynamically linked
-# ELF = formato Linux | PE = formato Windows | Mach-O = macOS
-# 64-bit = arquitetura | dynamically linked = usa libs externas
-
-# strings — extrair strings do binário:
-strings programa | grep -i "pass\\|flag\\|key\\|secret\\|admin"
-# Encontra strings hardcoded como senhas e flags!
-# Em CTFs, a flag pode estar literalmente nas strings!
-
-# ltrace — monitorar chamadas de biblioteca:
-ltrace ./programa
-# Mostra CADA chamada de função de biblioteca:
-# strcmp("input", "senha_secreta") = 0
-# ↑ strcmp compara duas strings — a "senha_secreta" é revelada!
-
-# strace — monitorar chamadas de sistema:
-strace ./programa
-# Mostra chamadas ao kernel: open, read, write, connect, etc.
-# Útil para ver quais arquivos o programa acessa
-
-# objdump — disassembly rápido:
-objdump -d programa | less
-# -d = disassemble
-# Menos poderoso que r2/Ghidra, mas rápido para olhar`}
+      <h2>Triagem inicial — sempre nessa ordem</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "file challenge",
+            out: `challenge: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=abc..., for GNU/Linux 3.2.0, not stripped, with debug_info`,
+            outType: "info",
+          },
+          {
+            comment: "informações: 64-bit, dinâmico, NÃO stripped, debug INFO presente. JÚNIA!",
+            cmd: "checksec --file=challenge",
+            out: `RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      Symbols       FORTIFY  Fortified   Fortifiable  FILE
+Full RELRO      Canary found      NX enabled    PIE enabled     No RPATH   No RUNPATH   122 Symbols   Yes      0          1            challenge`,
+            outType: "warning",
+          },
+          {
+            cmd: "strings -n 8 challenge | head -30",
+            out: `/lib64/ld-linux-x86-64.so.2
+__libc_start_main
+__cxa_finalize
+__libc_start_main@GLIBC_2.34
+puts
+fgets
+strcmp
+stdin
+GLIBC_2.34
+GLIBC_2.2.5
+challenge.c
+Welcome to the challenge!
+Enter the secret password: 
+S3cr3t_P@ss_2026!         ← BINGO!
+ACCESS GRANTED!
+Wrong password.
+[ANSI X3.4-1968]
+GNU C99 11.4.0`,
+            outType: "success",
+          },
+        ]}
       />
 
-      <h2>Análise Estática — Passo a Passo</h2>
-      <CodeBlock
-        title="Metodologia de análise estática com exemplos"
-        code={`# ═══════════════════════════════════════════════════
-# PASSO 1: Informações básicas
-# ═══════════════════════════════════════════════════
-file programa              # Tipo, arquitetura, linkage
-checksec --file=programa    # Proteções habilitadas:
-# RELRO:    Full RELRO       (protege GOT/PLT)
-# Stack:    Canary found      (stack canary — protege stack)
-# NX:       NX enabled        (stack não-executável)
-# PIE:      PIE enabled       (endereços randomizados)
-# ↑ Quanto mais proteções, mais difícil de explorar
-
-# PASSO 2: Strings interessantes
-strings programa | grep -iE "pass|flag|key|secret|admin|root|login|http|sql"
-
-# PASSO 3: Importações (funções de biblioteca usadas)
-objdump -T programa   # Funções importadas (dynamic symbols)
-# Funções perigosas que indicam vulnerabilidades:
-# gets()        → buffer overflow GARANTIDO (sem limit check)
-# strcpy()      → buffer overflow (sem size check)
-# sprintf()     → buffer overflow
-# scanf("%s")   → buffer overflow
-# printf(input) → format string vulnerability
-# system()      → command injection se input não sanitizado
-# exec*()       → command injection
-
-# PASSO 4: Abrir no Ghidra e focar em:
-# - Função main() → entender o fluxo principal
-# - Chamadas a gets/strcpy/system → vulnerabilidades
-# - Comparações de strings → senhas/flags hardcoded
-# - Funções que processam input do usuário`}
+      <h2>Caso 1 — Strings achou (challenge fácil)</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "./challenge",
+            out: `Welcome to the challenge!
+Enter the secret password: S3cr3t_P@ss_2026!
+ACCESS GRANTED!`,
+            outType: "success",
+          },
+          {
+            cmd: "echo 'lesson: SEMPRE rode strings antes de Ghidra'",
+            out: "(50% dos challenges easy se resolvem em strings + grep)",
+            outType: "muted",
+          },
+        ]}
       />
 
-      <h2>Análise Dinâmica com GDB</h2>
-      <CodeBlock
-        title="Debugar binários e encontrar vulnerabilidades"
-        code={`# ═══════════════════════════════════════════════════
-# EXEMPLO: Bypass de verificação de senha
-# ═══════════════════════════════════════════════════
-
-# Programa hipotético que pede senha:
-# $ ./crackme
-# Enter password: teste
-# Wrong password!
-
-# No GDB:
-gdb ./crackme
-(gdb) break main
-(gdb) run
-# Executa até main()
-
-(gdb) disas main
-# Procurar por instruções de comparação (cmp, test)
-# e saltos condicionais (je, jne, jz, jnz)
-# Ex:
-#   0x40120a: call strcmp      ← compara strings
-#   0x40120f: test eax, eax   ← resultado da comparação
-#   0x401211: jne 0x401230    ← se NÃO igual, pula para "Wrong"
-#   0x401213: ...             ← se igual, continua para "Correct"
-
-# Opção 1: Descobrir a senha
-(gdb) break *0x40120a        # Break ANTES do strcmp
-(gdb) run
-# Enter password: AAAA
-# Breakpoint hit!
-(gdb) x/s $rsi              # Segundo argumento do strcmp
-# 0x402010: "s3cr3t_p4ss!"   ← A SENHA!
-
-# Opção 2: Bypass sem saber a senha
-(gdb) break *0x401211        # Break no JNE (salto condicional)
-(gdb) run
-# Enter password: qualquer
-(gdb) set $eflags = 0x246    # Setar zero flag → JNE não salta
-(gdb) continue
-# "Correct password!"        ← Bypass sem saber a senha!
-
-# Alternativa: mudar o salto
-(gdb) set *(unsigned char*)0x401211 = 0x74
-# Muda JNE (0x75) para JE (0x74) → lógica invertida
-
-# ═══════════════════════════════════════════════════
-# BUFFER OVERFLOW BÁSICO
-# ═══════════════════════════════════════════════════
-
-# Programa vulnerável:
-# void vuln() {
-#   char buf[64];
-#   gets(buf);    ← buffer overflow! Sem limit check
-# }
-
-# 1. Encontrar o offset para sobrescrever RIP:
-# Gerar pattern:
-python3 -c "from pwn import *; print(cyclic(200))" | ./programa
-# Segfault! GDB mostra o valor de RIP sobrescrito.
-
-# 2. Calcular offset:
-python3 -c "from pwn import *; print(cyclic_find(0x61616168))"
-# → 72 (significa que 72 bytes até chegar ao RIP)
-
-# 3. Criar exploit:
-python3 -c "
-from pwn import *
-buf  = b'A' * 72              # Preencher buffer
-buf += p64(0x00401156)         # Endereço da função win()
-print(buf.decode('latin-1'))
-" | ./programa
-# Sobrescreve RIP com endereço da função desejada!`}
+      <h2>Caso 2 — Strings ofuscado</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "./crackme2",
+            out: `Welcome.
+> teste
+WRONG`,
+            outType: "muted",
+          },
+          {
+            cmd: "strings crackme2 | grep -iE 'pass|secret|flag|key' | head",
+            out: "(silencioso — ofuscado)",
+            outType: "default",
+          },
+          {
+            comment: "abrir no radare2",
+            cmd: "r2 -A crackme2",
+            out: `[Cannot find function 'entry0'] Analysis: aaaa
+[x] Analyze all flags starting with sym. and entry0 (aa)
+[x] Analyze function calls (aac)
+[x] Analyze len bytes of instructions for references (aar)
+[x] Type matching analysis for all functions (aaft)
+[x] Use -AA or aaaa to perform additional experimental analysis
+ -- Take a look at /etc/radarerc to set startup commands
+[0x000010e0]> `,
+            outType: "info",
+          },
+          {
+            cmd: "(r2) afl | head",
+            out: `0x000010e0    1     46 entry0
+0x00001120    4     49 sym.deregister_tm_clones
+0x00001160    4     66 sym.register_tm_clones
+0x000011a0    5     58 sym.__do_global_dtors_aux
+0x000011e0    1     19 entry.init0
+0x00001050    1     11 sym.imp.printf
+0x00001260   10    342 sym.main
+0x00001500    3    142 sym.check_password    ← interessante!
+0x000015a0    1    214 sym.deobfuscate       ← deobfuscate!`,
+            outType: "warning",
+          },
+          {
+            cmd: "(r2) pdf @sym.deobfuscate",
+            out: `;-- sym.deobfuscate:
+0x000015a0      55             push rbp
+0x000015a1      4889e5         mov rbp, rsp
+0x000015a4      48897df8       mov qword [rbp - 8], rdi
+0x000015a8      c745f4000000   mov dword [rbp - 0xc], 0
+0x000015af      eb22           jmp 0x15d3
+;  loop XOR cada byte com 0x42
+0x000015b1      488b45f8       mov rax, qword [rbp - 8]
+0x000015b5      8b55f4         mov edx, dword [rbp - 0xc]
+0x000015b8      4863d2         movsxd rdx, edx
+0x000015bb      4801c2         add rdx, rax
+0x000015be      0fb602         movzx eax, byte [rdx]
+0x000015c1      83f042         xor eax, 0x42                   ← XOR com 0x42!
+0x000015c4      8802           mov byte [rdx], al`,
+            outType: "info",
+          },
+          {
+            cmd: "(r2) iz | head -20",
+            out: `nth paddr      vaddr      len size section type  string
+000 0x00002008 0x00002008  16  17 .rodata ascii Welcome.\\n
+001 0x00002019 0x00002019   3   4 .rodata ascii > 
+002 0x0000201d 0x0000201d  18  19 .rodata ascii \\x00#52#08&PA0,4 ← string XORada!
+003 0x00002030 0x00002030   6   7 .rodata ascii WRONG\\n
+004 0x00002037 0x00002037   8   9 .rodata ascii CORRECT\\n`,
+            outType: "warning",
+          },
+          {
+            comment: "deobfuscar manualmente em python",
+            cmd: 'python3 -c "print(\'\'.join(chr(b ^ 0x42) for b in bytes.fromhex(\'003352300853265041303234\')))"',
+            out: `Bs0pJ\\x18d\\x12brv     ← errado, faltou tirar bytes finais`,
+            outType: "muted",
+          },
+          {
+            comment: "ver o blob exato no .rodata e xor",
+            cmd: "(r2) px 16 @0x0000201d",
+            out: `- offset -   0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
+0x0000201d  0033 5230 0853 2650 4130 3234 0000 0000  .3R0.S&PA024....`,
+            outType: "info",
+          },
+          {
+            cmd: 'python3 -c "data=bytes([0x00,0x33,0x52,0x30,0x08,0x53,0x26,0x50,0x41,0x30,0x32,0x34]); print(\'\'.join(chr(b ^ 0x42) for b in data))"',
+            out: `\\x42qpr\\x4aP12345678`,
+            outType: "muted",
+          },
+          {
+            comment: "alternativa: ver diretamente em runtime — gdb breakpoint após deobfuscate",
+            cmd: "gdb ./crackme2 -ex 'break *deobfuscate+98' -ex run -ex 'x/20s $rdi' -ex quit",
+            out: `Breakpoint 1, 0x0000555555555610 in deobfuscate ()
+0x55555555803d:  "Br1lh4nt3M1nd!"           ← password real!`,
+            outType: "success",
+          },
+          {
+            cmd: "./crackme2",
+            out: `Welcome.
+> Br1lh4nt3M1nd!
+CORRECT`,
+            outType: "success",
+          },
+        ]}
       />
 
-      <h2>Proteções de Binários e Bypass</h2>
-      <CodeBlock
-        title="Entender e contornar proteções modernas"
-        code={`# ═══════════════════════════════════════════════════
-# PROTEÇÕES COMUNS
-# ═══════════════════════════════════════════════════
-
-# 1. Stack Canary (Stack Cookie)
-# Valor aleatório colocado entre variáveis locais e RIP
-# Se o canary é sobrescrito (buffer overflow) → programa aborta
-# Bypass: leak do canary via format string ou info disclosure
-
-# 2. NX (No-Execute) / DEP (Data Execution Prevention)
-# Stack e heap NÃO são executáveis
-# Não pode injetar shellcode na stack e executar
-# Bypass: ROP (Return-Oriented Programming) — usar gadgets
-# do próprio código para construir execução
-
-# 3. ASLR (Address Space Layout Randomization)
-# Endereços de stack, heap, e libs são randomizados a cada execução
-# Não pode hardcodar endereços no exploit
-# Bypass: info leak para descobrir endereço base, ret2plt
-
-# 4. PIE (Position Independent Executable)
-# Código do programa também é randomizado (não só libs)
-# Bypass: info leak do endereço do programa
-
-# 5. RELRO (Relocation Read-Only)
-# Partial: GOT é writable (pode sobrescrever entradas GOT)
-# Full: GOT é read-only após carregamento (mais seguro)
-
-# Verificar proteções:
-checksec --file=programa
-# RELRO:    Partial RELRO
-# Stack:    No canary found     ← SEM proteção de stack!
-# NX:       NX enabled
-# PIE:      No PIE              ← Endereços fixos!
-
-# ═══════════════════════════════════════════════════
-# ROP (Return-Oriented Programming) — Conceito
-# ═══════════════════════════════════════════════════
-# Quando NX está habilitado, não pode executar shellcode na stack.
-# Solução: usar "gadgets" — pequenos trechos de código que
-# terminam em RET, já existentes no binário.
-#
-# Cada gadget faz UMA operação:
-# pop rdi; ret    → coloca valor da stack em RDI
-# pop rsi; ret    → coloca valor em RSI
-# ret             → retorna para o próximo endereço na stack
-#
-# Encadeando gadgets na stack, pode-se:
-# 1. Colocar "/bin/sh" em RDI (primeiro argumento)
-# 2. Chamar system() com RDI apontando para "/bin/sh"
-# → system("/bin/sh") → shell!
-
-# Encontrar gadgets:
-ROPgadget --binary programa --ropchain
-# Encontra gadgets E sugere ROP chain automaticamente!
-
-# Com ropper:
-ropper --file programa --search "pop rdi; ret"
-# Busca gadgets específicos`}
+      <h2>Ghidra — decompilação</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "ghidra &",
+            out: "(GUI Java abre. Workflow:)",
+            outType: "muted",
+          },
+          {
+            cmd: "echo 'workflow Ghidra'",
+            out: `1. File → New Project → Non-Shared
+2. File → Import File → seu binário
+3. Duplo click → CodeBrowser
+4. Auto-analyze (default options) → 10s-2min
+5. Symbol Tree → Functions → main → duplo click
+6. Painel direito = decompile DECENTE em C
+7. Edite var/func names (L = rename) — anote o que descobre`,
+            outType: "info",
+          },
+        ]}
       />
+
+      <CodeBlock
+        language="c"
+        title="Ghidra decompile do crackme2 — main()"
+        code={`undefined8 main(void)
+{
+  long lVar1;
+  char input [128];
+  
+  setvbuf(stdout,NULL,2,0);
+  puts("Welcome.");
+  printf("> ");
+  fgets(input,128,stdin);
+  input[strcspn(input,"\\n")] = '\\0';
+  
+  // deobfuscate copia static + xor cada byte com 0x42
+  char password [16];
+  memcpy(password, &DAT_00002030 /* 003352300853265041303234 */, 12);
+  for (int i = 0; i < 12; i++) {
+    password[i] ^= 0x42;     // ← XOR
+  }
+  password[12] = '\\0';
+  
+  if (strcmp(input, password) == 0) {
+    puts("CORRECT");
+    return 0;
+  }
+  puts("WRONG");
+  return 1;
+}`}
+      />
+
+      <h2>gdb-pwndbg — análise dinâmica</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "gdb ./crackme2",
+            out: `pwndbg: loaded 142 pwndbg commands and 47 shell commands.
+Reading symbols from ./crackme2...
+pwndbg> `,
+            outType: "info",
+          },
+          {
+            cmd: "(pwndbg) info functions",
+            out: `Non-debugging symbols:
+0x00000000000010e0  _start
+0x0000000000001260  main
+0x0000000000001500  check_password
+0x00000000000015a0  deobfuscate
+[...]`,
+            outType: "default",
+          },
+          {
+            cmd: "(pwndbg) break strcmp",
+            out: "Breakpoint 1 at 0x1040",
+            outType: "muted",
+          },
+          {
+            cmd: "(pwndbg) run",
+            out: `Welcome.
+> teste
+
+Breakpoint 1, __strcmp_avx2 () at ../sysdeps/x86_64/multiarch/strcmp-avx2.S:99
+
+  *RDI  0x7fffffffe5d0 ◂— 'teste'                     ← seu input
+  *RSI  0x7fffffffe5b0 ◂— 'Br1lh4nt3M1nd!'            ← password real!
+   RBP  0x7fffffffe700 ◂— 0x0
+   RSP  0x7fffffffe590 —▸ 0x555555555431 (main+457)`,
+            outType: "success",
+          },
+          {
+            cmd: "(pwndbg) x/s $rsi",
+            out: "0x7fffffffe5b0:  \"Br1lh4nt3M1nd!\"",
+            outType: "success",
+          },
+        ]}
+      />
+
+      <h2>PE Windows — Ghidra + ILSpy</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "file dropper.exe",
+            out: "dropper.exe: PE32+ executable (console) x86-64, for MS Windows, 8 sections",
+            outType: "info",
+          },
+          {
+            comment: "C# .NET? usar ILSpy/dnSpy (decompila para C# legível)",
+            cmd: "file -b dropper.exe | grep -i .NET || pip install dnSpy-Sharpener",
+            out: "(se .NET, dnSpy é melhor que Ghidra)",
+            outType: "muted",
+          },
+          {
+            comment: "PE imports — quais APIs?",
+            cmd: "rabin2 -i dropper.exe | head -20",
+            out: `[Imports]
+nth vaddr      bind   type   lib                  name
+1   0x140004080 NONE   FUNC   KERNEL32.dll         CreateProcessA
+2   0x140004088 NONE   FUNC   KERNEL32.dll         VirtualAlloc        ← shellcode!
+3   0x140004090 NONE   FUNC   KERNEL32.dll         WriteProcessMemory  ← injection!
+4   0x140004098 NONE   FUNC   KERNEL32.dll         CreateRemoteThread  ← classic injection
+5   0x1400040a0 NONE   FUNC   WININET.dll          InternetOpenA       ← C2!
+6   0x1400040a8 NONE   FUNC   WININET.dll          InternetReadFile`,
+            outType: "warning",
+          },
+          {
+            cmd: "rabin2 -z dropper.exe | grep -iE 'http|\\.exe|\\.dll' | head",
+            out: `38   0x00004220  0x140004220  29   30  http://c2.atacante[.]com/key.bin
+42   0x00004240  0x140004240  18   19  C:\\Users\\Public\\evil.exe
+43   0x00004260  0x140004260  12   13  amsi.dll`,
+            outType: "warning",
+          },
+        ]}
+      />
+
+      <h2>Anti-debug / packer detection</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "ver se está empacotado (UPX, Themida, VMProtect)",
+            cmd: "upx -t suspicious.exe && upx -l suspicious.exe",
+            out: `   File size         Ratio      Format      Name
+   --------------------   ------   -----------   -----------
+    142841 ->     38241   26.77%    win64/pe     suspicious.exe
+[OK] suspicious.exe                                        [packed]`,
+            outType: "warning",
+          },
+          {
+            cmd: "upx -d suspicious.exe -o unpacked.exe",
+            out: `[+] unpacked successfully → unpacked.exe (142841 bytes)`,
+            outType: "success",
+          },
+          {
+            cmd: "diec suspicious.exe",
+            out: `Detect It Easy 3.10
+File: suspicious.exe
+Type: PE64
+Compiler: VS2022
+Packer: Themida v3.0+              ← packer comercial — bem mais difícil
+Sections: 5 (CODE, .rsrc, .reloc, .themida, .boot)`,
+            outType: "error",
+          },
+        ]}
+      />
+
+      <CommandTable
+        title="Ferramentas por linguagem/formato"
+        variations={[
+          { cmd: "Ghidra", desc: "Tudo (ELF/PE/MachO/etc.). Decompile pra C.", output: "Gratuito (NSA). Padrão do mercado." },
+          { cmd: "IDA Free", desc: "Concorrente comercial.", output: "Mais polido. Pago tem decompiler poderoso." },
+          { cmd: "radare2 / Cutter", desc: "CLI/GUI open. Análise dinâmica + estática.", output: "Cutter = GUI do r2." },
+          { cmd: "gdb + pwndbg", desc: "Debugger Linux com pluggin.", output: "Para análise dinâmica + exploit dev." },
+          { cmd: "x64dbg", desc: "Debugger Windows x64.", output: "Padrão para PE." },
+          { cmd: "dnSpy / ILSpy", desc: "Apps .NET (C#, F#).", output: "Decompile pra C# quase original." },
+          { cmd: "jadx / jd-gui", desc: "Apps Java/Android.", output: "JAR/DEX → Java." },
+          { cmd: "Hopper", desc: "macOS/iOS.", output: "Pago mas excelente p/ MachO." },
+          { cmd: "binwalk", desc: "Firmware embedded.", output: "Encontra FS embutido." },
+          { cmd: "Frida", desc: "Hook de runtime.", output: "Modifica binário em execução." },
+        ]}
+      />
+
+      <h2>Roteiro de análise — checklist</h2>
+      <OutputBlock label="o que fazer em cada novo binário" type="info">
+{`[ ] file <bin>                          # arch / linkage / stripped?
+[ ] checksec --file=<bin>                # NX, ASLR, PIE, canary, RELRO
+[ ] strings -n 8 <bin> | grep -iE 'pass|flag|key|http|/tmp|secret'
+[ ] strings -e l <bin>                   # UTF-16 (Windows wchar)
+[ ] rabin2 -i <bin>                      # imports (APIs)
+[ ] rabin2 -z <bin>                      # strings em .data/.rodata
+[ ] ltrace ./<bin>                       # libcalls em runtime
+[ ] strace ./<bin>                       # syscalls em runtime
+[ ] ghidra OU r2 -AA <bin>               # decompile
+[ ] localizar main / WinMain
+[ ] gdb com break em strcmp/strncmp/memcmp
+[ ] documentar funções renomeadas
+[ ] PoC do bypass / extração de flag`}
+      </OutputBlock>
+
+      <PracticeBox
+        title="Lab: resolva 1 crackme em 15 min"
+        goal="Praticar pipeline completo num crackme público."
+        steps={[
+          "Baixe um crackme do crackmes.one (level 1).",
+          "file → strings → checksec.",
+          "Se strings tem a flag → done.",
+          "Senão → r2 -AA → list functions → ler main.",
+          "GDB break em strcmp para ver password em runtime.",
+        ]}
+        command={`# pegar crackme
+wget https://crackmes.one/static/crackme/example.zip
+unzip example.zip && cd example
+
+file ./challenge
+checksec --file=./challenge
+strings -n 8 ./challenge | grep -iE 'flag|pass|secret'
+
+# se não achou
+r2 -A ./challenge
+# (r2) afl
+# (r2) pdg @sym.main
+# Q
+
+# dinâmico
+gdb ./challenge -ex 'break strcmp' -ex run`}
+        expected={`Welcome to challenge
+> teste
+Breakpoint 1, __strcmp_avx2 ()
+RSI: "S3cr3tP@ss"      ← achou em 30 segundos!`}
+        verify="Anote o tempo. Em 1 mês de prática diária, easy crackme = < 5 min."
+      />
+
+      <AlertBox type="info" title="Ordem de aprendizado">
+        Comece em <strong>Linux ELF C nativo</strong> (mais simples). Depois <strong>PE C/C++</strong>.
+        Depois <strong>.NET (decompila quase 1:1)</strong>. Por último <strong>Android/Java</strong>
+        (jadx) e <strong>iOS</strong>. Reverse de malware moderno (packed + obfuscated +
+        anti-VM) é especialização — várias semanas só pra UM sample.
+      </AlertBox>
     </PageContainer>
   );
 }

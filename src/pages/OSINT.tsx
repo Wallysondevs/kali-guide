@@ -1,57 +1,324 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-  import { AlertBox } from "@/components/ui/AlertBox";
-  import { CodeBlock } from "@/components/ui/CodeBlock";
+import { AlertBox } from "@/components/ui/AlertBox";
+import { CodeBlock } from "@/components/ui/CodeBlock";
+import { CommandTable } from "@/components/ui/CommandTable";
+import { PracticeBox } from "@/components/ui/PracticeBox";
+import { Terminal } from "@/components/ui/Terminal";
 
-  export default function OSINT() {
-    return (
-      <PageContainer
-        title="OSINT — Inteligência de Fonte Aberta"
-        subtitle="Colete informações públicas sobre alvos de forma legal, antes de qualquer teste de penetração."
-        difficulty="intermediario"
-        timeToRead="14 min"
-      >
-        <AlertBox type="info" title="OSINT é legal — se feito corretamente">
-          OSINT (Open Source Intelligence) usa apenas informações publicamente disponíveis.
-          Não envolve acesso não autorizado. É a fase de reconhecimento passivo em qualquer pentest profissional.
-        </AlertBox>
+export default function OSINT() {
+  return (
+    <PageContainer
+      title="OSINT — Visão Geral"
+      subtitle="Open Source INTelligence — coleta passiva de informação a partir de fontes públicas."
+      difficulty="iniciante"
+      timeToRead="14 min"
+      prompt="recon/osint"
+    >
+      <h2>O que é OSINT</h2>
+      <p>
+        <strong>OSINT</strong> é tudo que você descobre sem tocar diretamente no alvo: registros públicos,
+        DNS, WHOIS, certificados TLS, leaks de credencial, posts em redes sociais, código no GitHub,
+        bancos de imagens, registros de empresa.
+      </p>
+      <p>
+        É a primeira fase de qualquer pentest sério: 60% do trabalho está em conhecer o alvo
+        antes de mandar o primeiro pacote.
+      </p>
 
-        <h2>O que é OSINT?</h2>
-        <p>
-          OSINT é a arte de coletar, analisar e correlacionar informações públicas sobre um alvo —
-          empresa, domínio, pessoa ou sistema — sem interagir diretamente com ele.
-          Antes de qualquer ataque ativo, um pentester profissional passa horas (ou dias) em OSINT.
-        </p>
+      <h2>WHOIS, DNS e ASN</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "whois kali.org | head -20",
+            out: `   Domain Name: KALI.ORG
+   Registry Domain ID: 1737832059_DOMAIN_ORG-VRSN
+   Registrar WHOIS Server: whois.gandi.net
+   Registrar URL: http://www.gandi.net
+   Updated Date: 2024-09-12T11:23:14Z
+   Creation Date: 2012-08-14T15:31:11Z
+   Registry Expiry Date: 2025-08-14T15:31:11Z
+   Registrar: Gandi SAS
+   Registrar IANA ID: 81
+   Registrar Abuse Contact Email: abuse@support.gandi.net
+   Registrar Abuse Contact Phone: +33.170377661
+   Domain Status: clientTransferProhibited
+   Name Server: APOLLO.NS.CLOUDFLARE.COM
+   Name Server: BRITNEY.NS.CLOUDFLARE.COM
+   DNSSEC: signed`,
+            outType: "info",
+          },
+          {
+            cmd: "dig kali.org ANY +short",
+            out: `192.124.249.10
+2604:a880:4:1d0::e1:f000
+v=spf1 ip4:192.124.249.10 ip6:2604:a880:4:1d0::e1:f000 ~all
+0 issue "letsencrypt.org"
+britney.ns.cloudflare.com.
+apollo.ns.cloudflare.com.`,
+            outType: "default",
+          },
+          {
+            comment: "qual ISP/empresa hospeda esse IP?",
+            cmd: "whois -h whois.cymru.com \" -v 192.124.249.10\"",
+            out: `AS      | IP               | BGP Prefix          | CC | Registry | Allocated  | AS Name
+40695   | 192.124.249.10   | 192.124.249.0/24    | US | ARIN     | 2014-04-28 | OFFENSIVE-SECURITY, US`,
+            outType: "success",
+          },
+        ]}
+      />
 
-        <h2>Fases do OSINT no Pentest</h2>
-        <CodeBlock language="bash" code={'# Fase 1 — Definir o escopo\n# O que você quer descobrir?\n# - Endereços de e-mail dos funcionários?\n# - Subdomínios da empresa?\n# - Tecnologias usadas no site?\n# - Histórico de vazamentos?\n\n# Fase 2 — Coleta passiva (sem contato direto)\n# Motores de busca, WHOIS, Shodan, redes sociais\n\n# Fase 3 — Análise e correlação\n# Cruzar dados para montar o mapa do alvo\n\n# Fase 4 — Documentação\n# Registrar tudo antes de avançar para reconhecimento ativo'} />
+      <h2>Subdomínios e certificados</h2>
+      <p>
+        Cada certificado TLS emitido entra no log público de <strong>Certificate Transparency</strong>.
+        Isso vaza subdomínios mesmo de empresas que tentam esconder.
+      </p>
 
-        <h2>WHOIS — Quem registrou o domínio?</h2>
-        <CodeBlock language="bash" code={'whois exemplo.com.br\nwhois 192.168.1.1\n\n# Alternativa online: https://registro.br/cgi-bin/whois/\n\n# Buscar informações de ASN (Autonomous System Number)\nwhois -h whois.radb.net AS1234'} />
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "curl -s 'https://crt.sh/?q=%25.kali.org&output=json' | jq -r '.[].name_value' | sort -u | head -10",
+            out: `*.docs.kali.org
+*.kali.org
+bugs.kali.org
+docs.kali.org
+forums.kali.org
+http.kali.org
+kali.org
+www.kali.org`,
+            outType: "info",
+          },
+          {
+            comment: "alternativa com a ferramenta dedicada",
+            cmd: "subfinder -d kali.org -silent",
+            out: `kali.org
+http.kali.org
+docs.kali.org
+forums.kali.org
+www.kali.org
+bugs.kali.org
+gitlab.com.kali.org
+old.kali.org
+pkg.kali.org`,
+            outType: "default",
+          },
+          {
+            comment: "amass faz combinação de fontes (mais lento, mais completo)",
+            cmd: "amass enum -passive -d kali.org -o subs.txt && wc -l subs.txt",
+            out: "147 subs.txt",
+            outType: "success",
+          },
+        ]}
+      />
 
-        <h2>DNS Recon Manual</h2>
-        <CodeBlock language="bash" code={'# Registros básicos\ndig exemplo.com ANY\ndig exemplo.com MX\ndig exemplo.com NS\ndig exemplo.com TXT\n\n# Resolver IP de subdomínio\nnslookup mail.exemplo.com\nhost -a exemplo.com\n\n# Zone Transfer (se mal configurado, revela todos os subdomínios)\ndig @ns1.exemplo.com exemplo.com AXFR\n\n# Descoberta de subdomínios com subfinder (instalar se não tiver)\nsubfinder -d exemplo.com -o subdomains.txt\n\n# Amass — reconhecimento passivo e ativo\namass enum -passive -d exemplo.com\namass enum -active -d exemplo.com -o amass_output.txt'} />
+      <CommandTable
+        title="Ferramentas OSINT no Kali"
+        variations={[
+          { cmd: "theHarvester", desc: "Emails, subdomínios, hosts a partir de search engines.", output: "Página dedicada: theHarvester" },
+          { cmd: "shodan / censys", desc: "Mecanismos de busca de hosts/serviços expostos na internet.", output: "Página: Shodan" },
+          { cmd: "sherlock", desc: "Busca o mesmo username em centenas de redes sociais.", output: "sherlock wallysondevs" },
+          { cmd: "h8mail", desc: "Procura emails em vazamentos públicos (HIBP, Snusbase).", output: "h8mail -t alvo@empresa.com" },
+          { cmd: "spiderfoot", desc: "Plataforma OSINT all-in-one (200+ módulos).", output: "spiderfoot -l 127.0.0.1:5001" },
+          { cmd: "recon-ng", desc: "Framework modular tipo Metasploit, mas para OSINT.", output: "Página: Recon-ng" },
+          { cmd: "maltego", desc: "GUI gráfica de análise (links/transformações).", output: "Página: Maltego" },
+          { cmd: "exiftool", desc: "Metadados (EXIF) de fotos, PDFs, docs Office.", output: "exiftool foto.jpg | grep GPS" },
+          { cmd: "wayback", desc: "Snapshots históricos do site em archive.org.", output: "waybackurls dominio.com | sort -u" },
+        ]}
+      />
 
-        <h2>Pesquisa por E-mails</h2>
-        <CodeBlock language="bash" code={'# TheHarvester (ver página dedicada)\ntheHarvester -d exemplo.com -b all\n\n# Hunter.io (API gratuita)\ncurl "https://api.hunter.io/v2/domain-search?domain=exemplo.com&api_key=SUA_CHAVE"\n\n# Verificar vazamentos de e-mail\ncurl "https://haveibeenpwned.com/api/v3/breachedaccount/email@exemplo.com" \\\n  -H "hibp-api-key: SUA_CHAVE"'} />
+      <h2>Google Dorks</h2>
+      <p>
+        Operadores de busca que filtram resultados — descobrem painéis admin, .env vazados,
+        backups esquecidos. Veja a página dedicada{" "}
+        <a href="#/google-dorks"><strong>Google Dorks (GHDB)</strong></a>.
+      </p>
 
-        <h2>Redes Sociais e LinkedIn</h2>
-        <CodeBlock language="bash" code={'# Busca no Google por funcionários da empresa\n# site:linkedin.com "Exemplo SA" "engenheiro"\n\n# Maltego (ver página dedicada)\n# Reconhecimento visual de relações entre entidades\n\n# Instagram / Twitter scraping (legal com APIs públicas)\n# Verificar nomes de usuário, localização, padrões de senha\n\n# Sherlock — buscar username em 300+ plataformas\npip3 install sherlock-project\nsherlock nomeusuario\nsherlock --timeout 10 nomeusuario -o resultados.txt'} />
+      <CodeBlock
+        language="text"
+        title="dorks rápidos para reconhecimento"
+        code={`# Subdomínios
+site:*.empresa.com -www
 
-        <h2>Metadados de Arquivos</h2>
-        <CodeBlock language="bash" code={'# exiftool — extrair metadados de imagens, PDFs, documentos\nsudo apt install exiftool\n\n# Analisar arquivo local\nexiftool documento.pdf\nexiftool foto.jpg\n\n# Baixar PDFs do site e analisar em lote\nwget -r -l 1 -A pdf https://www.exemplo.com/docs/\nexiftool *.pdf | grep -i "author\\|creator\\|producer\\|company"\n\n# Metadados podem revelar:\n# - Nome de usuário do sistema operacional\n# - Software usado (e versão)\n# - Localização GPS de fotos'} />
+# Painéis de login
+site:empresa.com inurl:admin
+site:empresa.com inurl:login
 
-        <h2>Vazamentos de Dados (Breach Data)</h2>
-        <CodeBlock language="bash" code={'# Have I Been Pwned — verificar e-mails vazados\ncurl "https://haveibeenpwned.com/api/v3/breachedaccount/usuario@exemplo.com"\n\n# DeHashed — busca em banco de dados de vazamentos\n# https://www.dehashed.com/ (requer conta)\n\n# Pastebin e sites similares\n# Buscar: "exemplo.com" site:pastebin.com\n\n# Ferramentas de CLI\npip3 install h8mail\nh8mail -t email@alvo.com'} />
+# Arquivos sensíveis
+site:empresa.com filetype:pdf "confidencial"
+site:empresa.com filetype:env
+site:empresa.com filetype:sql
 
-        <AlertBox type="success" title="Dica profissional">
-          Crie um mapa mental do alvo à medida que coleta informações. Ferramentas como CherryTree,
-          Obsidian ou até papel e caneta ajudam a correlacionar dados. Um bom OSINT pode revelar
-          funcionários com senhas vazadas, servidores esquecidos e muito mais — sem nenhuma interação direta.
-        </AlertBox>
+# Documentos com metadados
+site:empresa.com filetype:docx OR filetype:xlsx
 
-        <h2>Ferramentas OSINT no Kali</h2>
-        <CodeBlock language="bash" code={'# Verificar o que já está instalado\nkali-tools-information-gathering\n\n# Principais ferramentas disponíveis:\n# theHarvester     — e-mails, subdomínios, IPs\n# maltego          — reconhecimento visual/gráfico\n# recon-ng         — framework modular de OSINT\n# shodan           — busca em dispositivos conectados\n# whois            — informações de registro\n# dnsenum/dnsrecon — enumeração de DNS\n# subfinder/amass  — descoberta de subdomínios\n# exiftool         — metadados de arquivos\n# metagoofil       — metadados de docs públicos'} />
-      </PageContainer>
-    );
-  }
-  
+# Erros expondo tecnologia
+site:empresa.com intext:"sql syntax error"
+site:empresa.com intext:"mysql_fetch_array"
+
+# Diretórios listados
+site:empresa.com intitle:"Index of /"`}
+      />
+
+      <h2>People search — funcionários</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "username em 400+ redes sociais",
+            cmd: "sherlock wallysondevs --print-found",
+            out: `[*] Checking username wallysondevs on:
+[+] GitHub: https://github.com/wallysondevs
+[+] LinkedIn: https://linkedin.com/in/wallysondevs
+[+] X (Twitter): https://x.com/wallysondevs
+[+] Instagram: https://instagram.com/wallysondevs
+[+] Replit: https://replit.com/@wallysondevs
+[+] Reddit: https://reddit.com/user/wallysondevs
+
+[*] Search completed with 6 results`,
+            outType: "info",
+          },
+          {
+            comment: "achar email de funcionário pelo padrão",
+            cmd: "theHarvester -d empresa.com -b duckduckgo,bing,crtsh -l 500",
+            out: `[*] Target: empresa.com 
+
+[*] Searching DuckDuckGo.
+[*] Searching Bing.
+[*] Searching crtsh.
+
+[*] No IPs found.
+
+[*] Emails found: 23
+----------------------
+contato@empresa.com
+joao.silva@empresa.com
+maria.santos@empresa.com
+[...]
+
+[*] Hosts found: 18
+---------------------
+www.empresa.com:200.150.10.42
+mail.empresa.com:200.150.10.45
+vpn.empresa.com:200.150.10.50`,
+            outType: "success",
+          },
+        ]}
+      />
+
+      <h2>Vazamentos de credencial</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "checar se um email está em algum leak conhecido",
+            cmd: "h8mail -t alvo@empresa.com",
+            out: `╭─[ ⠿ ] [Connecting...] HIBP
+╰─[ ✔ ] HIBP — alvo@empresa.com — appeared in 4 breaches:
+        2019-05 — Canva
+        2020-12 — LinkedIn (ScrapedAPI)
+        2021-04 — Facebook (533M leak)
+        2023-11 — DailyQuiz
+
+╭─[ ⠿ ] [Connecting...] Snusbase
+╰─[ ✔ ] Snusbase — 12 hashed passwords for alvo@empresa.com (use -p para pegar)`,
+            outType: "warning",
+          },
+        ]}
+      />
+
+      <h2>Metadados em arquivos</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "EXIF de uma foto pode entregar GPS, modelo de câmera, software",
+            cmd: "exiftool foto-publicada.jpg | head -20",
+            out: `ExifTool Version Number         : 13.00
+File Name                       : foto-publicada.jpg
+File Size                       : 4.2 MB
+Make                            : Apple
+Camera Model Name               : iPhone 14 Pro
+Software                        : 17.4.1
+Date/Time Original              : 2026:03:12 14:23:01
+Lens Model                      : iPhone 14 Pro back triple camera 6.86mm f/1.78
+Image Width                     : 4032
+Image Height                    : 3024
+GPS Latitude                    : 23 deg 32' 51.24" S
+GPS Longitude                   : 46 deg 38' 9.96" W
+GPS Position                    : 23 deg 32' 51.24" S, 46 deg 38' 9.96" W
+GPS Altitude                    : 745.2 m Above Sea Level
+City                            : São Paulo
+State                           : SP
+Country                         : Brazil`,
+            outType: "warning",
+          },
+          {
+            comment: "PDF — autor e software original",
+            cmd: "exiftool relatorio.pdf | grep -iE 'author|creator|producer'",
+            out: `Author                          : Maria Souza (TI)
+Creator                         : Microsoft® Word para Microsoft 365
+Producer                        : Microsoft® Word para Microsoft 365`,
+            outType: "info",
+          },
+        ]}
+      />
+
+      <h2>Wayback Machine — versões antigas</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "waybackurls empresa.com | head -10",
+            out: `https://empresa.com/admin
+https://empresa.com/admin/login.php?error=1
+https://empresa.com/api/v1/users
+https://empresa.com/backup.zip
+https://empresa.com/dev/test.php
+https://empresa.com/internal/relatorio.pdf
+https://empresa.com/staging/.env
+https://empresa.com/wp-config.php.bak`,
+            outType: "warning",
+          },
+          {
+            comment: "filtrar só os arquivos sensíveis",
+            cmd: "waybackurls empresa.com | grep -iE '\\.env$|\\.zip$|\\.bak$|\\.sql$|\\.git'",
+            out: `https://empresa.com/backup.zip
+https://empresa.com/staging/.env
+https://empresa.com/wp-config.php.bak
+https://empresa.com/.git/config
+https://empresa.com/dump.sql.gz`,
+            outType: "error",
+          },
+        ]}
+      />
+
+      <PracticeBox
+        title="Faça um perfil OSINT de você mesmo"
+        goal="Veja o que está exposto sobre o seu próprio nome/username — base ética para depois aplicar em alvos autorizados."
+        steps={[
+          "Procure seu username principal no sherlock.",
+          "Veja seu email no h8mail (HIBP é gratuito).",
+          "Liste os subdomínios do seu site pessoal pelo crt.sh.",
+          "Veja o histórico do seu site no Wayback Machine.",
+        ]}
+        command={`USER="seu-username"
+EMAIL="voce@seu-email.com"
+DOMAIN="seudominio.com"
+
+sherlock $USER --print-found
+h8mail -t $EMAIL
+curl -s "https://crt.sh/?q=%25.$DOMAIN&output=json" | jq -r '.[].name_value' | sort -u
+curl -s "http://web.archive.org/cdx/search/cdx?url=$DOMAIN/*&output=text&fl=original" | head -20`}
+        expected={`(varia por pessoa — mas é provável que apareça mais do que você esperava)`}
+        verify="Confirme: 1) quantas redes sociais te listam, 2) se aparece em algum leak, 3) quais subdomínios estão expostos."
+      />
+
+      <AlertBox type="info" title="OSINT é passivo — mas a ETAPA SEGUINTE não">
+        OSINT puro (consultar fontes públicas) é legal em quase todo lugar.
+        Mas a partir do momento em que você <em>conecta</em> ao alvo (varredura, dirbusting,
+        teste de credencial) já entra na zona regulada — exija autorização por escrito.
+      </AlertBox>
+    </PageContainer>
+  );
+}

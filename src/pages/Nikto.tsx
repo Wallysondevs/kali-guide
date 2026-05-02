@@ -1,114 +1,274 @@
 import { PageContainer } from "@/components/layout/PageContainer";
 import { AlertBox } from "@/components/ui/AlertBox";
-import { CodeBlock } from "@/components/ui/CodeBlock";
+import { CommandTable } from "@/components/ui/CommandTable";
+import { PracticeBox } from "@/components/ui/PracticeBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function Nikto() {
   return (
     <PageContainer
-      title="Nikto"
-      subtitle="Scanner de vulnerabilidades em servidores web — rápido e direto ao ponto."
+      title="Nikto — scanner web rápido"
+      subtitle="Varredura clássica de servidores web: arquivos perigosos, configurações default, versões antigas."
       difficulty="iniciante"
-      timeToRead="5 min"
+      timeToRead="9 min"
+      prompt="web/nikto"
     >
-      <h2>O que é o Nikto?</h2>
+      <h2>O que faz</h2>
       <p>
-        O <strong>Nikto</strong> é um scanner de servidores web open source que verifica mais de 6.700 arquivos e 
-        programas potencialmente perigosos, versões desatualizadas de software, configurações incorretas 
-        e problemas específicos de servidores. É uma ferramenta de reconhecimento ativo.
+        Nikto roda 7000+ checks pré-definidos contra servidores web: arquivos sensíveis comuns
+        (<code>/admin</code>, <code>/.env</code>, <code>/server-status</code>), versões com CVE,
+        opções perigosas do servidor (PUT/DELETE habilitados), headers ausentes.
+        É <strong>barulhento</strong> — fácil de detectar por IDS — mas rápido.
       </p>
 
-      <h2>Uso básico</h2>
-      <CodeBlock language="bash" code={`# Scan básico
-nikto -h http://192.168.1.1
-nikto -h http://alvo.com
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "nikto -Version",
+            out: `-Nikto v2.5.0
++ Nikto plugins:
++ 7008 server checks loaded
++ Last update: 2024-12-17`,
+            outType: "info",
+          },
+        ]}
+      />
 
-# HTTPS
-nikto -h https://alvo.com
-nikto -h alvo.com -ssl
+      <h2>Scan básico</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "nikto -h https://app.local",
+            out: `- Nikto v2.5.0
+---------------------------------------------------------------------------
++ Target IP:          200.150.10.42
++ Target Hostname:    app.local
++ Target Port:        443
++ SSL Info:           Subject:  /CN=app.local
+                      Ciphers:  TLS_AES_256_GCM_SHA384
+                      Issuer:   /C=US/O=Let's Encrypt/CN=R3
++ Start Time:         2026-04-03 12:34:18 (GMT-3)
+---------------------------------------------------------------------------
++ Server: Apache/2.4.41 (Ubuntu)
++ /robots.txt: contains 7 entries which should be manually viewed.
++ Apache/2.4.41 appears to be outdated (current is at least Apache/2.4.62).
++ Allowed HTTP Methods: GET, POST, OPTIONS, HEAD, TRACE
++ OSVDB-877: HTTP TRACE method is active, suggesting the host is vulnerable to XST
++ /admin/: This might be interesting...
++ /backup/: Directory indexing found.
++ /server-status: Apache server-status interface found (pass protected).
++ /phpmyadmin/: phpMyAdmin directory found
++ /phpinfo.php: Output from the phpinfo() function was found.
++ /wp-content/plugins/akismet/readme.txt: WordPress plugin found.
++ /.git/HEAD: Git repository found in document root.
++ /.env: .env configuration file accessible.
++ Cookie PHPSESSID created without the httponly flag
++ Cookie PHPSESSID created without the secure flag
++ X-Frame-Options header is not present.
++ X-Content-Type-Options header is not present.
++ Content-Security-Policy header is not present.
++ ETag header found on server, inode: 1234, size: 5678
++ Strict-Transport-Security HTTP header NOT set.
++ 8347 requests: 0 error(s) and 22 item(s) reported on remote host
++ End Time:           2026-04-03 12:38:42 (GMT-3) (264 seconds)
+---------------------------------------------------------------------------
++ 1 host(s) tested`,
+            outType: "warning",
+          },
+        ]}
+      />
 
-# Porta específica
-nikto -h alvo.com -p 8080
-nikto -h 192.168.1.1 -p 443 -ssl
+      <CommandTable
+        title="Flags principais"
+        variations={[
+          { cmd: "-h URL", desc: "Alvo (com http:// ou https://, ou só IP).", output: "Pode ser arquivo: -h hosts.txt" },
+          { cmd: "-p 443,8080", desc: "Portas (lista ou range).", output: "Sem -p, detecta automaticamente." },
+          { cmd: "-ssl", desc: "Força HTTPS.", output: "Por padrão detecta." },
+          { cmd: "-Tuning N", desc: "Categoria de testes (1-9).", output: "Veja tabela abaixo." },
+          { cmd: "-evasion 1-8", desc: "Técnicas de evasão de IDS.", output: "1=URL encoding, 4=premature URL ending, etc." },
+          { cmd: "-useragent \"...\"", desc: "User-Agent custom.", output: "Por default usa 'Nikto'." },
+          { cmd: "-id user:pass", desc: "Basic auth.", output: "Para áreas protegidas." },
+          { cmd: "-Cookies \"name=value\"", desc: "Cookies.", output: "Para áreas autenticadas." },
+          { cmd: "-Format html|xml|csv|txt", desc: "Formato de saída.", output: "html é mais legível para report." },
+          { cmd: "-output saida.html", desc: "Arquivo de saída.", output: "Combine com -Format." },
+          { cmd: "-Plugins all", desc: "Carregar plugins extras.", output: "list_plugins para ver tudo." },
+          { cmd: "-update", desc: "Atualiza database.", output: "Roda periodicamente." },
+        ]}
+      />
 
-# Múltiplos hosts (arquivo)
-nikto -h hosts.txt`} />
+      <h2>Tuning — o que testar</h2>
+      <CommandTable
+        title="-Tuning N"
+        variations={[
+          { cmd: "1", desc: "Interesting File / Seen in logs.", output: "Acha arquivos sensíveis." },
+          { cmd: "2", desc: "Misconfiguration / Default File.", output: "Configs default." },
+          { cmd: "3", desc: "Information Disclosure.", output: "Versões, banners." },
+          { cmd: "4", desc: "Injection (XSS, etc).", output: "Testes ofensivos." },
+          { cmd: "5", desc: "Remote File Retrieval — Inside Web Root.", output: "LFI dentro do site." },
+          { cmd: "6", desc: "Denial of Service.", output: "PERIGOSO em produção." },
+          { cmd: "7", desc: "Remote File Retrieval — Server Wide.", output: "LFI fora do webroot." },
+          { cmd: "8", desc: "Command Execution / Remote Shell.", output: "RCE checks." },
+          { cmd: "9", desc: "SQL Injection.", output: "Detecção básica de SQLi." },
+          { cmd: "0", desc: "File Upload.", output: "Endpoints de upload." },
+          { cmd: "x", desc: "Reverse Tuning Options (excluir).", output: "-Tuning x6 = tudo MENOS DoS." },
+        ]}
+      />
 
-      <h2>Opções comuns</h2>
-      <CodeBlock language="bash" code={`# Salvar resultado
-nikto -h http://alvo.com -o resultado.txt
-nikto -h http://alvo.com -o resultado.html -Format html
-nikto -h http://alvo.com -o resultado.xml -Format xml
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "scan focado em arquivos sensíveis + info disclosure",
+            cmd: "nikto -h https://app.local -Tuning 13",
+            out: `+ /robots.txt: contains 12 entries
++ /.git/HEAD: Git repository found in document root.
++ /.env: .env configuration file accessible.
++ /backup.zip: Backup file found.
++ /phpinfo.php: phpinfo output exposed.
++ /server-status: Apache server-status interface found.
++ /wp-config.php.bak: Backup of WordPress config.`,
+            outType: "warning",
+          },
+          {
+            comment: "scan rápido — só info disclosure (Tuning 3)",
+            cmd: "nikto -h https://app.local -Tuning 3 -maxtime 60s",
+            out: "(termina em até 60s)",
+            outType: "muted",
+          },
+        ]}
+      />
 
-# Usar proxy (Burp Suite)
-nikto -h http://alvo.com -useproxy http://127.0.0.1:8080
+      <h2>Saída em formatos úteis</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "nikto -h https://app.local -Format html -output relatorio.html",
+            out: "+ Wrote 22 issue(s) to relatorio.html",
+            outType: "info",
+          },
+          {
+            cmd: "nikto -h https://app.local -Format csv -output achados.csv",
+            out: "+ Wrote 22 issue(s) to achados.csv",
+            outType: "default",
+          },
+          {
+            cmd: "nikto -h https://app.local -Format xml -output saida.xml",
+            out: "(útil para importar em outras ferramentas)",
+            outType: "muted",
+          },
+        ]}
+      />
 
-# Com autenticação
-nikto -h http://alvo.com -id admin:senha
+      <h2>Evasão de IDS</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "nikto -h https://app.local -evasion 1234 -useragent 'Mozilla/5.0'",
+            out: `(usa: 1=Random URI encoding (non-UTF8) + 2=Directory self-reference + 3=Premature URL ending + 4=Prepend long random string)`,
+            outType: "info",
+          },
+        ]}
+      />
 
-# Cookie de sessão
-nikto -h http://alvo.com -cookies "PHPSESSID=abc123"
+      <CommandTable
+        title="Técnicas de -evasion"
+        variations={[
+          { cmd: "1", desc: "Random URI encoding (non-UTF8).", output: "/admin → /%61%64%6d%69%6e" },
+          { cmd: "2", desc: "Directory self-reference (/./).", output: "/admin → /./admin" },
+          { cmd: "3", desc: "Premature URL ending.", output: "/admin → /admin?" },
+          { cmd: "4", desc: "Prepend long random string.", output: "Confunde signatures simples." },
+          { cmd: "5", desc: "Fake parameter.", output: "/admin?fake=1234" },
+          { cmd: "6", desc: "TAB as request spacer.", output: "GET\\t/admin\\tHTTP/1.1" },
+          { cmd: "7", desc: "Change case.", output: "GeT /AdMiN" },
+          { cmd: "8", desc: "Use Windows path separator (\\).", output: "/admin\\file" },
+        ]}
+      />
 
-# Evasão de IDS
-nikto -h http://alvo.com -evasion 1     # aleatório maiúsc/minúsc URL
-nikto -h http://alvo.com -evasion 2     # diretório duplo
-nikto -h http://alvo.com -evasion 3     # reverse traversal
-# 1-9 disponíveis, combinações com vírgula: -evasion 1,6
-
-# Limite de tempo
-nikto -h http://alvo.com -maxtime 120   # 2 minutos máximo`} />
-
-      <h2>O que o Nikto detecta</h2>
-      <div className="space-y-2 my-6">
-        {[
-          "Arquivos e diretórios perigosos (shell.php, .htpasswd, admin/)",
-          "Software desatualizado (Apache, IIS, Nginx, PHP, WordPress)",
-          "Configurações incorretas (directory listing, métodos HTTP inseguros)",
-          "Problemas de headers HTTP (falta de X-Frame-Options, CSP, HSTS)",
-          "Arquivos de backup e configuração expostos (.bak, .conf, .sql)",
-          "Vulnerabilidades conhecidas de versões específicas (CVEs)",
-          "Credenciais padrão em interfaces web",
-          "CGI e scripts perigosos",
-        ].map((item, i) => (
-          <div key={i} className="flex items-start gap-2 text-sm">
-            <span className="text-primary mt-1">•</span>
-            <span className="text-muted-foreground">{item}</span>
-          </div>
-        ))}
-      </div>
-
-      <h2>Interpretando resultados</h2>
-      <CodeBlock language="bash" code={`# Exemplo de saída do Nikto:
-# - Target: 192.168.1.1:80
-# - Start Time: 2024-01-01 10:00:00
-#
-# + Server: Apache/2.4.7 (Ubuntu)
-# + /: The anti-clickjacking X-Frame-Options header is not present.
-# + /phpMyAdmin/: phpMyAdmin directory found
-# + /backup/: Directory indexing found.
-# + /admin/config.php: PHP Config file may contain database IDs and passwords.
-# + Apache/2.4.7 appears to be outdated (current is at least Apache/2.4.54).
-# + /test.php: This might be interesting.
-# + 6544 requests: 0 error(s) and 8 item(s) reported`} />
-
-      <AlertBox type="info" title="Nikto é ruidoso">
-        O Nikto envia muitas requisições e é facilmente detectado por IDS/WAF. 
-        Para scans mais discretos, prefira o Gobuster ou ferramenta de crawling 
-        com menor footprint. Use Nikto no reconhecimento inicial.
-      </AlertBox>
+      <h2>Múltiplos hosts</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "cat hosts.txt",
+            out: `https://www.empresa.com
+https://api.empresa.com
+https://blog.empresa.com:8443
+https://admin.empresa.com`,
+            outType: "default",
+          },
+          {
+            cmd: "nikto -h hosts.txt -Format csv -output todos.csv",
+            out: `[*] Scanning https://www.empresa.com
+[*] Scanning https://api.empresa.com
+[*] Scanning https://blog.empresa.com:8443
+[*] Scanning https://admin.empresa.com
++ Wrote 87 issues to todos.csv`,
+            outType: "info",
+          },
+        ]}
+      />
 
       <h2>Combinando com outras ferramentas</h2>
-      <CodeBlock language="bash" code={`# Fluxo recomendado de recon web:
-# 1. Nmap para descobrir serviços web
-nmap -sV -p 80,443,8080,8443 alvo.com
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "1) hosts vivos com httpx",
+            cmd: "subfinder -d empresa.com -silent | httpx -silent | tee live.txt",
+            out: `https://www.empresa.com
+https://api.empresa.com
+https://blog.empresa.com`,
+            outType: "default",
+          },
+          {
+            comment: "2) nikto em paralelo (-h list)",
+            cmd: "nikto -h live.txt -Format html -output combo.html",
+            out: "(roda nikto em sequência em todos)",
+            outType: "muted",
+          },
+          {
+            comment: "3) achados → input para nuclei (mais profundo)",
+            cmd: "nuclei -l live.txt -t cves/ -severity high,critical",
+            out: "[CVE-2024-3094] [http] [critical] https://blog.empresa.com - Apache 2.4.41 backdoor",
+            outType: "warning",
+          },
+        ]}
+      />
 
-# 2. Nikto para scan rápido de vulnerabilidades
-nikto -h http://alvo.com -o nikto_result.txt
+      <PracticeBox
+        title="Auditoria rápida do seu próprio site"
+        goal="Em 5 minutos, identificar arquivos sensíveis, headers ruins e versões antigas no seu próprio site (autorizado)."
+        steps={[
+          "Confirme a porta correta com nmap.",
+          "Rode nikto -Tuning 123 para focar nos achados de maior valor.",
+          "Salve em HTML para report.",
+          "Abra o relatório e priorize itens marcados como OSVDB.",
+        ]}
+        command={`SITE="https://meu-site-de-teste.local"
 
-# 3. Gobuster para enumeração de diretórios
-gobuster dir -u http://alvo.com -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
+nmap -p 80,443,8080,8443 -sV $(echo $SITE | sed -E 's|https?://||' | cut -d/ -f1)
+nikto -h $SITE -Tuning 123 -Format html -output minha_auditoria.html
+firefox minha_auditoria.html &`}
+        expected={`+ /robots.txt: contains 5 entries
++ /server-status: Apache server-status interface found.
++ /.git/HEAD: Git repository found in document root.
++ Apache/2.4.41 appears outdated.
++ Cookie PHPSESSID created without the httponly flag.
 
-# 4. Burp Suite para análise manual profunda
-burpsuite`} />
+(o relatório HTML formatado ao final)`}
+        verify="Cada item OSVDB-XXXX tem link de referência. Use-os para confirmar gravidade e priorizar correção."
+      />
+
+      <AlertBox type="warning" title="Nikto é muito barulhento">
+        Por padrão envia milhares de requests com User-Agent 'Nikto'. Em pentest com WAF
+        ativo, considere usar <code>-evasion</code> + <code>-useragent</code> custom +
+        <code>-Pause N</code> entre requests, ou trocar por <strong>nuclei</strong>{" "}
+        (mais moderno e flexível).
+      </AlertBox>
     </PageContainer>
   );
 }

@@ -1,742 +1,844 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
 import { AlertBox } from "@/components/ui/AlertBox";
+import { CodeBlock } from "@/components/ui/CodeBlock";
+import { CommandTable } from "@/components/ui/CommandTable";
+import { OutputBlock } from "@/components/ui/OutputBlock";
+import { PracticeBox } from "@/components/ui/PracticeBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function OpenVAS() {
   return (
     <PageContainer
-      title="OpenVAS / GVM — Scanner de Vulnerabilidades"
-      subtitle="Use o OpenVAS (Greenbone Vulnerability Management) para identificar vulnerabilidades em redes e sistemas de forma automatizada. Guia completo com instalação, configuração, tipos de scan, interpretação de resultados e automação via CLI."
+      title="OpenVAS / GVM — scanner de vulnerabilidades"
+      subtitle="Greenbone Vulnerability Management: setup, NVT feeds, targets, scan configs (Full and fast, deep), tasks agendadas, relatórios HTML/PDF/XML/CSV e CLI via gvm-cli."
       difficulty="intermediario"
       timeToRead="35 min"
+      prompt="vuln-scan/openvas"
     >
-      <h2>O que é OpenVAS?</h2>
+      <h2>O que é o OpenVAS</h2>
       <p>
-        O <strong>OpenVAS</strong> (Open Vulnerability Assessment Scanner) é o scanner de vulnerabilidades
-        open-source mais utilizado no mundo. Ele faz parte do framework <strong>GVM (Greenbone Vulnerability
-        Management)</strong>, que inclui:
+        <strong>OpenVAS</strong> (Open Vulnerability Assessment Scanner) é o scanner de
+        vulnerabilidades open-source mais usado no mundo, parte do framework{" "}
+        <strong>GVM (Greenbone Vulnerability Management)</strong>. O motor testa cada porta e
+        serviço do alvo contra +70.000 NVTs (Network Vulnerability Tests) atualizados diariamente,
+        retornando severidade CVSS, descrição e correção para cada achado.
       </p>
-      <ul>
-        <li><strong>OpenVAS Scanner</strong> — o motor que executa os testes (NVTs — Network Vulnerability Tests)</li>
-        <li><strong>gvmd</strong> (Greenbone Vulnerability Manager Daemon) — gerencia scans, alvos, relatórios e políticas</li>
-        <li><strong>gsad</strong> (Greenbone Security Assistant Daemon) — interface web para gerenciamento</li>
-        <li><strong>OSPd</strong> (Open Scanner Protocol Daemon) — protocolo de comunicação entre componentes</li>
-        <li><strong>Community Feed</strong> — banco de dados com +70.000 NVTs (testes de vulnerabilidade) atualizados diariamente</li>
-      </ul>
-      <p>
-        O OpenVAS testa cada porta e serviço do alvo contra milhares de vulnerabilidades conhecidas (CVEs),
-        verificando versões de software, configurações inseguras, credenciais padrão, e falhas exploráveis.
-        Cada resultado inclui severidade CVSS, descrição detalhada, e recomendação de correção.
-      </p>
+
+      <OutputBlock label="componentes do GVM" type="muted">
+{`openvas-scanner   — motor que executa os NVTs (testes em NASL)
+gvmd              — daemon que gerencia tasks, targets, reports, policies
+gsad              — Greenbone Security Assistant (web UI na porta 9392)
+ospd-openvas      — Open Scanner Protocol bridge entre gvmd e openvas
+notus-scanner     — checa CVEs em pacotes via SSH/SMB (scan autenticado)
+greenbone-feed-sync — atualiza NVT, SCAP, CERT e GVMD_DATA feeds
+gvm-tools         — CLI: gvm-cli, gvm-script (automação via XML/GMP)`}
+      </OutputBlock>
 
       <AlertBox type="warning" title="Uso ético obrigatório">
-        Escaneie apenas sistemas que você tem autorização expressa para testar. Scanners de vulnerabilidade
-        geram tráfego intenso (milhares de requisições) e podem ser detectados por IDS/IPS como atividade
-        maliciosa. Em pentests profissionais, o scan de vulnerabilidades deve estar explicitamente no escopo.
+        Escaneie apenas o que você tem autorização EXPRESSA para testar. Um scan completo gera
+        milhares de requisições por host, é facilmente detectado por IDS/IPS e pode derrubar
+        serviços frágeis. Em pentest profissional, vulnerability scanning precisa estar
+        explicitamente no escopo do RoE assinado.
       </AlertBox>
 
-      <h2>Instalação Completa no Kali</h2>
-      <CodeBlock
-        title="Instalar, configurar e inicializar o GVM/OpenVAS"
-        code={`# ═══════════════════════════════════════════════════
-# PASSO 1: Instalar todos os componentes do GVM
-# ═══════════════════════════════════════════════════
-sudo apt update && sudo apt install gvm -y
-# Instala: openvas-scanner, gvmd, gsad, ospd-openvas,
-#          greenbone-feed-sync, gvm-tools, notus-scanner
+      <h2>Instalação no Kali (passo a passo)</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "1) instala TODOS os componentes do GVM",
+            cmd: "sudo apt update && sudo apt install -y gvm",
+            out: `Reading package lists... Done
+The following NEW packages will be installed:
+  gvm gvmd gsad openvas-scanner ospd-openvas notus-scanner
+  greenbone-feed-sync gvm-tools postgresql-15 redis-server
+0 upgraded, 142 newly installed.
+Need to get 218 MB of archives.
+After this operation, 612 MB of additional disk space will be used.`,
+            outType: "muted",
+          },
+          {
+            comment: "2) setup inicial — DEMORA 20-40 min (baixa NVTs, cria DB, gera certs, cria admin)",
+            cmd: "sudo gvm-setup",
+            out: `[*] Starting PostgreSQL service
+[*] Creating gvmd database
+[*] Migrating database schema
+[*] Synchronizing GVMD data feed (Greenbone Community Feed)...
+[####################] 100%  (24.318 NVTs baixados)
+[*] Synchronizing SCAP feed (CVEs, CPEs, OVAL)...
+[####################] 100%  (218.401 CVEs)
+[*] Synchronizing CERT feed (CERT-Bund, DFN-CERT)...
+[####################] 100%
+[*] Generating certificates ...
+[*] Creating admin user
++-------------------------------------------+
+| User created with password '4f2c1a8b-9e3d-4a7f-b6c2-7891e2cd3a05'. |
++-------------------------------------------+
+[+] Done. ANOTE A SENHA acima — não será mostrada de novo!`,
+            outType: "warning",
+          },
+          {
+            comment: "3) verificar saúde de cada componente",
+            cmd: "sudo gvm-check-setup",
+            out: `gvm-check-setup 22.4.0
+  Test completeness and readiness of GVM-22.4
 
-# ═══════════════════════════════════════════════════
-# PASSO 2: Configuração inicial (primeira execução)
-# ═══════════════════════════════════════════════════
-# ATENÇÃO: Este processo demora 20-40 minutos!
-# Ele faz: criar banco PostgreSQL, baixar NVT feeds,
-#          gerar certificados SSL, criar usuário admin
-sudo gvm-setup
+Step 1: Checking OpenVAS (Scanner)...
+        OK: OpenVAS Scanner is present in version 22.7.9.
+Step 2: Checking gvmd...
+        OK: gvmd is present in version 22.6.1.
+Step 3: Checking Greenbone Security Assistant (GSA)...
+        OK: GSA is present in version 22.5.3.
+Step 4: Checking PostgreSQL DB and user...
+        OK: PostgreSQL 15.x active (database 'gvmd' exists, user '_gvm' has access).
+Step 5: Checking NVTs / SCAP / CERT data...
+        OK: 88.421 NVTs loaded, 218.401 CVEs, 32.518 CERT advisories.
+Step 6: Checking ports...
+        OK: gsad listening on TCP/9392 (HTTPS, self-signed).
+        OK: gvmd listening on UNIX socket /run/gvmd/gvmd.sock.
 
-# No final da execução, ele mostra algo como:
-# ┌──────────────────────────────────────────┐
-# │  Admin user created.                      │
-# │  Username: admin                          │
-# │  Password: 4f2c1a8b-9e3d-4a7f-b6c2-...  │
-# └──────────────────────────────────────────┘
-# ⚠️ ANOTE ESSA SENHA! Ela é gerada aleatoriamente.
+It seems like your GVM-22.4 installation is OK.`,
+            outType: "success",
+          },
+          {
+            comment: "4) iniciar serviços (ospd-openvas, gvmd, gsad)",
+            cmd: "sudo gvm-start",
+            out: `[>] Please wait for the GVM services to start.
+[>] You might need to refresh your browser once it opens.
+[>] Web UI URL:  https://127.0.0.1:9392
 
-# ═══════════════════════════════════════════════════
-# PASSO 3: Verificar se tudo está funcionando
-# ═══════════════════════════════════════════════════
-sudo gvm-check-setup
-# Verifica cada componente e mostra OK ou FAIL:
-# Step 1: Checking OpenVAS Scanner ...         OK
-# Step 2: Checking gvmd ...                    OK
-# Step 3: Checking gsad ...                    OK
-# Step 4: Checking NVTs ...                    OK
-# Step 5: Checking PostgreSQL ...              OK
-
-# Se algum falhar, o output mostra exatamente o que corrigir.
-# Problema comum: NVTs não sincronizados
-# Solução: sudo greenbone-feed-sync --type GVMD_DATA
-#          sudo greenbone-feed-sync --type SCAP
-#          sudo greenbone-feed-sync --type CERT
-
-# ═══════════════════════════════════════════════════
-# PASSO 4: Iniciar os serviços
-# ═══════════════════════════════════════════════════
-sudo gvm-start
-# Inicia: ospd-openvas, gvmd, gsad
-# Output:
-# [*] Starting OpenVAS Scanner ...         [OK]
-# [*] Starting Greenbone Vulnerability Manager ...  [OK]
-# [*] Starting Greenbone Security Assistant ...      [OK]
-
-# ═══════════════════════════════════════════════════
-# PASSO 5: Acessar a interface web
-# ═══════════════════════════════════════════════════
-# Abra no navegador:
-# https://127.0.0.1:9392
-#
-# Login: admin
-# Senha: (a senha gerada no passo 2)
-#
-# ⚠️ O certificado SSL é self-signed, aceite o aviso.
-# Se não carregar, aguarde 1-2 min (gvmd pode estar
-# ainda carregando os NVTs).
-
-# ═══════════════════════════════════════════════════
-# OPCIONAL: Mudar a senha do admin
-# ═══════════════════════════════════════════════════
-sudo gvmd --user=admin --new-password=MinhaSenhaForte123!
-# Útil porque a senha gerada é difícil de memorizar.
-
-# ═══════════════════════════════════════════════════
-# OPCIONAL: Criar outro usuário
-# ═══════════════════════════════════════════════════
-sudo gvmd --create-user=pentester --password=P3nt3st!
-# Criar com role específico:
-sudo gvmd --create-user=auditor --role=Observer`}
+[*] Starting ospd-openvas              [ OK ]
+[*] Starting gvmd                      [ OK ]
+[*] Starting gsad                      [ OK ]`,
+            outType: "info",
+          },
+          {
+            comment: "5) checar portas (gsad=9392 HTTPS)",
+            cmd: "ss -lntp | grep -E ':(9390|9392)'",
+            out: `LISTEN  0  4096  127.0.0.1:9392  0.0.0.0:*  users:(("gsad",pid=8421))
+LISTEN  0  4096  127.0.0.1:9390  0.0.0.0:*  users:(("gvmd",pid=8418))   ← GMP (CLI)`,
+            outType: "default",
+          },
+        ]}
       />
 
-      <h2>Conceitos Fundamentais</h2>
-      <p>Antes de fazer scans, entenda os conceitos chave:</p>
-      <CodeBlock
-        title="Terminologia do OpenVAS"
-        code={`# ═══════════════════════════════════════════════════
-# TARGET (Alvo)
-# ═══════════════════════════════════════════════════
-# Define O QUE será escaneado.
-# Pode ser: IP único, range CIDR, lista de IPs, hostname.
-# Inclui: porta list, credenciais SSH/SMB (para scan autenticado),
-#         e método de verificação se o host está vivo.
-
-# ═══════════════════════════════════════════════════
-# SCAN CONFIG (Configuração de Scan)
-# ═══════════════════════════════════════════════════
-# Define COMO será escaneado. Configurações pré-definidas:
-#
-# 1. "Discovery"
-#    - Apenas descobre hosts e serviços ativos
-#    - NÃO testa vulnerabilidades
-#    - Rápido: ~2 min por host
-#    - Uso: mapeamento inicial da rede
-#
-# 2. "Host Discovery"
-#    - Ainda mais leve que Discovery
-#    - Apenas verifica se hosts estão online
-#    - Uso: inventário de rede
-#
-# 3. "Full and fast"  ← RECOMENDADO para a maioria dos casos
-#    - Testa TODAS as vulnerabilidades aplicáveis
-#    - Otimizado: pula testes que o alvo claramente não suporta
-#    - Ex: não testa CVEs de IIS em servidor Linux
-#    - Tempo: ~15-30 min por host (depende dos serviços)
-#
-# 4. "Full and fast ultimate"
-#    - Como "Full and fast" mas inclui testes que podem
-#      causar DoS (negação de serviço) no alvo
-#    - ⚠️ PODE DERRUBAR SERVIÇOS! Usar com cuidado
-#    - Tempo: ~20-45 min por host
-#
-# 5. "Full and deep"
-#    - Teste COMPLETO, sem otimizações
-#    - Testa TUDO, mesmo coisas improváveis
-#    - Muito lento: ~1-3 horas por host
-#    - Uso: auditoria formal completa
-#
-# 6. "Full and deep ultimate"
-#    - Combina "deep" com testes destrutivos
-#    - ⚠️ PODE CAUSAR CRASH NOS SERVIÇOS!
-#    - Tempo: ~2-5 horas por host
-#    - Uso: teste de resiliência
-
-# ═══════════════════════════════════════════════════
-# TASK (Tarefa)
-# ═══════════════════════════════════════════════════
-# Combina TARGET + SCAN CONFIG + SCANNER para criar
-# uma unidade de trabalho executável. Pode ser:
-# - Executada imediatamente ou agendada
-# - Repetida periodicamente (scans recorrentes)
-# - Cada execução gera um REPORT
-
-# ═══════════════════════════════════════════════════
-# NVT (Network Vulnerability Test)
-# ═══════════════════════════════════════════════════
-# Cada NVT é um teste individual para uma vulnerabilidade.
-# Escritos em NASL (Nessus Attack Scripting Language).
-# Total: +70.000 NVTs no Community Feed.
-# Cada NVT tem: OID (identificador), família, CVE associado,
-#               CVSS score, e script de teste.
-
-# ═══════════════════════════════════════════════════
-# CVSS (Common Vulnerability Scoring System)
-# ═══════════════════════════════════════════════════
-# Escala de 0.0 a 10.0 que mede severidade:
-#  0.0       = Informativo (Log)
-#  0.1 - 3.9 = Low  (verde)  — risco mínimo
-#  4.0 - 6.9 = Medium (amarelo) — risco moderado
-#  7.0 - 8.9 = High (laranja) — risco sério, corrigir em dias
-#  9.0 - 10.0 = Critical (vermelho) — ação IMEDIATA necessária`}
+      <h2>Acesso à interface web</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "abrir no Firefox; aceitar o cert self-signed",
+            cmd: "firefox https://127.0.0.1:9392 &",
+            out: `[1] 8901
+(login: admin / 4f2c1a8b-9e3d-4a7f-b6c2-7891e2cd3a05)`,
+            outType: "muted",
+          },
+          {
+            comment: "trocar senha do admin (a gerada é difícil de lembrar)",
+            cmd: "sudo gvmd --user=admin --new-password='Kali@OpenVAS2026!'",
+            out: "(silencioso — sucesso)",
+            outType: "success",
+          },
+          {
+            comment: "criar usuário read-only para auditor externo",
+            cmd: "sudo gvmd --create-user=auditor --role=Observer --password='Audit@2026'",
+            out: `User created with password 'Audit@2026'.`,
+            outType: "info",
+          },
+          {
+            comment: "criar pentester (role completo, pode fazer scans)",
+            cmd: "sudo gvmd --create-user=ana.silva --password='AnaPent@2026!'",
+            out: `User created with password 'AnaPent@2026!'.`,
+            outType: "info",
+          },
+          {
+            cmd: "sudo gvmd --get-users",
+            out: `admin
+auditor
+ana.silva`,
+            outType: "default",
+          },
+        ]}
       />
 
-      <h2>Criando e Executando um Scan</h2>
-
-      <h3>Via Interface Web (Passo a Passo)</h3>
-      <CodeBlock
-        title="Workflow completo na interface web"
-        code={`# ═══════════════════════════════════════════════════
-# PASSO 1: Criar um Target (Alvo)
-# ═══════════════════════════════════════════════════
-# Menu: Configuration → Targets → ícone ⊕ (New Target)
-#
-# Campos:
-# ┌─────────────────────────────────────────────────┐
-# │ Name:         "Servidor Web Lab"                 │
-# │ Comment:      "Servidor Apache na DMZ"           │
-# │                                                   │
-# │ Hosts:                                            │
-# │   Manual: 192.168.1.100                          │
-# │   Ou range: 192.168.1.0/24                       │
-# │   Ou lista: 192.168.1.10, 192.168.1.20           │
-# │   Ou arquivo: (upload de lista .txt)              │
-# │                                                   │
-# │ Exclude Hosts: 192.168.1.1  (excluir o gateway)  │
-# │                                                   │
-# │ Port List: ▼                                      │
-# │   "All IANA assigned TCP" (4590 portas)           │
-# │   "All IANA assigned TCP and UDP" (mais completo) │
-# │   "All TCP (1-65535)" (mais lento, mais completo) │
-# │   "All TCP and Nmap top 1000" (bom equilíbrio)    │
-# │   "OpenVAS Default" (top ~4000 portas)            │
-# │                                                   │
-# │ Alive Test: ▼                                     │
-# │   "ICMP & ARP Ping" — verifica se host está vivo  │
-# │   "Consider Alive" — assume que está vivo (útil   │
-# │   quando ICMP está bloqueado por firewall)         │
-# │   "ICMP Ping" — apenas ICMP                       │
-# │   "TCP-SYN Service Ping" — SYN em portas comuns   │
-# │                                                   │
-# │ ┌─ Credenciais (para scan AUTENTICADO) ──────┐   │
-# │ │ SSH: (selecionar credencial SSH previamente │   │
-# │ │      criada em Configuration → Credentials) │   │
-# │ │ SMB: (para scan Windows autenticado)        │   │
-# │ │ ESXi: (para scan VMware)                    │   │
-# │ │ SNMP: (para scan de dispositivos de rede)   │   │
-# │ └────────────────────────────────────────────┘   │
-# └─────────────────────────────────────────────────┘
-# Clicar "Create"
-
-# ═══════════════════════════════════════════════════
-# PASSO 2: Criar uma Task (Tarefa de Scan)
-# ═══════════════════════════════════════════════════
-# Menu: Scans → Tasks → ícone ⊕ (New Task)
-#
-# ┌─────────────────────────────────────────────────┐
-# │ Name:         "Scan Completo — Lab"              │
-# │ Comment:      "Pentest Q1 2024"                  │
-# │                                                   │
-# │ Scan Targets: ▼ "Servidor Web Lab" (do passo 1) │
-# │                                                   │
-# │ Scanner: ▼ "OpenVAS Default"                     │
-# │                                                   │
-# │ Scan Config: ▼                                   │
-# │   "Full and fast" ← ESCOLHA ESTE para começar    │
-# │                                                   │
-# │ Network Source Interface: (vazio = default)       │
-# │                                                   │
-# │ Order for target hosts: ▼                         │
-# │   "Sequential" — escaneia IPs em ordem            │
-# │   "Random" — ordem aleatória (mais furtivo)       │
-# │   "Reverse" — do maior para o menor               │
-# │                                                   │
-# │ Maximum concurrently executed NVTs per host: 4    │
-# │ Maximum concurrently scanned hosts: 20            │
-# │ (↑ Aumentar = mais rápido mas mais agressivo)     │
-# │                                                   │
-# │ ☐ Add results to Asset Management                │
-# │ ☐ Apply Overrides                                │
-# │ Minimum QoD: 70% (Quality of Detection)           │
-# │ ↑ 70% = padrão. Diminuir para ver mais resultados │
-# │   mas com mais falsos positivos.                   │
-# │   Aumentar para 90%+ = menos falsos positivos     │
-# └─────────────────────────────────────────────────┘
-# Clicar "Create"
-
-# ═══════════════════════════════════════════════════
-# PASSO 3: Iniciar o Scan
-# ═══════════════════════════════════════════════════
-# Na lista de Tasks, clicar no ícone ▶ (Start)
-# Status muda para: Requested → Running (X%)
-# O scan pode levar de 5 minutos a várias horas.
-#
-# Durante a execução você pode:
-# - Ver progresso em tempo real (% e barra)
-# - Ver resultados parciais clicando no relatório
-# - Parar o scan (ícone ■) se necessário
-# - Retomar (ícone ▶) de onde parou`}
+      <h2>Atualizar feeds NVT/SCAP/CERT</h2>
+      <p>
+        Os feeds são atualizados pela Greenbone diariamente. Rode <code>greenbone-feed-sync</code>{" "}
+        toda semana para ter NVTs novos (CVEs recém-publicados).
+      </p>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "sudo greenbone-feed-sync --type GVMD_DATA",
+            out: `🔄 Downloading the GVMD data...
+[####################] 100%   (124 MB)
+✓ GVMD data successfully synchronized.`,
+            outType: "success",
+          },
+          {
+            cmd: "sudo greenbone-feed-sync --type SCAP",
+            out: `🔄 Downloading SCAP data (CVEs, CPEs, OVAL)...
+[####################] 100%   (842 MB)
+✓ SCAP data successfully synchronized.
+  Updated: 218.401 → 219.142 CVEs (+741 novas).`,
+            outType: "success",
+          },
+          {
+            cmd: "sudo greenbone-feed-sync --type CERT",
+            out: `🔄 Downloading CERT-Bund / DFN-CERT advisories...
+[####################] 100%
+✓ CERT data successfully synchronized.`,
+            outType: "success",
+          },
+          {
+            comment: "rodar tudo via cron semanalmente",
+            cmd: "sudo crontab -l | tail -5",
+            out: `# Atualizar feeds GVM toda terça às 03:00
+0 3 * * 2 /usr/bin/greenbone-feed-sync --type GVMD_DATA
+5 3 * * 2 /usr/bin/greenbone-feed-sync --type SCAP
+10 3 * * 2 /usr/bin/greenbone-feed-sync --type CERT
+15 3 * * 2 /usr/bin/systemctl restart gvmd`,
+            outType: "info",
+          },
+        ]}
       />
 
-      <h3>Scan Autenticado vs Não-Autenticado</h3>
-      <CodeBlock
-        title="Diferença entre scans autenticados e não-autenticados"
-        code={`# ═══════════════════════════════════════════════════
-# SCAN NÃO-AUTENTICADO (padrão)
-# ═══════════════════════════════════════════════════
-# O scanner testa o alvo "de fora", como um atacante externo.
-# Detecta: portas abertas, serviços expostos, banners de versão,
-#          vulnerabilidades acessíveis remotamente.
-# NÃO detecta: software interno, patches instalados, configurações
-#              locais, vulnerabilidades que requerem acesso local.
-# Ideal para: teste de perímetro, visão do atacante externo.
-
-# ═══════════════════════════════════════════════════
-# SCAN AUTENTICADO (muito mais completo)
-# ═══════════════════════════════════════════════════
-# O scanner faz login no alvo via SSH (Linux) ou SMB (Windows)
-# e examina o sistema internamente.
-# Detecta TUDO do scan não-autenticado MAIS:
-# - Pacotes instalados e suas versões exatas
-# - Patches de segurança ausentes
-# - Configurações do sistema inseguras
-# - Permissões de arquivo incorretas
-# - Serviços locais vulneráveis
-# - Credenciais fracas em serviços internos
-#
-# Resultado: encontra 3x a 10x mais vulnerabilidades!
-# Ideal para: auditoria interna, compliance, hardening.
-
-# Como configurar credenciais:
-# 1. Menu: Configuration → Credentials → New Credential
-#
-# Para SSH:
-# ┌──────────────────────────────────────┐
-# │ Name: "SSH Admin Lab"                │
-# │ Type: Username + Password            │
-# │ Username: root                       │
-# │ Password: ********                   │
-# │ Ou: Username + SSH Key (mais seguro) │
-# │ Private Key: (upload da chave)       │
-# │ Passphrase: ********                 │
-# └──────────────────────────────────────┘
-#
-# Para SMB (Windows):
-# ┌──────────────────────────────────────┐
-# │ Name: "SMB Admin Lab"               │
-# │ Type: Username + Password            │
-# │ Username: Administrator              │
-# │ Password: ********                   │
-# │ ⚠️ Para domínio: DOMAIN\\\\user       │
-# └──────────────────────────────────────┘
-#
-# Depois, associar a credencial ao Target (passo 1 do scan).`}
+      <h2>Conceitos fundamentais</h2>
+      <CommandTable
+        title="Glossário do GVM (saber antes de scanear)"
+        variations={[
+          {
+            cmd: "Target",
+            desc: "O QUE escanear: IP, range CIDR, lista, hostname. Inclui port list, alive test, credenciais.",
+            output: "Ex: '192.168.50.0/24' + 'All TCP and Nmap top 1000' + ICMP & ARP Ping.",
+          },
+          {
+            cmd: "Scan Config",
+            desc: "COMO escanear. Define quais NVTs rodar e como.",
+            output: "Discovery / Host Discovery / Full and fast / Full and fast ultimate / Full and deep.",
+          },
+          {
+            cmd: "Task",
+            desc: "Combina Target + Scan Config + Scanner. Unidade executável.",
+            output: "Pode ser one-shot ou agendada (Schedule).",
+          },
+          {
+            cmd: "Report",
+            desc: "Resultado de uma execução de Task. Exportável em HTML/PDF/XML/CSV/TXT.",
+            output: "Inclui severity, QoD, hosts, NVTs disparados.",
+          },
+          {
+            cmd: "NVT (Network Vuln Test)",
+            desc: "Cada teste individual. Escrito em NASL. ~88.000 no feed.",
+            output: "Cada NVT tem: OID, família, CVE associado, CVSS, script de detecção.",
+          },
+          {
+            cmd: "QoD (Quality of Detection)",
+            desc: "Confiança de que o achado é real (não é FP). 0-100%.",
+            output: "97% = quase certeza. 70% = padrão. 30% = checar manualmente.",
+          },
+          {
+            cmd: "CVSS",
+            desc: "Severidade 0.0–10.0. None/Low/Medium/High/Critical.",
+            output: "9.0+ = corrigir AGORA. 7.0–8.9 = dias. 4.0–6.9 = sprint. <4 = backlog.",
+          },
+          {
+            cmd: "Port List",
+            desc: "Quais portas TCP/UDP escanear no Target.",
+            output: "All IANA TCP (4590) / All TCP (65535) / Nmap top 1000 / OpenVAS Default.",
+          },
+          {
+            cmd: "Alive Test",
+            desc: "Como detectar se host está vivo antes de escanear.",
+            output: "ICMP & ARP Ping / Consider Alive / TCP-SYN Service Ping.",
+          },
+        ]}
       />
 
-      <h2>Interpretando Resultados em Detalhe</h2>
-      <CodeBlock
-        title="Como ler e entender cada resultado"
-        code={`# Após o scan completar, vá em: Scans → Reports → (clique no relatório)
-#
-# ═══════════════════════════════════════════════════
-# VISÃO GERAL DO RELATÓRIO
-# ═══════════════════════════════════════════════════
-# O relatório mostra um resumo com barras coloridas:
-#
-# Severity    Count    Exemplos comuns
-# ─────────   ─────    ──────────────────────────────
-# Critical      3      CVE-2021-44228 (Log4Shell)
-# High         12      CVE-2023-22515 (Confluence)
-# Medium       28      TLS 1.0 habilitado
-# Low           8      Banner de versão exposto
-# Log          45      Porta aberta, serviço detectado
-#
-# ═══════════════════════════════════════════════════
-# DETALHES DE CADA VULNERABILIDADE
-# ═══════════════════════════════════════════════════
-# Clicando em uma vulnerabilidade, você vê:
-#
-# ┌─────────────────────────────────────────────────┐
-# │ Name: Apache HTTP Server 2.4.49 - Path          │
-# │       Traversal / RCE (CVE-2021-41773)           │
-# │                                                   │
-# │ Severity: 9.8 (Critical) ████████████████████░   │
-# │                                                   │
-# │ Host: 192.168.1.100                              │
-# │ Port: 80/tcp                                      │
-# │                                                   │
-# │ QoD: 97% (Quality of Detection)                  │
-# │ ↑ 97% = quase certeza que é real (não é FP)      │
-# │ ↑ 70% = provável mas pode ser falso positivo     │
-# │ ↑ 30% = baixa confiança, verificar manualmente   │
-# │                                                   │
-# │ Summary:                                          │
-# │ Apache HTTP Server 2.4.49 é vulnerável a          │
-# │ path traversal que permite leitura de arquivos    │
-# │ arbitrários e, se mod_cgi estiver habilitado,     │
-# │ execução remota de código (RCE).                  │
-# │                                                   │
-# │ Impact:                                           │
-# │ Um atacante remoto não-autenticado pode ler       │
-# │ qualquer arquivo do sistema (ex: /etc/shadow)     │
-# │ e potencialmente executar comandos como o          │
-# │ usuário do Apache.                                │
-# │                                                   │
-# │ Solution:                                         │
-# │ Atualizar Apache HTTP Server para versão ≥ 2.4.51 │
-# │                                                   │
-# │ Detection Result:                                 │
-# │ Installed version: 2.4.49                         │
-# │ Fixed version:     2.4.51                         │
-# │ Detection method:  Banner check (HTTP)            │
-# │                                                   │
-# │ References:                                       │
-# │ CVE: CVE-2021-41773, CVE-2021-42013               │
-# │ URL: https://httpd.apache.org/security/...         │
-# │ CERT: DFN-CERT-2021-2095                           │
-# └─────────────────────────────────────────────────┘
-
-# ═══════════════════════════════════════════════════
-# FILTROS ÚTEIS PARA ANÁLISE
-# ═══════════════════════════════════════════════════
-# Na barra de filtro do relatório:
-#
-# severity>7.0
-#   → Mostra apenas Critical e High (ação urgente)
-#
-# severity>7.0 and qod>80
-#   → Alta severidade E alta confiança (sem falsos positivos)
-#
-# host=192.168.1.100
-#   → Apenas resultados de um host específico
-#
-# vulnerability~"Apache"
-#   → Vulnerabilidades com "Apache" no nome
-#
-# solution_type="VendorFix"
-#   → Apenas as que têm patch disponível
-#
-# cvss_base>8.0 sort=severity rows=100
-#   → Top 100 mais críticas, ordenadas por severidade
-
-# ═══════════════════════════════════════════════════
-# EXPORTAR RELATÓRIO
-# ═══════════════════════════════════════════════════
-# Menu: Scans → Reports → (selecionar) → Export ↓
-#
-# Formatos disponíveis:
-# - PDF    → para enviar ao cliente (mais profissional)
-# - CSV    → para análise em Excel/planilha
-# - XML    → para integração com outras ferramentas
-# - TXT    → texto simples
-# - ITG    → formato de compliance
-#
-# Dica: Use PDF para o relatório do cliente
-#       e CSV para sua análise interna.`}
+      <h2>Scan Configs — qual escolher</h2>
+      <CommandTable
+        title="Scan Configs prontos do Greenbone"
+        variations={[
+          {
+            cmd: "Discovery",
+            desc: "Apenas descobre hosts, portas e serviços. NÃO testa vulnerabilidades.",
+            output: "~2 min/host. Use para mapeamento inicial da rede.",
+          },
+          {
+            cmd: "Host Discovery",
+            desc: "Mais leve ainda — apenas verifica se hosts estão online.",
+            output: "<30s/host. Inventário de rede.",
+          },
+          {
+            cmd: "Full and fast",
+            desc: "RECOMENDADO. Testa todas as vulnerabilidades aplicáveis (otimizado).",
+            output: "~15-30 min/host. Pula NVTs claramente inaplicáveis (ex: IIS em Linux).",
+          },
+          {
+            cmd: "Full and fast ultimate",
+            desc: "Como Full and fast + testes que podem causar DoS.",
+            output: "~20-45 min/host. ⚠️ Pode derrubar serviços frágeis.",
+          },
+          {
+            cmd: "Full and deep",
+            desc: "Auditoria completa, sem otimizações. Roda TUDO mesmo improvável.",
+            output: "1-3 horas/host. Use para compliance/auditoria formal.",
+          },
+          {
+            cmd: "Full and deep ultimate",
+            desc: "Deep + testes destrutivos. Combina o pior dos dois.",
+            output: "2-5 horas/host. ⚠️ Pode crashar serviços. Só com autorização.",
+          },
+          {
+            cmd: "System Discovery",
+            desc: "Detecta SO, fingerprint de OS, traceroute.",
+            output: "Útil para classificar inventário antes de scan completo.",
+          },
+        ]}
       />
 
-      <h2>Automação via Linha de Comando</h2>
-      <CodeBlock
-        title="gvm-cli — controle total via terminal"
-        code={`# ═══════════════════════════════════════════════════
-# INSTALAR gvm-tools
-# ═══════════════════════════════════════════════════
-sudo apt install gvm-tools
-# Inclui: gvm-cli, gvm-script, gvm-pyshell
+      <h2>Workflow web — criar Target, Task, executar, ler Report</h2>
+      <OutputBlock label="passo 1 — criar Target em Configuration → Targets → ⊕" type="info">
+{`Name:           Servidores Lab Empresa
+Comment:        Subnet de homologação - escopo Q2/2026
 
-# ═══════════════════════════════════════════════════
-# AUTENTICAÇÃO
-# ═══════════════════════════════════════════════════
-# Método 1: Socket (local, mais rápido)
-gvm-cli --gmp-username admin --gmp-password SENHA socket \\
-  --xml '<get_version/>'
-# Retorna versão do GMP (Greenbone Management Protocol)
+Hosts (manual): 192.168.50.10, 192.168.50.20, 192.168.50.30
+  ou range:     192.168.50.0/24
+  ou file:      hosts.txt (um por linha)
 
-# Método 2: TLS (remoto)
-gvm-cli --gmp-username admin --gmp-password SENHA tls \\
-  --hostname 192.168.1.100 --port 9390 \\
-  --xml '<get_version/>'
+Exclude Hosts:  192.168.50.1            (excluir gateway)
+                192.168.50.5            (excluir impressora frágil)
 
-# ═══════════════════════════════════════════════════
-# LISTAR RECURSOS EXISTENTES
-# ═══════════════════════════════════════════════════
+Port List:      ▼ All TCP and Nmap top 1000 UDP    (bom equilíbrio)
+                  All IANA assigned TCP            (4590 TCP, sem UDP)
+                  All TCP                          (65535 TCP - LENTO)
+                  OpenVAS Default                  (top ~4.000)
 
-# Listar targets (alvos)
-gvm-cli --gmp-username admin --gmp-password SENHA socket \\
-  --xml '<get_targets/>'
-# Retorna XML com todos os targets, incluindo IDs
+Alive Test:     ▼ ICMP & ARP Ping                 (padrão)
+                  Consider Alive                  (firewall bloqueia ICMP)
+                  ICMP Ping                       (só ICMP)
+                  TCP-SYN Service Ping            (SYN nas portas comuns)
 
-# Listar scan configs
-gvm-cli --gmp-username admin --gmp-password SENHA socket \\
-  --xml '<get_configs/>'
-# Anote o ID da config desejada (ex: Full and fast)
+Credenciais (scan AUTENTICADO — opcional):
+  SSH (Linux):   ana-ssh-prod        (criada em Configuration → Credentials)
+  SMB (Windows): admin-smb-empresa
+  ESXi:          —
+  SNMP v3:       —
 
-# Listar scanners
-gvm-cli --gmp-username admin --gmp-password SENHA socket \\
-  --xml '<get_scanners/>'
+Reverse Lookup Only:    ☐
+Reverse Lookup Unify:   ☐
 
-# Listar tarefas
-gvm-cli --gmp-username admin --gmp-password SENHA socket \\
-  --xml '<get_tasks/>'
+[ Create ]`}
+      </OutputBlock>
 
-# Listar relatórios
-gvm-cli --gmp-username admin --gmp-password SENHA socket \\
-  --xml '<get_reports/>'
+      <OutputBlock label="passo 2 — criar Task em Scans → Tasks → ⊕" type="info">
+{`Name:                       Scan Q2 - Servidores Lab
+Comment:                     Pentest interno trimestral
 
-# ═══════════════════════════════════════════════════
-# CRIAR E EXECUTAR SCAN VIA CLI
-# ═══════════════════════════════════════════════════
+Scan Targets:           ▼   Servidores Lab Empresa     (do passo 1)
 
-# Passo 1: Criar target
-gvm-cli --gmp-username admin --gmp-password SENHA socket \\
-  --xml '<create_target>
-    <name>Lab Server CLI</name>
-    <hosts>192.168.1.100</hosts>
-    <port_list id="PORT_LIST_ID"/>
-    <alive_tests>ICMP and ARP Ping</alive_tests>
-  </create_target>'
-# Retorna: <create_target_response id="TARGET_ID" .../>
-# ⚠️ Anote o TARGET_ID retornado!
+Alterable Task:             ☐  (se ☑, pode editar config após começar)
 
-# Passo 2: Criar task
-gvm-cli --gmp-username admin --gmp-password SENHA socket \\
-  --xml '<create_task>
-    <name>Scan CLI Full</name>
-    <config id="CONFIG_ID"/>
-    <target id="TARGET_ID"/>
-    <scanner id="SCANNER_ID"/>
-  </create_task>'
-# Retorna: <create_task_response id="TASK_ID" .../>
+Schedule:               ▼   Once
+                            Every Monday 02:00
+                            Every Sunday 22:00
 
-# Passo 3: Iniciar scan
-gvm-cli --gmp-username admin --gmp-password SENHA socket \\
-  --xml '<start_task task_id="TASK_ID"/>'
-# Retorna: <start_task_response>
-#            <report_id>REPORT_ID</report_id>
-#          </start_task_response>
+Add results to
+Asset Management:           ☑  (popula AM com hosts/serviços encontrados)
 
-# Passo 4: Verificar progresso
-gvm-cli --gmp-username admin --gmp-password SENHA socket \\
-  --xml '<get_tasks task_id="TASK_ID"/>'
-# Procurar: <status>Running</status> <progress>45</progress>
+Apply Overrides:            ☑
+Min QoD:                    70%
 
-# Passo 5: Obter relatório quando completar
-gvm-cli --gmp-username admin --gmp-password SENHA socket \\
-  --xml '<get_reports report_id="REPORT_ID"
-    filter="severity>4.0 rows=100 sort-reverse=severity"
-    format_id="FORMAT_ID"/>'`}
+Auto-delete Reports:    ▼   Do not automatically delete
+                            Keep last 5 reports
+
+Scanner:                ▼   OpenVAS Default
+Scan Config:            ▼   Full and fast        ← comece com este
+
+Network Source Iface:       (vazio = padrão)
+
+Order for target hosts: ▼   Sequential
+                            Random              (mais furtivo)
+                            Reverse
+
+Maximum concurrent NVTs/host:    4
+Maximum concurrent hosts:        20
+
+[ Create ]`}
+      </OutputBlock>
+
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "verificar status da task pelo CLI gvm-cli",
+            cmd: "gvm-cli --gmp-username admin --gmp-password 'Kali@OpenVAS2026!' socket --xml '<get_tasks/>' | xmllint --xpath '//task/name/text() | //task/status/text()' -",
+            out: `Scan Q2 - Servidores Lab
+Running 42%
+
+Inventário Mensal
+Done
+
+Scan DMZ Externa
+Requested`,
+            outType: "info",
+          },
+          {
+            cmd: "sudo journalctl -u gvmd -f --since '5 min ago'",
+            out: `gvmd[8418]: md   main:MESSAGE: Slave got new task '7c1b...': starting
+gvmd[8418]: md openvas: launching scan on 192.168.50.10
+gvmd[8418]: md openvas: 192.168.50.10 progress 12% (NVT 1.3.6.1.4.1.25623.1.0.10330)
+gvmd[8418]: md openvas: 192.168.50.10 host vulnerable: CVE-2021-41773 (Critical)
+gvmd[8418]: md openvas: 192.168.50.10 progress 38%`,
+            outType: "warning",
+          },
+        ]}
       />
 
-      <h2>Script Python para Automação</h2>
-      <CodeBlock
-        title="Automatizar scans com Python e gvm-tools"
-        code={`# Instalar biblioteca Python
-pip install gvm-tools python-gvm
+      <h2>Lendo um Report — anatomia do achado</h2>
+      <OutputBlock label="exemplo de vulnerability detectada" type="error">
+{`╔════════════════════════════════════════════════════════════════════╗
+║ Apache HTTP Server 2.4.49 — Path Traversal/RCE (CVE-2021-41773)     ║
+╠════════════════════════════════════════════════════════════════════╣
+║ Severity:       9.8 (Critical)   ████████████████████░             ║
+║ QoD:            97% — Banner check (HTTP)                           ║
+║ Host:           192.168.50.10                                        ║
+║ Port:           80/tcp                                               ║
+║ NVT OID:        1.3.6.1.4.1.25623.1.0.150164                         ║
+║ Family:         Web Servers                                          ║
+║ First seen:     2026-04-04 14:21:33                                  ║
+╠════════════════════════════════════════════════════════════════════╣
+║ Summary:                                                             ║
+║   O Apache HTTP Server 2.4.49 está vulnerável a path traversal       ║
+║   que permite leitura arbitrária de arquivos. Se mod_cgi estiver     ║
+║   habilitado, escala para Remote Code Execution (RCE).               ║
+║                                                                      ║
+║ Impact:                                                              ║
+║   Atacante remoto não-autenticado pode ler /etc/shadow e executar    ║
+║   comandos como o usuário do Apache (www-data).                      ║
+║                                                                      ║
+║ Solution:                                                            ║
+║   Atualizar Apache HTTPD para versão >= 2.4.51                       ║
+║                                                                      ║
+║ Detection Result:                                                    ║
+║   Installed version: 2.4.49                                          ║
+║   Fixed version:     2.4.51                                          ║
+║   Detection method:  HTTP banner (Server: header)                    ║
+║                                                                      ║
+║ References:                                                          ║
+║   CVE: CVE-2021-41773, CVE-2021-42013                                ║
+║   URL: https://httpd.apache.org/security/vulnerabilities_24.html     ║
+║   CERT: DFN-CERT-2021-2095                                           ║
+║   Exploit-DB: 50383                                                  ║
+╚════════════════════════════════════════════════════════════════════╝`}
+      </OutputBlock>
 
-# ═══════════════════════════════════════════════════
-# Script completo: criar target, scan, e obter resultados
-# ═══════════════════════════════════════════════════
-cat << 'PYEOF' > scan_automatico.py
-#!/usr/bin/env python3
+      <h2>Exportar relatórios — HTML / PDF / XML / CSV</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "listar reports e pegar o ID",
+            cmd: "gvm-cli --gmp-username admin --gmp-password 'Kali@OpenVAS2026!' socket --xml '<get_reports/>' | xmllint --xpath '//report/@id' - | head",
+            out: `id="d2b7a912-4c1e-4f7b-91a2-baf67a01ec88"
+id="3a1f88c0-12d3-4ba0-9e21-7a4b1c882bde"
+id="9c2d4f81-6b3e-4d75-87a1-12c441ba7d09"`,
+            outType: "default",
+          },
+          {
+            comment: "exportar como PDF (formato '910200ca-dc05-11e1-954f-406186ea4fc5' = PDF)",
+            cmd: "gvm-cli --gmp-username admin --gmp-password 'Kali@OpenVAS2026!' socket --xml '<get_reports report_id=\"d2b7a912-4c1e-4f7b-91a2-baf67a01ec88\" format_id=\"c402cc3e-b531-11e1-9163-406186ea4fc5\"/>' > scan-q2.html",
+            out: `(scan-q2.html — 1.4 MB; abre no browser, navegação por host/severity)`,
+            outType: "info",
+          },
+          {
+            comment: "PDF (cliente formal)",
+            cmd: "gvm-cli ... format_id='910200ca-dc05-11e1-954f-406186ea4fc5' ... | base64 -d > scan-q2.pdf",
+            out: `(scan-q2.pdf — 842 KB; logo Greenbone, capa, sumário executivo)`,
+            outType: "info",
+          },
+          {
+            comment: "CSV (importar em planilha / SIEM)",
+            cmd: "gvm-cli ... format_id='c1645568-627a-11e3-a660-406186ea4fc5' ...",
+            out: `IP,Hostname,Port,Severity,QoD,CVE,Summary,Solution
+192.168.50.10,web01,80/tcp,9.8,97,CVE-2021-41773,"Apache HTTPD 2.4.49 path traversal","Update >= 2.4.51"
+192.168.50.10,web01,443/tcp,7.5,80,CVE-2023-44487,"HTTP/2 Rapid Reset","Update nginx/openssl"
+192.168.50.20,db01,3306/tcp,5.3,70,CVE-2022-21539,"MySQL InnoDB DoS","Update 8.0.30+"
+[...142 linhas]`,
+            outType: "warning",
+          },
+          {
+            comment: "XML (parsear em Python / integrar com DefectDojo)",
+            cmd: "gvm-cli ... format_id='a994b278-1f62-11e1-96ac-406186ea4fc5' ... > scan-q2.xml",
+            out: `<?xml version="1.0"?>
+<report id="d2b7a912-...">
+  <result>
+    <host>192.168.50.10</host>
+    <port>80/tcp</port>
+    <nvt oid="1.3.6.1.4.1.25623.1.0.150164">
+      <name>Apache HTTPD 2.4.49 Path Traversal</name>
+      <cvss_base>9.8</cvss_base>
+      <refs>
+        <ref type="cve" id="CVE-2021-41773"/>
+      </refs>
+    </nvt>
+    <severity>9.8</severity>
+    <qod><value>97</value></qod>
+  </result>
+  [...]
+</report>`,
+            outType: "muted",
+          },
+        ]}
+      />
+
+      <h2>Scan autenticado (descobre 3-10x mais)</h2>
+      <p>
+        Scan não-autenticado vê o alvo "de fora". Scan autenticado faz login (SSH/SMB) e examina o
+        sistema por dentro: pacotes instalados, patches faltantes, configs inseguras, permissões
+        erradas. Detecta MUITO mais.
+      </p>
+
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "criar credencial SSH em Configuration → Credentials → ⊕",
+            cmd: "(via UI ou via CLI):",
+            out: `Name:        ssh-ana-prod
+Type:        Username + Password   (ou Username + SSH Key)
+Username:    ana.silva
+Password:    AnaPent@2026!
+Auto-generate: ☐  (não — você está informando manualmente)`,
+            outType: "default",
+          },
+          {
+            comment: "associar credencial ao Target (editar Target → SSH Credential dropdown)",
+            cmd: "(no Target 'Servidores Lab Empresa'):",
+            out: `Credentials for authenticated checks
+  SSH:        ▼ ssh-ana-prod   on port: 22
+  SMB:        ▼ smb-admin-empresa
+  ESXi:       —
+  SNMP v3:    —`,
+            outType: "info",
+          },
+          {
+            comment: "depois do scan rodar, comparar contagem",
+            cmd: "echo 'antes (não-auth) vs depois (auth):'",
+            out: `192.168.50.10 (web01-debian12):
+  Não-autenticado:   8 findings   (3 high, 5 medium)
+  Autenticado:      47 findings   (1 critical, 12 high, 18 med, 16 low)
+                                  └─ pacotes desatualizados:
+                                     openssl 3.0.2 → 3.0.13 (CVE-2024-0727)
+                                     curl 7.81 → 8.4 (CVE-2023-38545)
+                                     sudo 1.9.9 → 1.9.15 (CVE-2023-22809)
+                                     [...]`,
+            outType: "warning",
+          },
+        ]}
+      />
+
+      <h2>gvm-cli — automação total via XML/GMP</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "gvm-cli --help",
+            out: `usage: gvm-cli [-h] [-c CONFIG] [--log [LEVEL]]
+               [--timeout TIMEOUT] [--gmp-username USERNAME]
+               [--gmp-password PASSWORD] [-V]
+               CONNECTION_TYPE ...
+
+Connection types:
+  socket    UNIX Socket (local — /run/gvmd/gvmd.sock)
+  ssh       SSH                                       
+  tls       TLS                                       `,
+            outType: "default",
+          },
+          {
+            comment: "listar todos targets",
+            cmd: "gvm-cli socket --gmp-username admin --gmp-password '...' --xml '<get_targets/>' | xmllint --format -",
+            out: `<get_targets_response>
+  <target id="b1c2d3e4-...">
+    <name>Servidores Lab Empresa</name>
+    <hosts>192.168.50.10,192.168.50.20,192.168.50.30</hosts>
+    <max_hosts>3</max_hosts>
+  </target>
+  <target id="f4e5d6c7-...">
+    <name>DMZ Externa</name>
+    <hosts>203.0.113.0/28</hosts>
+    <max_hosts>16</max_hosts>
+  </target>
+</get_targets_response>`,
+            outType: "info",
+          },
+          {
+            comment: "criar Target via XML (script-friendly)",
+            cmd: "gvm-cli socket --xml '<create_target><name>Subnet RH</name><hosts>192.168.51.0/24</hosts><port_list id=\"4a4717fe-57d2-11e1-9a26-406186ea4fc5\"/></create_target>'",
+            out: `<create_target_response status="201" status_text="OK, resource created"
+                       id="9b81f2a3-bc12-4dc1-8b3a-22e1f6c8a01d"/>`,
+            outType: "success",
+          },
+          {
+            comment: "iniciar uma task pelo ID",
+            cmd: "gvm-cli socket --xml '<start_task task_id=\"7c1b2a8f-...\"/>'",
+            out: `<start_task_response status="202" status_text="OK, request submitted"/>`,
+            outType: "success",
+          },
+          {
+            comment: "stop / pause / resume",
+            cmd: "gvm-cli socket --xml '<stop_task task_id=\"7c1b2a8f-...\"/>'",
+            out: `<stop_task_response status="202" status_text="OK"/>`,
+            outType: "muted",
+          },
+        ]}
+      />
+
+      <h2>Scripts de automação (gvm-script)</h2>
+      <CodeBlock
+        language="python"
+        title="~/scans/weekly-scan.py — automação completa"
+        code={`#!/usr/bin/env python3
 """
-Scan automatizado com OpenVAS/GVM via Python.
-Uso: python3 scan_automatico.py 192.168.1.100
+Roda toda segunda às 02:00 via cron:
+  - Cria scan na subnet 192.168.50.0/24
+  - Aguarda concluir
+  - Exporta relatório PDF
+  - Manda por e-mail para o time de segurança
 """
-import sys
-import time
 from gvm.connections import UnixSocketConnection
 from gvm.protocols.gmp import Gmp
 from gvm.transforms import EtreeTransform
+from datetime import datetime
+import smtplib, time, base64
 
-TARGET_IP = sys.argv[1] if len(sys.argv) > 1 else "192.168.1.100"
-GVM_USER = "admin"
-GVM_PASS = "SENHA_AQUI"
+USERNAME = "admin"
+PASSWORD = "Kali@OpenVAS2026!"
+SUBNET   = "192.168.50.0/24"
+EMAIL_TO = "soc@empresa.com.br"
 
-# IDs padrão do GVM (podem variar na sua instalação)
-# Use get_configs/get_scanners/get_port_lists para encontrar
-SCAN_CONFIG_FULL_FAST = "daba56c8-73ec-11df-a475-002264764cea"
-OPENVAS_SCANNER = "08b69003-5fc2-4037-a479-93b440211c73"
-PORT_LIST_ALL_TCP = "33d0cd82-57c6-11e1-8ed1-406186ea4fc5"
+PORT_LIST_ID    = "4a4717fe-57d2-11e1-9a26-406186ea4fc5"  # All IANA TCP
+SCAN_CONFIG_ID  = "daba56c8-73ec-11df-a475-002264764cea"  # Full and fast
+SCANNER_ID      = "08b69003-5fc2-4037-a479-93b440211c73"  # OpenVAS Default
+PDF_FORMAT_ID   = "910200ca-dc05-11e1-954f-406186ea4fc5"
 
-connection = UnixSocketConnection()
-transform = EtreeTransform()
+with Gmp(connection=UnixSocketConnection(), transform=EtreeTransform()) as gmp:
+    gmp.authenticate(USERNAME, PASSWORD)
 
-with Gmp(connection, transform=transform) as gmp:
-    gmp.authenticate(GVM_USER, GVM_PASS)
-    print(f"[+] Autenticado como {GVM_USER}")
+    target_name = f"Auto-{datetime.now():%Y-%m-%d}"
+    t = gmp.create_target(name=target_name, hosts=[SUBNET], port_list_id=PORT_LIST_ID)
+    target_id = t.get("id")
 
-    # 1. Criar Target
-    target_resp = gmp.create_target(
-        name=f"Auto-scan {TARGET_IP}",
-        hosts=[TARGET_IP],
-        port_list_id=PORT_LIST_ALL_TCP,
-        alive_test=gmp.types.AliveTest.ICMP_AND_ARP_PING
-    )
-    target_id = target_resp.get('id')
-    print(f"[+] Target criado: {target_id}")
-
-    # 2. Criar Task
-    task_resp = gmp.create_task(
-        name=f"Scan {TARGET_IP} - {time.strftime('%Y-%m-%d')}",
-        config_id=SCAN_CONFIG_FULL_FAST,
+    task = gmp.create_task(
+        name=f"Weekly {target_name}",
+        config_id=SCAN_CONFIG_ID,
         target_id=target_id,
-        scanner_id=OPENVAS_SCANNER
+        scanner_id=SCANNER_ID,
     )
-    task_id = task_resp.get('id')
-    print(f"[+] Task criada: {task_id}")
+    task_id = task.get("id")
+    gmp.start_task(task_id)
 
-    # 3. Iniciar Scan
-    start_resp = gmp.start_task(task_id)
-    report_id = start_resp[0].text  # report_id
-    print(f"[+] Scan iniciado! Report ID: {report_id}")
-
-    # 4. Monitorar progresso
     while True:
-        task_info = gmp.get_task(task_id)
-        status = task_info.find('.//status').text
-        progress = task_info.find('.//progress')
-        prog_val = progress.text if progress is not None else "?"
-        print(f"    Status: {status} | Progresso: {prog_val}%")
+        s = gmp.get_task(task_id).find(".//status").text
+        if s == "Done": break
+        print(f"[*] status: {s}")
+        time.sleep(60)
 
-        if status in ("Done", "Stopped"):
-            break
-        time.sleep(30)  # Verificar a cada 30 segundos
-
-    # 5. Obter Resultados
-    print(f"\\n[+] Scan completo! Obtendo resultados...")
-    results = gmp.get_results(
-        filter_string=f"report_id={report_id} "
-                      f"severity>0 sort-reverse=severity rows=200"
-    )
-
-    print(f"\\n{'='*60}")
-    print(f"RELATÓRIO DE VULNERABILIDADES — {TARGET_IP}")
-    print(f"{'='*60}")
-
-    for result in results.findall('.//result'):
-        name = result.find('name').text
-        severity = result.find('severity').text
-        host = result.find('host').text
-        port = result.find('port').text
-        desc = result.find('.//description')
-        desc_text = desc.text[:200] if desc is not None and desc.text else "N/A"
-
-        sev_float = float(severity)
-        if sev_float >= 9.0:
-            level = "CRITICAL"
-        elif sev_float >= 7.0:
-            level = "HIGH"
-        elif sev_float >= 4.0:
-            level = "MEDIUM"
-        else:
-            level = "LOW"
-
-        print(f"\\n[{level}] {severity} — {name}")
-        print(f"  Host: {host}:{port}")
-        print(f"  Desc: {desc_text}...")
-
-PYEOF
-
-# Executar:
-# python3 scan_automatico.py 192.168.1.100`}
+    report_id = gmp.get_task(task_id).find(".//last_report/report").get("id")
+    report = gmp.get_report(report_id, report_format_id=PDF_FORMAT_ID)
+    pdf_b64 = report.find(".//report").text
+    open("/tmp/scan.pdf", "wb").write(base64.b64decode(pdf_b64))
+    print("[+] PDF salvo em /tmp/scan.pdf — enviar por e-mail")
+`}
       />
 
-      <h2>Comparação: OpenVAS vs Nessus vs Qualys</h2>
-      <CodeBlock
-        title="Quando usar cada scanner"
-        code={`# ┌──────────────┬─────────────┬─────────────┬────────────┐
-# │              │  OpenVAS    │   Nessus    │   Qualys   │
-# ├──────────────┼─────────────┼─────────────┼────────────┤
-# │ Custo        │ GRATUITO    │ Pago        │ Pago       │
-# │              │ Open-source │ $3,590/ano  │ Enterprise │
-# │              │             │ (Pro)       │            │
-# ├──────────────┼─────────────┼─────────────┼────────────┤
-# │ NVTs/Plugins │ +70.000     │ +200.000    │ +75.000    │
-# ├──────────────┼─────────────┼─────────────┼────────────┤
-# │ Interface    │ Web (lenta) │ Web (boa)   │ Cloud      │
-# ├──────────────┼─────────────┼─────────────┼────────────┤
-# │ Compliance   │ Básico      │ PCI, HIPAA  │ PCI, HIPAA │
-# │              │             │ NIST, SOX   │ NIST, SOX  │
-# ├──────────────┼─────────────┼─────────────┼────────────┤
-# │ API/CLI      │ GMP (XML)   │ REST API    │ REST API   │
-# ├──────────────┼─────────────┼─────────────┼────────────┤
-# │ Falso Pos.   │ Médio       │ Baixo       │ Baixo      │
-# ├──────────────┼─────────────┼─────────────┼────────────┤
-# │ Ideal para   │ Aprendizado │ Pentest     │ Corporate  │
-# │              │ CTF, Lab    │ Profissional│ Auditoria  │
-# │              │ Orçamento 0 │ Consultoria │ Compliance │
-# └──────────────┴─────────────┴─────────────┴────────────┘
-#
-# Resumo:
-# - Estudante/CTF → OpenVAS (gratuito, completo o suficiente)
-# - Pentester freelancer → Nessus Essentials (gratuito até 16 IPs)
-# - Empresa/consultoria → Nessus Professional ou Qualys`}
+      <h2>OpenVAS vs Nessus vs Qualys</h2>
+      <CommandTable
+        title="Comparação rápida (use o que cabe no orçamento e escopo)"
+        variations={[
+          {
+            cmd: "OpenVAS / GVM",
+            desc: "Open-source, Greenbone Community Feed grátis. Self-hosted.",
+            output: "Custo: R$0 (CE) / pago (Enterprise Feed). NVTs: ~88k. UI lenta. Rico em CLI.",
+          },
+          {
+            cmd: "Nessus Professional",
+            desc: "Tenable. ~3.500 USD/ano por scanner. Padrão do mercado corporativo.",
+            output: "+200k plugins, UI excelente, suporte 24/7. Limitação 1 scanner por licença.",
+          },
+          {
+            cmd: "Nessus Essentials",
+            desc: "Free, limitado a 16 IPs. Bom para estudo/lab caseiro.",
+            output: "Mesmo motor do Pro, sem compliance e sem agendamento.",
+          },
+          {
+            cmd: "Qualys VMDR",
+            desc: "Cloud-only. Caríssimo. Padrão em Fortune 500.",
+            output: "Agentes leves nos hosts, dashboard executivo, integração SIEM.",
+          },
+          {
+            cmd: "Rapid7 InsightVM",
+            desc: "Antigo Nexpose. Cloud + on-prem. Bom Asset Management.",
+            output: "Integração nativa com Metasploit (também Rapid7).",
+          },
+          {
+            cmd: "Nuclei",
+            desc: "Open-source moderno (templates YAML). Rápido, focado em web.",
+            output: "Não substitui OpenVAS para infra/SO, mas complementar excelente.",
+          },
+        ]}
       />
 
-      <h2>Troubleshooting Comum</h2>
-      <CodeBlock
-        title="Problemas frequentes e soluções"
-        code={`# ═══════════════════════════════════════════════════
-# PROBLEMA: Interface web não carrega (porta 9392)
-# ═══════════════════════════════════════════════════
-# Verificar se os serviços estão rodando:
-sudo systemctl status ospd-openvas
-sudo systemctl status gvmd
-sudo systemctl status gsad
-# Se algum está parado:
+      <AlertBox type="info" title="Quando usar OpenVAS na vida real">
+        <ul className="list-disc pl-5 space-y-1">
+          <li>Empresa pequena/média sem orçamento para Nessus/Qualys.</li>
+          <li>Pentest interno onde o cliente quer baseline antes do trabalho manual.</li>
+          <li>Auditoria periódica de compliance (PCI-DSS exige scan trimestral).</li>
+          <li>Lab pessoal e estudo — feed grátis tem 90% das CVEs do Nessus.</li>
+          <li>Como complemento ao Nessus em ambientes onde quer 2 fontes de verdade.</li>
+        </ul>
+      </AlertBox>
+
+      <h2>Troubleshooting comum</h2>
+      <CommandTable
+        title="Erros típicos e como resolver"
+        variations={[
+          {
+            cmd: "gsad não abre na 9392",
+            desc: "Provavelmente gvmd ainda carregando NVTs (1ª inicialização demora).",
+            output: "sudo journalctl -u gvmd -f → aguardar 'Loaded NVTs'.",
+          },
+          {
+            cmd: "Login falha com a senha gerada",
+            desc: "Senha contém caracteres que o shell interpretou no setup.",
+            output: "sudo gvmd --user=admin --new-password='NovaSenha123!'.",
+          },
+          {
+            cmd: "Scan trava em 1%",
+            desc: "ospd-openvas não está rodando ou socket errado.",
+            output: "sudo systemctl restart ospd-openvas gvmd && sudo gvm-check-setup.",
+          },
+          {
+            cmd: "Feeds desatualizados (NVTs antigos)",
+            desc: "greenbone-feed-sync não rodou ou rate-limited.",
+            output: "sudo greenbone-feed-sync --type GVMD_DATA && sleep 60 && SCAP && CERT.",
+          },
+          {
+            cmd: "Erro 'No such scanner OpenVAS Default'",
+            desc: "ospd-openvas socket não foi registrado em gvmd.",
+            output: "sudo gvmd --modify-scanner=$ID --scanner-host=/run/ospd/ospd-openvas.sock.",
+          },
+          {
+            cmd: "Scan derruba serviço (timeout no banco)",
+            desc: "Full and fast ultimate em produção sem janela.",
+            output: "Mude para Full and fast (sem ultimate). Reduza max concurrent NVTs.",
+          },
+          {
+            cmd: "PostgreSQL não inicia",
+            desc: "Port 5432 ocupada ou cluster corrompido.",
+            output: "sudo pg_lsclusters && sudo systemctl restart postgresql.",
+          },
+        ]}
+      />
+
+      <h2>Parar / reiniciar serviços</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "sudo gvm-stop",
+            out: `[*] Stopping gsad             [ OK ]
+[*] Stopping gvmd             [ OK ]
+[*] Stopping ospd-openvas     [ OK ]`,
+            outType: "muted",
+          },
+          {
+            cmd: "sudo gvm-start",
+            out: `[*] Starting ospd-openvas     [ OK ]
+[*] Starting gvmd             [ OK ]
+[*] Starting gsad             [ OK ]
+[>] Web UI: https://127.0.0.1:9392`,
+            outType: "success",
+          },
+          {
+            cmd: "sudo systemctl status gvmd ospd-openvas gsad --no-pager | head -30",
+            out: `● gvmd.service - Greenbone Vulnerability Manager daemon (gvmd)
+     Loaded: loaded (/lib/systemd/system/gvmd.service; enabled)
+     Active: active (running) since Thu 2026-04-04 14:21:08 -03; 1h 42min ago
+
+● ospd-openvas.service - OSPd Wrapper for OpenVAS
+     Active: active (running) since Thu 2026-04-04 14:21:05 -03; 1h 42min ago
+
+● gsad.service - Greenbone Security Assistant daemon (gsad)
+     Active: active (running) since Thu 2026-04-04 14:21:11 -03; 1h 42min ago`,
+            outType: "info",
+          },
+        ]}
+      />
+
+      <PracticeBox
+        title="Lab: scan completo + relatório PDF de uma VM Metasploitable"
+        goal="Subir Metasploitable 2 (vulnerável de propósito), criar Target+Task no OpenVAS, executar Full and fast e exportar PDF."
+        steps={[
+          "Baixe Metasploitable 2 (sourceforge) e suba no VirtualBox em rede host-only (192.168.56.0/24).",
+          "No Kali, garanta GVM rodando (sudo gvm-start) e UI em https://127.0.0.1:9392.",
+          "Configuration → Targets → ⊕ → Hosts: 192.168.56.101, Port List: All IANA TCP, Alive: Consider Alive.",
+          "Scans → Tasks → ⊕ → Target acima, Scan Config: Full and fast.",
+          "Clique ▶ (Start). Aguarde ~20-30 minutos.",
+          "Quando terminar, clique no Report e exporte como PDF.",
+          "Conte quantos Critical/High/Medium apareceram.",
+        ]}
+        command={`# 1) garantir que o GVM está de pé
 sudo gvm-start
+ss -lntp | grep 9392
 
-# ═══════════════════════════════════════════════════
-# PROBLEMA: Scan fica em 0% ou "Requested" para sempre
-# ═══════════════════════════════════════════════════
-# Os NVTs podem não estar carregados ainda.
-# Verificar:
-sudo greenbone-feed-sync --type GVMD_DATA
-sudo greenbone-feed-sync --type SCAP
-sudo greenbone-feed-sync --type CERT
-# Depois reiniciar:
-sudo gvm-stop && sudo gvm-start
+# 2) verificar acesso à VM Metasploitable
+ping -c 2 192.168.56.101
+nmap -Pn -p- --top-ports 100 192.168.56.101 | head
 
-# ═══════════════════════════════════════════════════
-# PROBLEMA: "Failed to find scan config"
-# ═══════════════════════════════════════════════════
-# Configs não foram importadas. Sincronizar feeds:
-sudo greenbone-feed-sync
-# Aguardar 5-10 min para o gvmd processar
+# 3) criar Target via CLI (alternativa à UI)
+gvm-cli --gmp-username admin --gmp-password 'Kali@OpenVAS2026!' socket --xml \\
+  '<create_target>
+    <name>Lab-Metasploitable</name>
+    <hosts>192.168.56.101</hosts>
+    <port_list id="4a4717fe-57d2-11e1-9a26-406186ea4fc5"/>
+    <alive_tests>Consider Alive</alive_tests>
+   </create_target>'
 
-# ═══════════════════════════════════════════════════
-# PROBLEMA: Scan muito lento
-# ═══════════════════════════════════════════════════
-# 1. Usar "Full and fast" em vez de "Full and deep"
-# 2. Reduzir Port List (usar "Top 1000" em vez de "All")
-# 3. Aumentar concurrent NVTs: 4 → 8
-# 4. Aumentar concurrent hosts: 20 → 30
-# ⚠️ Mais concorrência = mais agressivo na rede
+# 4) criar Task (Full and fast = daba56c8-73ec-11df-a475-002264764cea)
+gvm-cli ... --xml '<create_task>
+    <name>Scan Metasploitable</name>
+    <config id="daba56c8-73ec-11df-a475-002264764cea"/>
+    <target id="UUID_DO_TARGET_ACIMA"/>
+    <scanner id="08b69003-5fc2-4037-a479-93b440211c73"/>
+   </create_task>'
 
-# ═══════════════════════════════════════════════════
-# PROBLEMA: Muitos falsos positivos
-# ═══════════════════════════════════════════════════
-# 1. Aumentar QoD mínimo: 70% → 90%
-# 2. Fazer scan AUTENTICADO (reduz FPs drasticamente)
-# 3. Criar Overrides para marcar FPs conhecidos:
-#    Scans → Reports → (resultado) → Override → False Positive
-# 4. Usar Notes para documentar exceções`}
+# 5) iniciar e acompanhar
+gvm-cli ... --xml '<start_task task_id="UUID_DA_TASK"/>'
+watch -n 30 "gvm-cli ... --xml '<get_tasks task_id=\\"UUID\\"/>' | grep -i progress"`}
+        expected={`Scan finalizado em ~25 min.
+Achados típicos no Metasploitable 2:
+
+  Critical (10.0)  vsftpd 2.3.4 backdoor (CVE-2011-2523)
+  Critical (10.0)  UnrealIRCd 3.2.8.1 backdoor
+  Critical  (9.8)  Samba usermap_script RCE (CVE-2007-2447)
+  High      (9.0)  distcc daemon CVE-2004-2687
+  High      (8.5)  PHP CGI argument injection (CVE-2012-1823)
+  High      (7.5)  rlogin/rsh sem autenticação
+  Medium    (5.0)  TLS 1.0/SSLv3 habilitados
+  Low       (3.0)  Banner com versões expostas
+  [...] ~50 findings totais`}
+        verify="Exporte como PDF (format_id=910200ca-dc05-11e1-954f-406186ea4fc5) e abra: deve ter capa, sumário e seções por host. CTF: tente explorar o vsftpd 2.3.4 com Metasploit (use exploit/unix/ftp/vsftpd_234_backdoor) — o OpenVAS já te entregou o CVE."
       />
+
+      <AlertBox type="success" title="Próximos passos">
+        Depois de dominar OpenVAS, integre os reports XML no <strong>DefectDojo</strong> ou{" "}
+        <strong>Faraday</strong> para gestão de vulnerabilidades em escala. Para web especificamente,
+        complemente com <strong>Nuclei</strong> e <strong>ZAP</strong> (a próxima página). Em
+        ambientes Windows, considere <strong>Nessus</strong> ou <strong>Qualys</strong> que
+        detectam mais CVEs específicas de produtos Microsoft.
+      </AlertBox>
     </PageContainer>
   );
 }

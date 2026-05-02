@@ -1,224 +1,399 @@
 import { PageContainer } from "@/components/layout/PageContainer";
 import { AlertBox } from "@/components/ui/AlertBox";
 import { CodeBlock } from "@/components/ui/CodeBlock";
-import { ParamsTable } from "@/components/ui/ParamsTable";
+import { CommandTable } from "@/components/ui/CommandTable";
+import { OutputBlock } from "@/components/ui/OutputBlock";
+import { PracticeBox } from "@/components/ui/PracticeBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function SSH() {
   return (
     <PageContainer
-      title="SSH — Secure Shell"
-      subtitle="Protocolo de acesso remoto seguro — essencial para pentest, administração e CTFs."
+      title="SSH — Conexão Remota Segura"
+      subtitle="Cliente, servidor, chaves, agentes, tunelamento e hardening — o canivete do pentester."
       difficulty="iniciante"
-      timeToRead="12 min"
+      timeToRead="20 min"
+      prompt="redes/ssh"
     >
-      <h2>Consultando a ajuda do SSH</h2>
-      <CodeBlock language="bash" code={`# Ajuda básica (muitas opções)
-ssh --help
-man ssh              # manual completo e detalhado
-
-# Ajuda do ssh-keygen (gerar chaves)
-ssh-keygen --help
-man ssh-keygen
-
-# Ajuda do scp (transferência de arquivos)
-man scp
-
-# Ajuda do ssh-copy-id (copiar chave pública)
-ssh-copy-id --help`} />
-
-      <AlertBox type="info" title="Como ler o --help do SSH">
-        O SSH tem MUITAS opções (-L, -R, -D, -J, etc.) que não aparecem claramente no --help resumido. 
-        Use <code>man ssh</code> para a documentação completa. Abaixo explicamos as principais em português.
-      </AlertBox>
-
       <h2>Conexão básica</h2>
-      <CodeBlock language="bash" code={`# Conectar com senha
-ssh usuario@192.168.1.1
-ssh usuario@servidor.com
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "ssh wallyson@192.168.1.50",
+            out: `The authenticity of host '192.168.1.50 (192.168.1.50)' can't be established.
+ED25519 key fingerprint is SHA256:XKF/4xXp8aQRSm8mLZ9rz7qVKKLZxX9...
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.1.50' (ED25519) to the list of known hosts.
+wallyson@192.168.1.50's password: 
+Linux target 6.1.0-23-amd64 #1 SMP Debian 6.1.99-1 (2024-07-15) x86_64
 
-# Porta diferente (padrão é 22)
-ssh -p 2222 usuario@192.168.1.1
-
-# Com chave privada
-ssh -i chave_privada.pem usuario@192.168.1.1
-ssh -i ~/.ssh/id_rsa usuario@servidor.com
-
-# Modo verboso (ótimo para debug de conexão)
-ssh -v usuario@servidor.com    # verboso
-ssh -vv usuario@servidor.com   # mais verboso
-ssh -vvv usuario@servidor.com  # máximo detalhe`} />
-
-      <ParamsTable
-        title="ssh — flags principais explicadas em português"
-        params={[
-          { flag: "-p PORTA", desc: "Conecta em uma porta diferente da padrão (22). Muito útil em CTFs onde o SSH está em porta alternativa.", exemplo: "ssh -p 2222 user@alvo" },
-          { flag: "-i CHAVE", desc: "Especifica a chave privada a usar para autenticação. O arquivo deve ter permissão 600.", exemplo: "ssh -i id_rsa user@alvo" },
-          { flag: "-v / -vv / -vvv", desc: "Modo verboso (verbose). Exibe detalhes do processo de autenticação. Essencial para depurar erros de conexão. Mais v's = mais detalhes.", exemplo: "ssh -v user@alvo" },
-          { flag: "-o OPÇÃO=VALOR", desc: "Passa uma opção de configuração diretamente. Evita editar o arquivo ~/.ssh/config.", exemplo: "ssh -o StrictHostKeyChecking=no user@alvo" },
-          { flag: "-o StrictHostKeyChecking=no", desc: "Não pede confirmação ao conectar pela primeira vez em um host desconhecido. Útil em scripts e CTFs.", exemplo: "ssh -o StrictHostKeyChecking=no user@alvo" },
-          { flag: "-l USUÁRIO", desc: "Especifica o usuário (alternativo a usuario@host).", exemplo: "ssh -l admin 192.168.1.1" },
-          { flag: "-q", desc: "Modo quieto — suprime mensagens de aviso. Útil em scripts.", exemplo: "ssh -q user@alvo comando" },
-          { flag: "-t", desc: "Força alocação de pseudo-terminal (PTY). Necessário para comandos interativos via SSH.", exemplo: "ssh -t user@alvo sudo bash" },
-          { flag: "-T", desc: "Desativa alocação de TTY. Usado para conexões não interativas (transferências de dados).", exemplo: "ssh -T git@github.com" },
-          { flag: "-N", desc: "Não executa comando remoto — usado apenas para tunneling (port forwarding). Mantém o túnel aberto.", exemplo: "ssh -N -L 8080:localhost:80 user@alvo" },
-          { flag: "-f", desc: "Coloca o SSH em background após autenticar. Geralmente usado com -N para túneis.", exemplo: "ssh -f -N -L 8080:localhost:80 user@alvo" },
-          { flag: "-4 / -6", desc: "Força IPv4 ou IPv6.", exemplo: "ssh -4 user@alvo" },
+Last login: Fri Apr  3 09:58:24 2026 from 192.168.1.42
+wallyson@target:~$`,
+            outType: "info",
+          },
+          {
+            comment: "outros formatos válidos",
+            cmd: "ssh -p 2222 root@10.10.10.5",
+            out: "(porta customizada com -p)",
+            outType: "muted",
+          },
+          {
+            cmd: "ssh wallyson@bastion.cliente.com -i ~/.ssh/cliente_ed25519",
+            out: "(usando chave privada específica com -i)",
+            outType: "muted",
+          },
         ]}
       />
 
-      <h2>Port Forwarding (Tunneling)</h2>
-      <CodeBlock language="bash" code={`# -L: Local Port Forward
-# Redireciona PORTA_LOCAL → HOST_REMOTO:PORTA_REMOTA via servidor SSH
-ssh -L PORTA_LOCAL:DESTINO:PORTA_DESTINO usuario@SERVIDOR_SSH
-
-# Exemplos práticos:
-# Acessar MySQL interno (porta 3306) via SSH
-ssh -L 3306:localhost:3306 user@192.168.1.1
-# Agora: mysql -h 127.0.0.1 -P 3306 se conecta ao MySQL remoto
-
-# Acessar serviço web interno
-ssh -L 8080:192.168.2.10:80 user@192.168.1.1
-# Abra: http://localhost:8080 no browser
-
-# -R: Remote Port Forward (tunnel reverso)
-# Expõe PORTA_LOCAL sua para o servidor remoto
-ssh -R PORTA_REMOTA:localhost:PORTA_LOCAL usuario@SERVIDOR
-# Útil para receber conexões quando você está atrás de NAT/firewall
-
-# -D: Dynamic SOCKS proxy
-# Cria um proxy SOCKS5 local para rotear tráfego via SSH
-ssh -D 1080 user@192.168.1.1
-# Configure seu browser para usar SOCKS5 proxy em 127.0.0.1:1080`} />
-
-      <ParamsTable
-        title="Port Forwarding — explicado em detalhes"
-        params={[
-          { flag: "-L [bind:]PORTA_LOCAL:HOST:PORTA", desc: "Local Forward — tráfego na PORTA_LOCAL da sua máquina é redirecionado para HOST:PORTA através do servidor SSH. Você acessa serviços internos do servidor.", exemplo: "ssh -L 8080:10.0.0.5:80 user@salto" },
-          { flag: "-R [bind:]PORTA_REMOTA:HOST:PORTA", desc: "Remote Forward — expõe um serviço local para o servidor remoto. Útil para receber reverse shells quando está atrás de NAT.", exemplo: "ssh -R 4444:localhost:4444 user@servidor" },
-          { flag: "-D [bind:]PORTA", desc: "Dynamic SOCKS Proxy — cria um proxy SOCKS5 local. Rota todo o tráfego configurado via a conexão SSH (pivoting).", exemplo: "ssh -D 1080 user@alvo" },
-          { flag: "-J HOST_SALTO", desc: "Jump Host — conecta ao destino final passando por um host intermediário (proxy/bastion). Substitui ProxyJump.", exemplo: "ssh -J usuario@bastion user@alvo_interno" },
-          { flag: "-N", desc: "Não executa nenhum comando remoto — apenas mantém o túnel aberto. Essencial com -L, -R e -D.", exemplo: "ssh -N -L 3306:localhost:3306 user@alvo" },
-          { flag: "-f", desc: "Coloca a sessão SSH em background. Combine com -N para túneis sem precisar manter o terminal aberto.", exemplo: "ssh -fN -L 8080:localhost:80 user@alvo" },
+      <CommandTable
+        title="Flags essenciais do cliente ssh"
+        variations={[
+          { cmd: "-p 2222", desc: "Porta diferente da 22.", output: "ssh -p 2222 user@host" },
+          { cmd: "-i ~/.ssh/key", desc: "Chave privada específica.", output: "Útil quando você tem várias." },
+          { cmd: "-l usuario", desc: "Usuário (alternativa a user@host).", output: "ssh -l root host = ssh root@host" },
+          { cmd: "-v / -vv / -vvv", desc: "Verbosity (debug). Tripla quase sempre acha o problema.", output: "Mostra negociação cripto, auth, etc." },
+          { cmd: "-N", desc: "Não abre shell (só túnel).", output: "Combinado com -L/-R/-D." },
+          { cmd: "-f", desc: "Background depois de autenticar.", output: "Para túneis persistentes." },
+          { cmd: "-C", desc: "Compressão (útil em links lentos).", output: "Bom para X11/SCP em link 3G." },
+          { cmd: "-J bastion@host", desc: "ProxyJump: pula por um bastion.", output: "ssh -J bastion@a.com user@b.com" },
+          { cmd: "-o StrictHostKeyChecking=no", desc: "Aceita fingerprint sem perguntar (cuidado!).", output: "Útil em scripts/CI." },
         ]}
       />
 
-      <h2>Chaves SSH — geração e configuração</h2>
-      <CodeBlock language="bash" code={`# Gerar par de chaves (pública + privada)
-ssh-keygen -t rsa -b 4096 -C "comentario"
-ssh-keygen -t ed25519 -C "email@exemplo.com"    # mais moderno e seguro
-
-# Gera dois arquivos:
-# ~/.ssh/id_rsa       → CHAVE PRIVADA (NUNCA compartilhe!)
-# ~/.ssh/id_rsa.pub   → chave pública (pode compartilhar — vai no servidor)
-
-# Copiar chave pública para um servidor
-ssh-copy-id usuario@192.168.1.1
-ssh-copy-id -i ~/.ssh/id_rsa.pub usuario@servidor.com
-
-# Adicionar chave ao agente SSH (para não digitar passphrase toda hora)
-eval $(ssh-agent)
-ssh-add ~/.ssh/id_rsa
-
-# Ajustar permissões corretas (necessário!)
-chmod 700 ~/.ssh
-chmod 600 ~/.ssh/id_rsa
-chmod 644 ~/.ssh/id_rsa.pub`} />
-
-      <ParamsTable
-        title="ssh-keygen — flags explicadas"
-        params={[
-          { flag: "-t TIPO", desc: "Tipo de algoritmo: rsa (mais compatível), ed25519 (mais seguro e rápido), ecdsa, dsa.", exemplo: "ssh-keygen -t ed25519" },
-          { flag: "-b BITS", desc: "Tamanho da chave RSA em bits. Mínimo recomendado: 2048. Melhor: 4096.", exemplo: "ssh-keygen -t rsa -b 4096" },
-          { flag: "-C 'COMENTÁRIO'", desc: "Adiciona um comentário à chave (normalmente seu email ou descrição do uso).", exemplo: "ssh-keygen -t ed25519 -C 'pentest@kali'" },
-          { flag: "-f ARQUIVO", desc: "Nome do arquivo de saída. Padrão: ~/.ssh/id_rsa", exemplo: "ssh-keygen -f ~/.ssh/chave_ctf" },
-          { flag: "-N 'PASSPHRASE'", desc: "Define a passphrase (senha da chave). Use '' para chave sem senha.", exemplo: "ssh-keygen -N '' -f /tmp/chave" },
-          { flag: "-p", desc: "Muda a passphrase de uma chave existente.", exemplo: "ssh-keygen -p -f ~/.ssh/id_rsa" },
-          { flag: "-y -f CHAVE", desc: "Exibe a chave pública a partir de uma chave privada.", exemplo: "ssh-keygen -y -f chave_privada" },
+      <h2>Chaves SSH (sem senha, com segurança)</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "ED25519 é o algoritmo moderno recomendado",
+            cmd: "ssh-keygen -t ed25519 -C \"wallyson@kali\"",
+            out: `Generating public/private ed25519 key pair.
+Enter file in which to save the key (/home/wallyson/.ssh/id_ed25519): 
+Enter passphrase (empty for no passphrase): ********
+Enter same passphrase again: ********
+Your identification has been saved in /home/wallyson/.ssh/id_ed25519
+Your public key has been saved in /home/wallyson/.ssh/id_ed25519.pub
+The key fingerprint is:
+SHA256:Pj9aPxX7kKKxLZ9mqRSm8mLZ9rz7qVKK wallyson@kali
+The key's randomart image is:
++--[ED25519 256]--+
+|    .o.+oE.      |
+|   . .o.* o      |
+|  o = .o.+ . .   |
+| . O.* +.+.* .   |
+|  =+B B So+ +    |
+|   *.= o oo=     |
+|  o B + ..o o    |
+|   = + .  .      |
+|    .            |
++----[SHA256]-----+`,
+            outType: "success",
+          },
+          {
+            cmd: "ls -l ~/.ssh/",
+            out: `-rw------- 1 wallyson wallyson  411 Apr  3 10:05 id_ed25519
+-rw-r--r-- 1 wallyson wallyson   95 Apr  3 10:05 id_ed25519.pub
+-rw-r--r-- 1 wallyson wallyson  178 Apr  3 09:55 known_hosts`,
+            outType: "info",
+          },
+          {
+            cmd: "cat ~/.ssh/id_ed25519.pub",
+            out: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPj9aPxX7kKKxLZ9mqRSm8mLZ9rz7qVKK wallyson@kali",
+            outType: "default",
+          },
         ]}
       />
 
-      <h2>Arquivo de configuração ~/.ssh/config</h2>
-      <CodeBlock language="bash" code={`# Criar/editar o arquivo de config
-nano ~/.ssh/config
+      <h3>Copiar chave para o servidor</h3>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "ssh-copy-id automatiza tudo",
+            cmd: "ssh-copy-id -i ~/.ssh/id_ed25519.pub wallyson@192.168.1.50",
+            out: `/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/wallyson/.ssh/id_ed25519.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+wallyson@192.168.1.50's password: 
 
-# Exemplo de configuração:
-Host servidor-principal
-    HostName 192.168.1.100
-    User kali
-    Port 22
-    IdentityFile ~/.ssh/id_rsa
+Number of key(s) added: 1
 
-Host ctf-htb
-    HostName 10.10.10.100
-    User root
-    Port 22
-    IdentityFile ~/.ssh/hackthebox.pem
-    StrictHostKeyChecking no
-
-Host tuneldb
-    HostName 192.168.1.1
-    User admin
-    LocalForward 3306 localhost:3306
-    # Agora: ssh tuneldb → túnel MySQL automático
-
-# Após configurar, usar é simples:
-ssh servidor-principal
-ssh ctf-htb`} />
-
-      <h2>Transferência de arquivos</h2>
-      <CodeBlock language="bash" code={`# scp — cópia segura via SSH
-# Enviar arquivo para servidor
-scp arquivo.txt usuario@192.168.1.1:/home/usuario/
-
-# Baixar arquivo do servidor
-scp usuario@192.168.1.1:/etc/passwd ./
-
-# Copiar diretório inteiro
-scp -r pasta/ usuario@servidor.com:/home/usuario/
-
-# Com porta diferente (atenção: é -P maiúsculo no scp!)
-scp -P 2222 arquivo.txt usuario@servidor.com:/tmp/
-
-# sftp — modo interativo de transferência
-sftp usuario@192.168.1.1
-# Comandos dentro do sftp:
-# ls, cd, pwd → navegação no servidor
-# lls, lcd, lpwd → navegação LOCAL
-# get arquivo → baixar
-# put arquivo → enviar
-# bye / exit → sair`} />
-
-      <ParamsTable
-        title="scp — flags explicadas"
-        params={[
-          { flag: "-P PORTA", desc: "Porta SSH (atenção: P maiúsculo, diferente do ssh que usa p minúsculo!).", exemplo: "scp -P 2222 arquivo user@alvo:/tmp/" },
-          { flag: "-r", desc: "Copia recursivamente (diretórios e subdiretórios).", exemplo: "scp -r pasta/ user@alvo:/home/user/" },
-          { flag: "-i CHAVE", desc: "Usa chave privada específica para autenticação.", exemplo: "scp -i chave.pem arquivo user@alvo:/tmp/" },
-          { flag: "-v", desc: "Modo verboso — mostra detalhes da transferência.", exemplo: "scp -v arquivo user@alvo:/tmp/" },
-          { flag: "-C", desc: "Ativa compressão durante a transferência. Útil para arquivos de texto grandes.", exemplo: "scp -C arquivo user@alvo:/tmp/" },
-          { flag: "-3", desc: "Copia entre dois servidores remotos passando pelo seu computador (sem conexão direta entre eles).", exemplo: "scp -3 user1@host1:/arquivo user2@host2:/destino" },
+Now try logging into the machine, with: "ssh 'wallyson@192.168.1.50'"
+and check to make sure that only the key(s) you wanted were added.`,
+            outType: "success",
+          },
+          {
+            cmd: "ssh wallyson@192.168.1.50",
+            out: `Enter passphrase for key '/home/wallyson/.ssh/id_ed25519': 
+Linux target 6.1.0-23-amd64 ...
+wallyson@target:~$`,
+            outType: "info",
+          },
         ]}
       />
 
-      <h2>Técnicas de pentest com SSH</h2>
-      <CodeBlock language="bash" code={`# Verificar métodos de autenticação aceitos
-ssh -v usuario@alvo 2>&1 | grep "Authentication"
+      <h3>ssh-agent — digite a passphrase só uma vez</h3>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "eval \"$(ssh-agent -s)\"",
+            out: "Agent pid 14523",
+            outType: "muted",
+          },
+          {
+            cmd: "ssh-add ~/.ssh/id_ed25519",
+            out: `Enter passphrase for /home/wallyson/.ssh/id_ed25519: 
+Identity added: /home/wallyson/.ssh/id_ed25519 (wallyson@kali)`,
+            outType: "success",
+          },
+          {
+            cmd: "ssh-add -l",
+            out: "256 SHA256:Pj9aPxX7kKKxLZ9mqRSm8mLZ9rz7qVKK wallyson@kali (ED25519)",
+            outType: "info",
+          },
+          {
+            comment: "agora as próximas conexões não pedem passphrase",
+            cmd: "ssh wallyson@192.168.1.50 'whoami'",
+            out: "wallyson",
+            outType: "default",
+          },
+        ]}
+      />
 
-# Tentar login com usuário inválido para identificar SO
-ssh invalido@alvo 2>&1
+      <h2>SCP e SFTP — transferir arquivos</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "enviar arquivo local → remoto",
+            cmd: "scp loot.zip wallyson@192.168.1.50:/tmp/",
+            out: `loot.zip                                100%   42MB  18.4MB/s   00:02`,
+            outType: "info",
+          },
+          {
+            comment: "baixar remoto → local",
+            cmd: "scp wallyson@192.168.1.50:/etc/passwd ./passwd_target",
+            out: `passwd_target                           100% 2147     1.2MB/s   00:00`,
+            outType: "default",
+          },
+          {
+            comment: "diretório inteiro (-r)",
+            cmd: "scp -r reports/ wallyson@192.168.1.50:/home/wallyson/",
+            out: `report1.pdf                             100%  1.2MB  ...
+report2.pdf                             100%  876KB ...`,
+            outType: "default",
+          },
+          {
+            comment: "rsync é mais rápido para muitos arquivos",
+            cmd: "rsync -avz --progress reports/ wallyson@192.168.1.50:/home/wallyson/reports/",
+            out: `sending incremental file list
+report1.pdf
+      1,234,567 100%  18.42MB/s    0:00:00 (xfr#1, to-chk=1/2)
+report2.pdf
+        897,432 100%  14.21MB/s    0:00:00 (xfr#0, to-chk=0/2)
+sent 2,135,103 bytes  received 84 bytes  854,074.80 bytes/sec`,
+            outType: "success",
+          },
+        ]}
+      />
 
-# Verificar algoritmos suportados
-nmap -p 22 --script=ssh2-enum-algos alvo
-nmap -p 22 --script=ssh-auth-methods --script-args="ssh.user=root" alvo
+      <h2>Servidor SSH (sshd)</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "sudo systemctl enable --now ssh",
+            out: `Created symlink /etc/systemd/system/ssh.service.wants/ssh.service.
+Synchronizing state of ssh.service with SysV service script with /usr/lib/systemd/systemd-sysv-install.`,
+            outType: "success",
+          },
+          {
+            cmd: "sudo ss -tlnp | grep ssh",
+            out: `LISTEN 0  128         0.0.0.0:22         0.0.0.0:*   users:(("sshd",pid=14823,fd=3))
+LISTEN 0  128            [::]:22            [::]:*   users:(("sshd",pid=14823,fd=4))`,
+            outType: "info",
+          },
+        ]}
+      />
 
-# Procurar chaves privadas em um sistema comprometido
-find / -name "id_rsa" 2>/dev/null
-find / -name "*.pem" 2>/dev/null
-find / -name "authorized_keys" 2>/dev/null
+      <CodeBlock
+        language="bash"
+        title="/etc/ssh/sshd_config — configuração HARDENED"
+        code={`# Trocar porta padrão (defesa em profundidade, não real segurança)
+Port 2222
 
-# Ajustar permissão e usar chave encontrada
-chmod 600 id_rsa_encontrada
-ssh -i id_rsa_encontrada usuario@alvo`} />
+# Apenas IPv4 (se não usa IPv6)
+# AddressFamily inet
+
+# Banner antes do login
+Banner /etc/ssh/banner
+
+# Login de root: nunca, ou só com chave
+PermitRootLogin no
+# PermitRootLogin prohibit-password   # alternativa: só chave
+
+# Senha NÃO — só chaves SSH
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+KbdInteractiveAuthentication no
+UsePAM yes
+
+# Chaves
+PubkeyAuthentication yes
+AuthorizedKeysFile     .ssh/authorized_keys
+
+# Limite de tentativas e tempo
+MaxAuthTries 3
+LoginGraceTime 30
+ClientAliveInterval 300
+ClientAliveCountMax 2
+
+# Restringir usuários
+AllowUsers wallyson admin
+# Ou por grupo:
+# AllowGroups ssh-users
+
+# Algoritmos modernos apenas
+KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org
+HostKeyAlgorithms ssh-ed25519,rsa-sha2-512
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
+
+# Desabilitar X11 e túneis se não usa
+X11Forwarding no
+AllowAgentForwarding no
+AllowTcpForwarding no
+PermitTunnel no
+
+# Logs verbosos
+LogLevel VERBOSE`}
+      />
+
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "validar a sintaxe ANTES de reiniciar",
+            cmd: "sudo sshd -t",
+            out: "(silencioso = OK. erro = mostra a linha errada)",
+            outType: "muted",
+          },
+          {
+            cmd: "sudo systemctl restart ssh",
+            out: "(silencioso)",
+            outType: "default",
+          },
+          {
+            comment: "testar de outro terminal SEM fechar a sessão atual!",
+            cmd: "ssh -p 2222 wallyson@192.168.1.50",
+            out: "Welcome to Kali ...",
+            outType: "success",
+          },
+        ]}
+      />
+
+      <h2>Túneis SSH (port forwarding)</h2>
+      <CommandTable
+        title="Os 3 modos de túnel"
+        variations={[
+          { cmd: "-L 8080:web.interna:80", desc: "LOCAL → REMOTO. Cliente abre porta local que sai pelo servidor.", output: "Acessa http://localhost:8080 e cai no http da web.interna." },
+          { cmd: "-R 4444:127.0.0.1:5900", desc: "REVERSO. Servidor abre porta que volta pro cliente.", output: "Útil para callback de uma máquina interna sem porta aberta." },
+          { cmd: "-D 1080", desc: "SOCKS proxy dinâmico (-D porta).", output: "Configure firefox/proxychains apontando 127.0.0.1:1080 e tudo sai pelo servidor." },
+        ]}
+      />
+
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "exemplo prático: acessar painel HTTP interno via SSH",
+            cmd: "ssh -L 8080:192.168.10.5:80 -N -f wallyson@bastion.empresa.com",
+            out: "(roda em background. agora curl http://localhost:8080 vai pro 192.168.10.5:80)",
+            outType: "success",
+          },
+          {
+            cmd: "curl -s http://localhost:8080 | head -3",
+            out: `<!DOCTYPE html>
+<html lang="en">
+<title>Painel Interno - ACME Corp</title>`,
+            outType: "info",
+          },
+          {
+            comment: "matar o túnel quando terminar",
+            cmd: "pkill -f 'ssh -L 8080'",
+            out: "(silencioso)",
+            outType: "muted",
+          },
+        ]}
+      />
+
+      <p>
+        Para tunelamento avançado (chisel, sshuttle, dynamic SOCKS) veja a página{" "}
+        <a href="#/ssh-tunneling"><strong>SSH Tunneling & Chisel</strong></a> e{" "}
+        <a href="#/proxychains"><strong>Proxychains</strong></a>.
+      </p>
+
+      <h2>~/.ssh/config — apelidos</h2>
+      <CodeBlock
+        language="ssh-config"
+        title="~/.ssh/config — torne sua vida fácil"
+        code={`# Padrões para todos
+Host *
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    HashKnownHosts yes
+
+# Apelido simples
+Host htb
+    HostName 10.10.14.42
+    User htb-student
+    IdentityFile ~/.ssh/htb_ed25519
+
+# Bastion + ProxyJump
+Host bastion
+    HostName bastion.acme.com
+    User wallyson
+    IdentityFile ~/.ssh/acme_ed25519
+
+Host interno-*
+    User wallyson
+    ProxyJump bastion
+    IdentityFile ~/.ssh/acme_ed25519
+
+# Agora você só digita "ssh htb" ou "ssh interno-db01"`}
+      />
+
+      <PracticeBox
+        title="Setup SSH endurecido com chaves + porta nova"
+        goal="Configurar um SSH 'pronto para internet' bloqueando senha, root, e usando porta alternativa."
+        steps={[
+          "Gere uma chave ED25519 com passphrase.",
+          "Copie para o servidor com ssh-copy-id.",
+          "Edite /etc/ssh/sshd_config: Port 2222, PermitRootLogin no, PasswordAuthentication no.",
+          "Valide com sshd -t e reinicie o serviço.",
+          "Teste o login com a nova porta. Tente login com senha — deve falhar.",
+        ]}
+        command={`ssh-keygen -t ed25519 -C "$(whoami)@kali"
+ssh-copy-id -i ~/.ssh/id_ed25519.pub wallyson@servidor.com
+sudo sed -i 's/^#Port 22/Port 2222/' /etc/ssh/sshd_config
+sudo sed -i 's/^#PermitRootLogin .*/PermitRootLogin no/' /etc/ssh/sshd_config
+sudo sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+sudo sshd -t && sudo systemctl restart ssh
+ssh -p 2222 wallyson@servidor.com`}
+        expected={`Linux servidor 6.1.0-23-amd64 ...
+Last login: Fri Apr  3 10:31:14 2026 from 192.168.1.42
+wallyson@servidor:~$`}
+        verify="Tente ssh -o PreferredAuthentications=password wallyson@servidor.com — deve recusar com 'Permission denied (publickey)'."
+      />
+
+      <AlertBox type="danger" title="Não trave seu SSH antes de testar">
+        <strong>Sempre</strong> mantenha uma sessão aberta enquanto edita
+        <code>sshd_config</code>. Se a nova config quebrar, você ainda tem a sessão antiga
+        para reverter. Testar a sintaxe com <code>sudo sshd -t</code> também é obrigatório
+        antes do <code>systemctl restart</code>.
+      </AlertBox>
     </PageContainer>
   );
 }

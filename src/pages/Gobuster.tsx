@@ -1,176 +1,319 @@
 import { PageContainer } from "@/components/layout/PageContainer";
 import { AlertBox } from "@/components/ui/AlertBox";
-import { CodeBlock } from "@/components/ui/CodeBlock";
-import { ParamsTable } from "@/components/ui/ParamsTable";
+import { CommandTable } from "@/components/ui/CommandTable";
+import { OutputBlock } from "@/components/ui/OutputBlock";
+import { PracticeBox } from "@/components/ui/PracticeBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function Gobuster() {
   return (
     <PageContainer
-      title="Gobuster"
-      subtitle="Enumeração rápida de diretórios, arquivos, subdomínios e buckets S3."
+      title="Gobuster + ffuf — força bruta de diretórios e VHosts"
+      subtitle="Descobre paths escondidos, subdomínios, virtual hosts e parâmetros via wordlist."
       difficulty="iniciante"
-      timeToRead="10 min"
+      timeToRead="13 min"
+      prompt="web/gobuster"
     >
-      <h2>Consultando a ajuda do Gobuster</h2>
-      <CodeBlock language="bash" code={`# Ajuda geral
-gobuster --help
-
-# Ajuda de um modo específico
-gobuster dir --help     # ajuda do modo diretório
-gobuster dns --help     # ajuda do modo subdomínio
-gobuster vhost --help   # ajuda do modo virtual host
-
-# Exemplo de saída do gobuster dir --help (em inglês → traduzido abaixo)
-# Usage:
-#   gobuster dir [flags]
-# Flags:
-#   -u, --url string            → URL alvo
-#   -w, --wordlist string       → caminho para a wordlist
-#   -x, --extensions string     → extensões de arquivo
-#   -t, --threads int           → número de threads (padrão 10)
-#   -o, --output string         → arquivo de saída
-#   -k, --no-tls-validation     → ignorar erros SSL`} />
-
-      <AlertBox type="info" title="Como ler o --help do Gobuster">
-        O Gobuster divide seus modos em subcomandos: <code>dir</code>, <code>dns</code>, <code>vhost</code>, <code>s3</code>, <code>fuzz</code>. Cada um tem suas próprias flags. Use <code>gobuster MODO --help</code> para ver as flags específicas do modo.
-      </AlertBox>
-
-      <h2>Modos de operação</h2>
-      <CodeBlock language="bash" code={`# Modo dir — enumeração de diretórios/arquivos
-gobuster dir -u http://alvo.com -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
-
-# Modo dns — enumeração de subdomínios
-gobuster dns -d alvo.com -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt
-
-# Modo vhost — descoberta de virtual hosts
-gobuster vhost -u http://alvo.com -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt
-
-# Modo fuzz — fuzzing genérico (substitui FUZZ na URL)
-gobuster fuzz -u http://alvo.com/FUZZ -w wordlist.txt`} />
-
-      <ParamsTable
-        title="Flags do modo dir — explicadas em português"
-        params={[
-          { flag: "-u URL", desc: "URL alvo obrigatória. Inclua o protocolo (http:// ou https://) e qualquer caminho base.", exemplo: "gobuster dir -u http://192.168.1.1 -w lista.txt" },
-          { flag: "-w WORDLIST", desc: "Caminho para a wordlist (lista de palavras). Quanto maior, mais diretórios serão testados — mas mais demorado.", exemplo: "-w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt" },
-          { flag: "-x EXTENSÕES", desc: "Extensões de arquivo para testar junto com cada palavra. Separe por vírgula. Essencial para encontrar arquivos específicos.", exemplo: "-x php,html,txt,bak,conf,xml,sql" },
-          { flag: "-t THREADS", desc: "Número de threads paralelas. Padrão é 10. Aumente para acelerar (ex: -t 50), mas cuidado com servidores frágeis.", exemplo: "-t 50" },
-          { flag: "-o ARQUIVO", desc: "Salva os resultados encontrados em um arquivo.", exemplo: "-o resultado_gobuster.txt" },
-          { flag: "-k", desc: "Ignora erros de certificado SSL/TLS inválido. Essencial para sites HTTPS com cert autoassinado.", exemplo: "gobuster dir -u https://alvo.com -w lista.txt -k" },
-          { flag: "-s CÓDIGOS", desc: "Códigos de status HTTP a considerar como encontrado. Padrão é 200,204,301,302,307,401,403.", exemplo: "-s 200,301,302" },
-          { flag: "-b CÓDIGOS", desc: "Codes de status para excluir (blacklist). Útil para ignorar redirects ou 403.", exemplo: "-b 301,302,403" },
-          { flag: "-U / -P", desc: "Usuário e senha para autenticação HTTP Basic. Permite enumerar diretórios em áreas protegidas.", exemplo: "-U admin -P senha123" },
-          { flag: "-c COOKIE", desc: "Envia cookies com cada requisição. Permite enumerar áreas que requerem sessão autenticada.", exemplo: "-c 'PHPSESSID=abc123; role=admin'" },
-          { flag: "--proxy URL", desc: "Roteia o tráfego por um proxy HTTP. Útil para ver as requisições no Burp Suite.", exemplo: "--proxy http://127.0.0.1:8080" },
-          { flag: "-r", desc: "Segue redirecionamentos HTTP. Por padrão o Gobuster não segue — ative se estiver perdendo resultados.", exemplo: "gobuster dir -u http://alvo -w lista.txt -r" },
-          { flag: "--timeout DURAÇÃO", desc: "Tempo máximo de espera por resposta. Padrão é 10s.", exemplo: "--timeout 30s" },
-          { flag: "-a USER-AGENT", desc: "Define o User-Agent da requisição. Útil para imitar um browser.", exemplo: "-a 'Mozilla/5.0'" },
-          { flag: "--add-slash", desc: "Adiciona / ao final de cada palavra testada. Útil para encontrar diretórios que só respondem com barra.", exemplo: "--add-slash" },
-          { flag: "-q", desc: "Modo quieto — não exibe o banner inicial e status. Saída mais limpa para parsear.", exemplo: "gobuster dir -u alvo -w lista.txt -q" },
+      <h2>Setup</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "sudo apt install -y gobuster ffuf seclists",
+            out: "(seclists = 100MB de wordlists)",
+            outType: "muted",
+          },
+          {
+            cmd: "ls /usr/share/seclists/Discovery/Web-Content/ | head -10",
+            out: `big.txt
+common.txt
+directory-list-2.3-medium.txt
+directory-list-2.3-small.txt
+raft-large-directories.txt
+raft-large-files.txt
+raft-medium-directories.txt
+raft-small-words.txt
+quickhits.txt
+api/`,
+            outType: "info",
+          },
         ]}
       />
 
-      <h2>Enumeração de diretórios na prática</h2>
-      <CodeBlock language="bash" code={`# Básico — rápido para CTF inicial
-gobuster dir -u http://192.168.1.1 \
-  -w /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt \
-  -t 50 -o recon_dir.txt
-
-# Completo com extensões — mais lento mas abrangente
-gobuster dir -u http://alvo.com \
-  -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt \
-  -x php,html,txt,bak,conf,xml,sql,zip,json \
-  -t 30 -o resultado.txt
-
-# HTTPS com certificado inválido
-gobuster dir -u https://alvo.com \
-  -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt \
-  -k -t 30
-
-# Com sessão autenticada (cookie)
-gobuster dir -u http://alvo.com/painel/ \
-  -w /usr/share/seclists/Discovery/Web-Content/common.txt \
-  -c "session=abc123" -t 20
-
-# Via proxy Burp Suite (ver requests)
-gobuster dir -u http://alvo.com \
-  -w wordlist.txt \
-  --proxy http://127.0.0.1:8080`} />
-
-      <ParamsTable
-        title="Flags do modo dns — enumeração de subdomínios"
-        params={[
-          { flag: "-d DOMÍNIO", desc: "Domínio alvo (sem http://). Obrigatório no modo dns.", exemplo: "gobuster dns -d empresa.com -w lista.txt" },
-          { flag: "-w WORDLIST", desc: "Wordlist de subdomínios para testar.", exemplo: "-w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt" },
-          { flag: "-i", desc: "Mostra os endereços IP resolvidos para cada subdomínio encontrado.", exemplo: "gobuster dns -d empresa.com -w lista.txt -i" },
-          { flag: "-r DNS_SERVER", desc: "Usa um servidor DNS específico para as consultas (ex: servidor interno da empresa).", exemplo: "-r 192.168.1.53" },
-          { flag: "--wildcard", desc: "Ativa detecção e supressão de wildcards DNS (quando o servidor resolve qualquer subdomínio)." },
-          { flag: "-t THREADS", desc: "Threads paralelas para consultas DNS. Aumente para domínios grandes.", exemplo: "-t 100" },
+      <h2>gobuster — modo dir</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: `gobuster dir -u https://app.local -w /usr/share/seclists/Discovery/Web-Content/common.txt -t 50 -o gobuster.txt`,
+            out: `===============================================================
+Gobuster v3.6
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     https://app.local
+[+] Method:                  GET
+[+] Threads:                 50
+[+] Wordlist:                /usr/share/seclists/Discovery/Web-Content/common.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.6
+[+] Timeout:                 10s
+===============================================================
+2026/04/03 13:01:14 Starting gobuster in directory enumeration mode
+===============================================================
+/.git                 (Status: 301) [Size: 178] [--> /.git/]
+/.htaccess            (Status: 403) [Size: 199]
+/admin                (Status: 301) [Size: 178] [--> /admin/]
+/api                  (Status: 200) [Size: 542]
+/backup               (Status: 200) [Size: 1245]
+/css                  (Status: 301) [Size: 178] [--> /css/]
+/dashboard            (Status: 302) [Size: 0]   [--> /login]
+/images               (Status: 301) [Size: 178] [--> /images/]
+/index.html           (Status: 200) [Size: 4521]
+/js                   (Status: 301) [Size: 178] [--> /js/]
+/login                (Status: 200) [Size: 1842]
+/phpmyadmin           (Status: 301) [Size: 178] [--> /phpmyadmin/]
+/robots.txt           (Status: 200) [Size: 412]
+/server-status        (Status: 403) [Size: 199]
+/uploads              (Status: 301) [Size: 178] [--> /uploads/]
+===============================================================
+2026/04/03 13:03:42 Finished
+===============================================================`,
+            outType: "success",
+          },
         ]}
       />
 
-      <h2>Enumeração de subdomínios</h2>
-      <CodeBlock language="bash" code={`# Básico
-gobuster dns -d empresa.com \
-  -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt \
-  -t 50
+      <CommandTable
+        title="Flags úteis (modo dir)"
+        variations={[
+          { cmd: "-u URL", desc: "Alvo.", output: "https://app.local" },
+          { cmd: "-w wordlist.txt", desc: "Wordlist.", output: "common.txt para começar; raft/big depois." },
+          { cmd: "-t 50", desc: "Threads (default 10).", output: "Em LAN: 50-100. Internet: 20-30." },
+          { cmd: "-x php,html,bak,zip", desc: "Extensões para tentar em cada palavra.", output: "/admin → /admin.php /admin.html ..." },
+          { cmd: "-s 200,204,301,302,307,401,403", desc: "Status codes a aceitar.", output: "Default exclui 404. Inclua 401/403 para achar protegidos." },
+          { cmd: "-b 404,500", desc: "Status codes a IGNORAR (blacklist).", output: "Útil quando alvo retorna 200 falso." },
+          { cmd: "-k", desc: "Aceita certificados self-signed (HTTPS).", output: "Lab/CTF." },
+          { cmd: "-H 'Cookie: x=y'", desc: "Header customizado (pode repetir).", output: "Para áreas autenticadas." },
+          { cmd: "-a 'UA'", desc: "User-Agent.", output: "Bypass de WAFs simples." },
+          { cmd: "--proxy http://127.0.0.1:8080", desc: "Roteia pelo Burp.", output: "Para inspecionar." },
+          { cmd: "-r", desc: "Segue redirect.", output: "Vê o destino real." },
+          { cmd: "-o saida.txt", desc: "Output.", output: "Limpa, sem cores." },
+          { cmd: "--no-error", desc: "Não mostra erros (timeout).", output: "Output mais limpo." },
+        ]}
+      />
 
-# Mostrar IPs dos subdomínios encontrados
-gobuster dns -d empresa.com \
-  -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt \
-  -i -t 50`} />
+      <h2>gobuster — modo dns / vhost / s3</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "DNS — brute force de subdomínios",
+            cmd: "gobuster dns -d empresa.com -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -t 50",
+            out: `===============================================================
+[+] Domain:     empresa.com
+[+] Threads:    50
+[+] Wordlist:   /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt
+===============================================================
+Found: www.empresa.com
+Found: mail.empresa.com
+Found: api.empresa.com
+Found: admin.empresa.com
+Found: dev.empresa.com
+Found: staging.empresa.com
+Found: vpn.empresa.com
+Found: webmail.empresa.com
+===============================================================`,
+            outType: "info",
+          },
+          {
+            comment: "VHOST — Host header brute force",
+            cmd: "gobuster vhost -u https://200.150.10.42 -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -t 30 --append-domain",
+            out: `===============================================================
+Found: admin.200.150.10.42 Status: 200 [Size: 4521]
+Found: api.200.150.10.42 Status: 200 [Size: 9821]
+Found: dev.200.150.10.42 Status: 200 [Size: 1245]
+===============================================================`,
+            outType: "warning",
+          },
+          {
+            comment: "S3 buckets — descobre AWS S3 com brute force",
+            cmd: "gobuster s3 -w /usr/share/seclists/Discovery/Web-Content/common.txt",
+            out: `bucket1.s3.amazonaws.com  [Status: 200] (PUBLIC LISTING!)
+bucket-backup.s3.amazonaws.com  [Status: 403]`,
+            outType: "default",
+          },
+        ]}
+      />
+
+      <h2>ffuf — fuzzer mais flexível</h2>
+      <p>
+        ffuf usa <code>FUZZ</code> como placeholder em qualquer lugar (URL, header, body).
+        Mais rápido e flexível que gobuster para casos avançados.
+      </p>
+
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "directory busting (mesmo do gobuster)",
+            cmd: "ffuf -u 'https://app.local/FUZZ' -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt -t 50 -mc 200,301,302,401,403",
+            out: `        /'___\\  /'___\\           /'___\\
+       /\\ \\__/ /\\ \\__/  __  __  /\\ \\__/
+       \\ \\ ,__\\\\ \\ ,__\\/\\ \\/\\ \\ \\ \\ ,__\\
+        \\ \\ \\_/ \\ \\ \\_/\\ \\ \\_\\ \\ \\ \\ \\_/
+         \\ \\_\\   \\ \\_\\  \\ \\____/  \\ \\_\\
+          \\/_/    \\/_/   \\/___/    \\/_/
+
+       v2.1.0-dev
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : https://app.local/FUZZ
+ :: Wordlist         : FUZZ: /usr/share/seclists/.../raft-medium-directories.txt
+ :: Threads          : 50
+ :: Matcher          : Response status: 200,301,302,401,403
+________________________________________________
+
+admin                   [Status: 301, Size: 178, Words: 7, Lines: 8]
+api                     [Status: 200, Size: 542, Words: 12, Lines: 5]
+backup                  [Status: 200, Size: 1245, Words: 89, Lines: 23]
+dashboard               [Status: 302, Size: 0, Words: 1, Lines: 1]
+.git                    [Status: 301, Size: 178, Words: 7, Lines: 8]
+
+:: Progress: [30000/30000] :: Job [1/1] :: 412 req/sec :: Errors: 0 ::`,
+            outType: "success",
+          },
+        ]}
+      />
+
+      <CommandTable
+        title="ffuf — modos avançados"
+        variations={[
+          { cmd: "Subdomain (-H 'Host: FUZZ.alvo.com')", desc: "Vhost discovery.", output: "Combine com -fs (filter size) para tirar 'sem hit'." },
+          { cmd: "Parameter discovery", desc: "Acha GET/POST params escondidos.", output: "ffuf -u 'site/?FUZZ=test' -w params.txt" },
+          { cmd: "Authentication brute", desc: "Login form fuzzing.", output: "ffuf -u site/login -X POST -d 'u=admin&p=FUZZ' -w pass.txt" },
+          { cmd: "Multiple FUZZ keywords", desc: "FUZZUSER, FUZZPASS, etc.", output: "Cluster bomb com -w lista1:FUZZ1 -w lista2:FUZZ2" },
+          { cmd: "Recursive (-recursion)", desc: "Recursivo: encontrou /admin → fuzza /admin/.", output: "-recursion-depth 2" },
+        ]}
+      />
+
+      <h2>ffuf — exemplo: descobrir parâmetro escondido</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "ffuf -u 'https://app.local/api/user?FUZZ=admin' -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -fs 412",
+            out: `:: Wordlist: FUZZ: burp-parameter-names.txt (6453 words)
+:: Filter: Response size: 412
+
+debug                   [Status: 200, Size: 1284, Words: 89, Lines: 23]
+admin                   [Status: 200, Size: 1284, Words: 89, Lines: 23]
+isAdmin                 [Status: 200, Size: 2451, Words: 142, Lines: 41]   ← achado!
+role                    [Status: 200, Size: 1284, Words: 89, Lines: 23]
+
+:: Progress: [6453/6453] :: 510 req/sec`,
+            outType: "warning",
+          },
+          {
+            cmd: "curl 'https://app.local/api/user?isAdmin=true' -H 'Authorization: Bearer xxx'",
+            out: `{
+  "id": 99,
+  "name": "wallyson",
+  "role": "admin",            ← agora vê o role admin!
+  "permissions": ["read", "write", "delete"]
+}`,
+            outType: "error",
+          },
+        ]}
+      />
+
+      <h2>ffuf — VHost discovery</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: `ffuf -u 'https://200.150.10.42/' -H 'Host: FUZZ.empresa.com' \\
+  -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt \\
+  -fs 4521 -mc 200,301,302`,
+            out: `(filtra response com tamanho 4521 = página default)
+
+admin                   [Status: 200, Size: 9821]   ← vhost diferente!
+api                     [Status: 200, Size: 542]
+dev                     [Status: 200, Size: 8714]
+staging                 [Status: 200, Size: 1245]`,
+            outType: "info",
+          },
+          {
+            comment: "agora confirmar via Host header",
+            cmd: "curl -H 'Host: dev.empresa.com' https://200.150.10.42/ -k | head",
+            out: "<h1>DEV environment - DO NOT TOUCH</h1>...",
+            outType: "warning",
+          },
+        ]}
+      />
 
       <h2>Wordlists recomendadas</h2>
-      <div className="space-y-2 my-6">
-        {[
-          { path: "/usr/share/wordlists/dirbuster/directory-list-2.3-small.txt", desc: "Rápida (~80k entradas). Use primeiro para ter resultado logo." },
-          { path: "/usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt", desc: "Padrão (~220k). Bom equilíbrio entre velocidade e cobertura." },
-          { path: "/usr/share/seclists/Discovery/Web-Content/common.txt", desc: "SecLists comum — caminhos mais vistos na web." },
-          { path: "/usr/share/seclists/Discovery/Web-Content/big.txt", desc: "SecLists grande — mais completo." },
-          { path: "/usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt", desc: "Raft — diretórios reais coletados da internet." },
-          { path: "/usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt", desc: "5k subdomínios mais comuns. Rápido para DNS." },
-        ].map((wl, i) => (
-          <div key={i} className="bg-card border border-border rounded-lg p-3">
-            <code className="text-primary text-xs font-mono break-all">{wl.path}</code>
-            <p className="text-xs text-muted-foreground mt-1">{wl.desc}</p>
-          </div>
-        ))}
-      </div>
-
-      <h2>ffuf — Alternativa mais poderosa</h2>
-      <CodeBlock language="bash" code={`# Instalar ffuf
-sudo apt install -y ffuf
-
-# Fuzzing de diretórios (FUZZ é o placeholder)
-ffuf -u http://alvo.com/FUZZ -w wordlist.txt -mc 200,301,302
-
-# Filtrar por tamanho de resposta (excluir 404 com tamanho específico)
-ffuf -u http://alvo.com/FUZZ -w wordlist.txt -fs 4242
-
-# Fuzzing de subdomínios
-ffuf -u http://FUZZ.alvo.com -w lista.txt -H "Host: FUZZ.alvo.com" -mc 200
-
-# Fuzzing de parâmetros GET
-ffuf -u "http://alvo.com/page?FUZZ=test" -w params.txt`} />
-
-      <ParamsTable
-        title="ffuf — flags principais em português"
-        params={[
-          { flag: "-u URL", desc: "URL com o placeholder FUZZ onde será inserido cada valor da wordlist.", exemplo: "-u http://alvo.com/FUZZ" },
-          { flag: "-w WORDLIST", desc: "Wordlist a usar. Você pode usar múltiplas com -w lista1.txt:W1 -w lista2.txt:W2 e os placeholders W1, W2 na URL.", exemplo: "-w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt" },
-          { flag: "-mc CÓDIGO", desc: "Match por código de status HTTP. Mostra apenas respostas com esses códigos.", exemplo: "-mc 200,301,302" },
-          { flag: "-fs TAMANHO", desc: "Filter Size — esconde respostas com esse tamanho em bytes. Muito útil para ignorar páginas de erro genéricas.", exemplo: "-fs 1234" },
-          { flag: "-fw PALAVRAS", desc: "Filter Words — esconde respostas com esse número de palavras.", exemplo: "-fw 42" },
-          { flag: "-t THREADS", desc: "Threads paralelas. Padrão é 40. Aumente para mais velocidade.", exemplo: "-t 100" },
-          { flag: "-H 'Header'", desc: "Adiciona um header HTTP customizado. Muito usado para fuzzing de subdomain.", exemplo: "-H 'Host: FUZZ.alvo.com'" },
-          { flag: "-o ARQUIVO -of FORMAT", desc: "Salva resultado em arquivo. Formatos: json, ejson, html, md, csv.", exemplo: "-o resultado.json -of json" },
-          { flag: "-c", desc: "Ativa colorização da saída.", exemplo: "ffuf -u http://alvo/FUZZ -w lista.txt -c" },
+      <CommandTable
+        title="Da SecLists, por situação"
+        variations={[
+          { cmd: "Web-Content/common.txt (4600 entries)", desc: "Boa para scan rápido.", output: "Termina em < 1 min." },
+          { cmd: "Web-Content/raft-medium-directories.txt", desc: "Padrão para diretórios.", output: "30k entries — equilíbrio." },
+          { cmd: "Web-Content/raft-large-directories.txt", desc: "Mais completa.", output: "62k entries." },
+          { cmd: "Web-Content/api/objects.txt", desc: "Endpoints típicos de API REST.", output: "/users, /products, /orders..." },
+          { cmd: "Web-Content/api/api-endpoints.txt", desc: "Versionado /v1/, /v2/.", output: "Para fuzzing de API." },
+          { cmd: "DNS/subdomains-top1million-5000.txt", desc: "Top 5000 subs.", output: "Padrão para gobuster dns." },
+          { cmd: "DNS/subdomains-top1million-110000.txt", desc: "110k subs.", output: "Mais lento, mais completo." },
+          { cmd: "Discovery/Web-Content/burp-parameter-names.txt", desc: "Param discovery.", output: "6453 names." },
+          { cmd: "Usernames/Names/names.txt", desc: "Nomes para enum de usuário.", output: "Para spraying." },
+          { cmd: "Passwords/rockyou.txt", desc: "14 milhões de senhas (legacy mas eficaz).", output: "PADRÃO em CTF/lab." },
         ]}
       />
 
-      <AlertBox type="success" title="Dica CTF">
-        Em CTFs, comece com a wordlist <code>common.txt</code> (rápida), depois <code>directory-list-2.3-medium.txt</code>. 
-        Sempre teste com extensões <code>-x php,html,txt</code> quando souber a linguagem do servidor.
+      <PracticeBox
+        title="Recon completo de um site web"
+        goal="Sair do zero (URL) até ter: subdomínios + vhosts + diretórios escondidos + parâmetros."
+        steps={[
+          "Brute force de subdomínios via DNS.",
+          "Para cada sub vivo, scan de diretórios.",
+          "Para o IP do alvo, vhost discovery via Host header.",
+          "Em endpoints API encontrados, parameter discovery com ffuf.",
+        ]}
+        command={`DOMAIN="empresa.com"
+
+# 1) subdomínios
+gobuster dns -d $DOMAIN -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -t 50 -o subs.txt
+grep '^Found' subs.txt | awk '{print $2}' > subs_clean.txt
+
+# 2) hosts vivos
+cat subs_clean.txt | httpx -silent | tee live.txt
+
+# 3) directory busting em cada
+for U in $(cat live.txt); do
+  echo "[*] Scanning $U"
+  gobuster dir -u $U -w /usr/share/seclists/Discovery/Web-Content/common.txt -q -t 30 -o "dir_$(echo $U | sed 's|/|_|g').txt"
+done
+
+# 4) param discovery em endpoint API
+ffuf -u "https://api.$DOMAIN/v1/user?FUZZ=test" \\
+     -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt \\
+     -fs 412 -mc 200`}
+        expected={`Found: www.empresa.com
+Found: api.empresa.com
+Found: admin.empresa.com
+Found: staging.empresa.com
+
+[*] Scanning https://api.empresa.com
+/v1                  (Status: 200) [Size: 542]
+/docs                (Status: 200) [Size: 4521]
+/swagger.json        (Status: 200) [Size: 18342]    ← spec da API!`}
+        verify="O arquivo dir_*.txt para cada subdomínio deve ter ao menos 5 paths novos. /swagger.json ou /openapi.json em api.* é jackpot."
+      />
+
+      <AlertBox type="info" title="gobuster vs ffuf">
+        <strong>gobuster</strong>: simples, ótimo para casos básicos (dir, dns, vhost, s3).
+        <br />
+        <strong>ffuf</strong>: mais rápido, mais flexível com filtros e <code>FUZZ</code> em
+        qualquer posição. Para param/header/body fuzz, ffuf é imbatível.
       </AlertBox>
     </PageContainer>
   );

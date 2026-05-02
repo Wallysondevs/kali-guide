@@ -1,122 +1,305 @@
 import { PageContainer } from "@/components/layout/PageContainer";
 import { AlertBox } from "@/components/ui/AlertBox";
 import { CodeBlock } from "@/components/ui/CodeBlock";
+import { CommandTable } from "@/components/ui/CommandTable";
+import { OutputBlock } from "@/components/ui/OutputBlock";
+import { PracticeBox } from "@/components/ui/PracticeBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function John() {
   return (
     <PageContainer
-      title="John the Ripper"
-      subtitle="O clássico crackeador de hashes de senhas para uso offline."
-      difficulty="intermediario"
-      timeToRead="8 min"
+      title="John the Ripper — cracking offline"
+      subtitle="Quebra hashes (shadow, NTLM, MD5, bcrypt, Kerberos, ZIP) usando wordlists, regras e bruteforce."
+      difficulty="intermediário"
+      timeToRead="16 min"
+      prompt="passwords/john"
     >
-      <h2>Introdução</h2>
-      <p>
-        O <strong>John the Ripper</strong> (JtR) é um dos crackeadores de senhas mais conhecidos. 
-        Funciona <strong>offline</strong>, aplicando ataques de dicionário, brute force e regras em hashes. 
-        O Kali inclui o <em>John the Ripper Jumbo</em>, que suporta mais de 400 tipos de hash.
-      </p>
+      <h2>Versão Jumbo (a única que importa)</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "john --version",
+            out: `John the Ripper 1.9.0-jumbo-1+bleeding-aec1328d6c 2024-09-15 13:24:11 +0200 OMP [linux-gnu 64-bit x86_64 AVX2 AC]`,
+            outType: "info",
+          },
+          {
+            cmd: "john --list=formats | head -20",
+            out: `descrypt, bsdicrypt, md5crypt, md5crypt-long, bcrypt, scrypt, LM, AFS, tripcode,
+AndroidBackup, adxcrypt, agilekeychain, aix-ssha1, aix-ssha256, aix-ssha512,
+andOTP, ansible, argon2, as400-des, as400-ssha1, asa-md5, AxCrypt, AzureAD,
+BestCrypt, BestCryptVer4, bfegg, bitcoin, BitLocker, BKS, Blackberry-ES10,
+blockchain, Bitwarden, ChaCha, Citrix_NS10, ClipperZ, cloudkeychain,
+cq, CRC32, CryptoSafe, dahua, Dexter, Django, DMD5, DMG, dnssec, dominosec,
+dragonfly3-32, dragonfly3-64, dragonfly4-32, dragonfly4-64, Drupal7, eCryptfs,
+[...]
+NT, NetNTLMv1, NetNTLMv2, NetNTLMv2-NT, mscash, mscash2, krb5pa-md5, krb5pa-sha1,
+krb5tgs, kerberoasted, RAR5, raw-MD4, raw-MD5, raw-SHA1, raw-SHA256, raw-SHA512`,
+            outType: "default",
+          },
+        ]}
+      />
 
-      <h2>Quebrando senhas Linux</h2>
-      <CodeBlock language="bash" code={`# Combinar /etc/passwd + /etc/shadow
-sudo unshadow /etc/passwd /etc/shadow > hashes.txt
+      <h2>Cracking de /etc/shadow</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "1) preparar input juntando passwd + shadow",
+            cmd: "sudo unshadow /etc/passwd /etc/shadow > shadow.txt",
+            out: "(silencioso. shadow.txt fica no formato que john entende)",
+            outType: "muted",
+          },
+          {
+            cmd: "head -3 shadow.txt",
+            out: `root:$y$j9T$6hL...:0:0:root:/root:/usr/bin/zsh
+daemon:*:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+wallyson:$y$j9T$Z6F8pQa.../...:1000:1000:Wallyson Lopes,,,:/home/wallyson:/usr/bin/zsh`,
+            outType: "info",
+          },
+          {
+            comment: "2) attack: john detecta o formato sozinho (yescrypt aqui)",
+            cmd: "john --wordlist=/usr/share/wordlists/rockyou.txt shadow.txt",
+            out: `Using default input encoding: UTF-8
+Loaded 2 password hashes with 2 different salts (yescrypt [pwhash 4x])
+Cost 1 (N) is 4096 for all loaded hashes
+Cost 2 (r) is 32 for all loaded hashes
+Cost 3 (p) is 1 for all loaded hashes
+Will run 8 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
 
-# Quebrar com rockyou
-john hashes.txt --wordlist=/usr/share/wordlists/rockyou.txt
+Senha@123      (wallyson)
+1g 0:00:00:14 DONE (2026-04-03 14:21) 0.06992g/s 287.4p/s 287.4c/s 574.8C/s 123456..whatever
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed.`,
+            outType: "success",
+          },
+          {
+            cmd: "john --show shadow.txt",
+            out: `wallyson:Senha@123:1000:1000:Wallyson Lopes,,,:/home/wallyson:/usr/bin/zsh
 
-# Ver senhas já quebradas
-john hashes.txt --show
-
-# Quebrar usando regras (mais variações)
-john hashes.txt --wordlist=rockyou.txt --rules=best64
-john hashes.txt --wordlist=rockyou.txt --rules=jumbo`} />
-
-      <h2>Identificar e especificar formato</h2>
-      <CodeBlock language="bash" code={`# John detecta automaticamente, ou especifique:
-john hashes.txt --format=md5crypt         # Linux MD5
-john hashes.txt --format=sha512crypt      # Linux SHA-512
-john hashes.txt --format=bcrypt           # bcrypt
-john hashes.txt --format=NT              # Windows NTLM
-john hashes.txt --format=LM              # Windows LM
-john hashes.txt --format=sha256          # SHA-256
-john hashes.txt --format=raw-md5         # MD5 puro
-john hashes.txt --format=nt              # Windows Net NTLM
-
-# Listar todos os formatos suportados
-john --list=formats
-john --list=formats | grep -i md5`} />
-
-      <h2>Extratores de hash (ferramentas *2john)</h2>
-      <p>
-        O John inclui utilitários para extrair hashes de vários tipos de arquivo:
-      </p>
-      <CodeBlock language="bash" code={`# ZIP protegido por senha
-zip2john arquivo.zip > zip_hash.txt
-john zip_hash.txt --wordlist=rockyou.txt
-
-# RAR protegido
-rar2john arquivo.rar > rar_hash.txt
-john rar_hash.txt --wordlist=rockyou.txt
-
-# PDF protegido
-pdf2john arquivo.pdf > pdf_hash.txt
-john pdf_hash.txt --wordlist=rockyou.txt
-
-# SSH key com passphrase
-ssh2john id_rsa > ssh_hash.txt
-john ssh_hash.txt --wordlist=rockyou.txt
-
-# KeePass (banco de senhas)
-keepass2john banco.kdbx > keepass_hash.txt
-john keepass_hash.txt --wordlist=rockyou.txt
-
-# TrueCrypt/VeraCrypt
-tcpdump2john volume.tc > tc_hash.txt
-
-# Microsoft Word/Excel
-office2john documento.docx > office_hash.txt
-john office_hash.txt --wordlist=rockyou.txt`} />
+1 password hash cracked, 1 left`,
+            outType: "info",
+          },
+        ]}
+      />
 
       <h2>Modos de ataque</h2>
-      <CodeBlock language="bash" code={`# 1. Wordlist (dicionário)
-john hashes.txt --wordlist=/usr/share/wordlists/rockyou.txt
+      <CommandTable
+        title="--mode / --rules / --incremental"
+        variations={[
+          { cmd: "(default sem flag)", desc: "Single (usa GECOS/login como senha) → wordlist.list → incremental.", output: "Bom para 'tudo de uma vez'." },
+          { cmd: "--wordlist=lista.txt", desc: "Só wordlist.", output: "Mais comum em CTF." },
+          { cmd: "--wordlist=lista.txt --rules=Best64", desc: "Wordlist + mutação (l33t, append digits).", output: "12-15x mais coverage." },
+          { cmd: "--wordlist=lista.txt --rules=All", desc: "Aplica TODAS as regras (lento).", output: "Use quando wordlist for pequena." },
+          { cmd: "--incremental=Lower", desc: "Brute force só letras minúsculas.", output: "Combinatório." },
+          { cmd: "--incremental=Alnum", desc: "Letras + dígitos.", output: "Próximo passo." },
+          { cmd: "--mask=?l?l?l?d?d?d", desc: "Máscara estrutural (3 letras + 3 dígitos).", output: "Quando você sabe o formato." },
+          { cmd: "--single", desc: "Tenta variações do username/GECOS.", output: "wallyson → Wallyson, wallyson123, wallyson!." },
+          { cmd: "--show", desc: "Mostra senhas já crackeadas.", output: "Não recracka, lê do pot file." },
+          { cmd: "--show=left", desc: "Mostra hashes ainda NÃO crackeados.", output: "Para continuar trabalhando neles." },
+        ]}
+      />
 
-# 2. Wordlist + regras (mutações)
-john hashes.txt --wordlist=rockyou.txt --rules
+      <h2>Regras (mutações)</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "john --list=rules | head -10",
+            out: `Single, Wordlist, Extra, NT, Jumbo, KoreLogic, Best64, T0XlC, T0XlCv1, OneRuleToRuleThemAll,
+SpiderLab, hashcat, dive, OneRuleToRuleThemAllRules, leetspeak, append_digit_3, ...`,
+            outType: "info",
+          },
+          {
+            comment: "Best64 é um clássico (64 regras curadas)",
+            cmd: "john --wordlist=top1000.txt --rules=Best64 hashes.txt",
+            out: "(testa cada palavra com 64 mutações: l33t, capitalize, append digits, etc.)",
+            outType: "muted",
+          },
+          {
+            comment: "OneRuleToRuleThemAll — 52k regras, mais coverage",
+            cmd: "john --wordlist=top1000.txt --rules=OneRuleToRuleThemAll hashes.txt",
+            out: "(extremamente lento mas pega coisas exóticas)",
+            outType: "warning",
+          },
+        ]}
+      />
 
-# 3. Incremental (brute force total — muito lento)
-john hashes.txt --incremental
+      <h3>Regras customizadas</h3>
+      <CodeBlock
+        language="ini"
+        title="/etc/john/john.conf — adicionar regras minhas"
+        code={`[List.Rules:Wallyson]
+# capitaliza primeira letra + append 1 dígito
+c $0
+c $1
+c $2
+c $3
+c $4
+c $5
+c $6
+c $7
+c $8
+c $9
 
-# 4. Incremental apenas dígitos
-john hashes.txt --incremental=digits
+# leetspeak básico
+sa@
+se3
+si1
+so0
+sl1
 
-# 5. Incremental alfanumérico
-john hashes.txt --incremental=alnum
+# append dígitos da virada de ano
+$2 $0 $2 $4
+$2 $0 $2 $5
+$2 $0 $2 $6
+$! $0 $!`}
+      />
 
-# 6. Modo "single" (usa info do arquivo passwd)
-john hashes.txt --single
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "john --wordlist=base.txt --rules=Wallyson hashes.txt",
+            out: "(usa as suas regras)",
+            outType: "default",
+          },
+        ]}
+      />
 
-# Sessão nomeada (pausar e retomar)
-john hashes.txt --session=crack1
-john --restore=crack1`} />
+      <h2>Hashes específicos</h2>
+      <CommandTable
+        title="Format hint (--format=...)"
+        variations={[
+          { cmd: "--format=raw-md5", desc: "MD5 puro (sem salt).", output: "5f4dcc3b5aa765d61d8327deb882cf99 = 'password'" },
+          { cmd: "--format=raw-sha1", desc: "SHA-1 puro.", output: "Útil para tokens." },
+          { cmd: "--format=raw-sha256", desc: "SHA-256 puro.", output: "Pra hashes de API." },
+          { cmd: "--format=md5crypt", desc: "$1$ Linux (MD5 + salt).", output: "Antigo /etc/shadow." },
+          { cmd: "--format=sha512crypt", desc: "$6$ Linux.", output: "Padrão antes do yescrypt." },
+          { cmd: "--format=yescrypt", desc: "$y$ Linux atual.", output: "Padrão Debian/Kali atual." },
+          { cmd: "--format=bcrypt", desc: "$2y$ ou $2a$ (hash de senhas web).", output: "Lento de proposito." },
+          { cmd: "--format=NT", desc: "NTLM (Windows).", output: "32 chars hex." },
+          { cmd: "--format=netntlmv2", desc: "NetNTLMv2 (Responder/SMB challenge).", output: "Capturado em ataques na rede." },
+          { cmd: "--format=krb5tgs", desc: "Kerberoasted ticket.", output: "$krb5tgs$23$*user$DOMAIN$..." },
+          { cmd: "--format=krb5asrep", desc: "AS-REP roastable.", output: "$krb5asrep$..." },
+          { cmd: "--format=zip", desc: "ZIP cifrado.", output: "Use zip2john primeiro." },
+          { cmd: "--format=rar", desc: "RAR cifrado.", output: "Use rar2john primeiro." },
+          { cmd: "--format=PDF", desc: "PDF protegido.", output: "Use pdf2john.pl primeiro." },
+        ]}
+      />
 
-      <h2>Trabalhando com hashes NTLM (Windows)</h2>
-      <CodeBlock language="bash" code={`# Hashes NTLM do Windows (ex: obtidos via Mimikatz ou secretsdump)
-# Formato típico: usuario:RID:LMHASH:NTHASH:::
-# admin:1001:aad3b435b51404eeaad3b435b51404ee:8846f7eaee8fb117ad06bdd830b7586c:::
+      <h2>Conversores *2john</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "zip2john arquivo_secreto.zip > zip.hash",
+            out: `arquivo_secreto.zip:$pkzip2$1*1*2*0*40*32*abc...:::::arquivo_secreto.zip`,
+            outType: "info",
+          },
+          {
+            cmd: "john --wordlist=/usr/share/wordlists/rockyou.txt zip.hash",
+            out: `Using default input encoding: UTF-8
+Loaded 1 password hash (PKZIP [32/64])
+Will run 8 OpenMP threads
 
-# Extrair só os hashes NT para um arquivo
-cat ntlm_hashes.txt | awk -F: '{print $4}' > nt_only.txt
+senha2024        (arquivo_secreto.zip)
+1g 0:00:00:00 DONE (2026-04-03 14:34)`,
+            outType: "success",
+          },
+          {
+            cmd: "rar2john arquivo.rar > rar.hash",
+            out: "(formato $RAR3$* ou $RAR5$*)",
+            outType: "muted",
+          },
+          {
+            cmd: "/usr/share/john/pdf2john.pl protegido.pdf > pdf.hash",
+            out: "protegido.pdf:$pdf$2*3*128*-1028*1*16*abc...",
+            outType: "muted",
+          },
+          {
+            cmd: "ssh2john ~/.ssh/id_rsa > ssh.hash && john --wordlist=top10k.txt ssh.hash",
+            out: `Cost 1 (KDF/cipher) is 1 (aes-128-cbc) for all loaded hashes
+minha_senha_ssh   (id_rsa)
+1g 0:00:00:01 DONE`,
+            outType: "warning",
+          },
+        ]}
+      />
 
-# Quebrar NTLM
-john ntlm_hashes.txt --format=NT --wordlist=rockyou.txt
+      <h2>Sessions e resume</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "salvar progresso com --session",
+            cmd: "john --session=lab1 --wordlist=rockyou.txt hashes.txt",
+            out: `(running. Ctrl+C interrompe — mas estado salvo)`,
+            outType: "muted",
+          },
+          {
+            cmd: "john --status=lab1",
+            out: `0g 0:00:01:23  3/3 0g/s 14823p/s 14823c/s 14823C/s 12345..senha999`,
+            outType: "info",
+          },
+          {
+            cmd: "john --restore=lab1",
+            out: "(continua de onde parou)",
+            outType: "default",
+          },
+        ]}
+      />
 
-# Com hashcat (GPU — muito mais rápido):
-hashcat -m 1000 ntlm_hashes.txt rockyou.txt`} />
+      <h2>Pot file</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "cat ~/.john/john.pot",
+            out: `$y$j9T$Z6F8pQa.../...:Senha@123
+$pkzip2$1*...:senha2024
+$ssh2$2,16$...:minha_senha_ssh`,
+            outType: "info",
+          },
+          {
+            comment: "limpar pot e recomeçar",
+            cmd: "rm ~/.john/john.pot",
+            out: "(silencioso. cuidado: perde tudo o que já foi crackeado)",
+            outType: "warning",
+          },
+        ]}
+      />
 
-      <AlertBox type="success" title="John vs Hashcat">
-        O John é mais simples e ótimo para hashes de arquivos (zip, ssh, pdf). 
-        Para hashes de senhas em volume (NTLM, bcrypt), o <strong>Hashcat com GPU</strong> é muito mais rápido.
+      <PracticeBox
+        title="Rachar um ZIP protegido em laboratório"
+        goal="Gerar um zip com senha fraca, extrair o hash, crackear com john."
+        steps={[
+          "Crie um arquivo qualquer.",
+          "Empacote em zip com senha 'admin123' (do top100).",
+          "Extraia o hash com zip2john.",
+          "Use john com rockyou.",
+        ]}
+        command={`echo "conteudo secreto" > segredo.txt
+zip -e -P 'admin123' arquivo.zip segredo.txt
+zip2john arquivo.zip > zip.hash
+john --wordlist=/usr/share/wordlists/rockyou.txt zip.hash
+john --show zip.hash`}
+        expected={`Loaded 1 password hash (PKZIP [32/64])
+admin123        (arquivo.zip)
+1g 0:00:00:00 DONE
+
+arquivo.zip:admin123
+
+1 password hash cracked, 0 left`}
+        verify="O comando '--show' deve mostrar a senha crackeada."
+      />
+
+      <AlertBox type="info" title="John é melhor para diversidade; Hashcat para velocidade">
+        John tem mais formatos suportados (ZIP, PDF, KeePass, ASR-REP, etc) e regras avançadas.
+        <strong> Hashcat</strong> é melhor quando você precisa de GPU brutal (NTLM, bcrypt em larga escala).
+        Use os dois — um pot file pode até ser convertido entre eles.
       </AlertBox>
     </PageContainer>
   );

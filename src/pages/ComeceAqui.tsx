@@ -1,353 +1,556 @@
 import { Link } from "wouter";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { AlertBox } from "@/components/ui/AlertBox";
-import { CodeBlock } from "@/components/ui/CodeBlock";
+import { CommandTable } from "@/components/ui/CommandTable";
+import { OutputBlock } from "@/components/ui/OutputBlock";
 import { PracticeBox } from "@/components/ui/PracticeBox";
-import { ArrowRight, ShieldAlert } from "lucide-react";
+import { Terminal } from "@/components/ui/Terminal";
+import { ArrowRight } from "lucide-react";
 
 export default function ComeceAqui() {
   return (
     <PageContainer
       title="Comece Aqui — do Zero Absoluto"
-      subtitle="Você nunca abriu um terminal? Perfeito. Esta página é o seu primeiro passo. Não pula etapas, não exige conhecimento prévio."
+      subtitle="Você nunca abriu um terminal? Perfeito. Esta é a sua porta de entrada para o mundo do Kali Linux e da segurança ofensiva — sem pular etapas, sem exigir conhecimento prévio."
       difficulty="iniciante"
-      timeToRead="12 min"
+      timeToRead="14 min"
+      prompt="intro/comece-aqui"
     >
       <AlertBox type="danger" title="Antes de tudo: leia o Aviso Legal">
-        Este guia ensina técnicas reais de segurança ofensiva. Usar essas
-        técnicas fora de um ambiente autorizado é <strong>crime no Brasil</strong>
-        {" "}(Lei 12.737/2012, Lei Carolina Dieckmann). Antes de avançar, leia o
-        capítulo{" "}
+        Este guia ensina técnicas reais de segurança ofensiva. Usar essas técnicas
+        fora de um ambiente autorizado é <strong>crime no Brasil</strong> (Lei
+        12.737/2012, conhecida como Lei Carolina Dieckmann, e Lei 14.155/2021).
+        Antes de avançar, leia o capítulo{" "}
         <Link href="/aviso-legal">
           <a className="underline font-semibold">Aviso Legal &amp; Ética</a>
         </Link>
         . É curto, mas obrigatório.
       </AlertBox>
 
-      <h2>1. O que é o terminal (e por que ele importa)</h2>
+      <h2>Quem é o Wallyson — e por que esse guia existe</h2>
+      <p>
+        Oi. Eu sou o <strong>Wallyson</strong>, dev brasileiro, e venho usando
+        Linux há mais de uma década. Comecei como muita gente: medo de quebrar
+        o sistema, traumatizado pelas telas pretas dos filmes, achando que
+        "hacker" era coisa de gênio. <strong>Não é.</strong> É método, repetição
+        e curiosidade.
+      </p>
+      <p>
+        Esse guia é o material que eu queria ter tido quando comecei: explicações
+        em <strong>português claro</strong>, exemplos com <strong>IPs e nomes
+        brasileiros</strong> (empresa.com.br, ana.silva, joao.lopes…), e cada
+        comando mostrando <strong>exatamente o que aparece na tela</strong> —
+        nada de "rode isso aqui e descubra sozinho".
+      </p>
+
+      <OutputBlock label="o que esse guia NÃO é" type="muted">
+{`✗ Não é um curso de "vire pentester em 7 dias"
+✗ Não é receita de bolo para invadir o ex
+✗ Não é dump de comando sem contexto
+✗ Não é tradução automática do man page
+
+✓ É um caminho linear: zero → terminal → redes → recon → exploração
+✓ É baseado em LABS — você executa, não só lê
+✓ É focado em CARREIRA: pentest profissional, bug bounty, blue team
+✓ É opinativo: indico O QUE usar e POR QUÊ, não 50 ferramentas equivalentes`}
+      </OutputBlock>
+
+      <h2>O que você vai aprender (mapa do guia)</h2>
+      <p>
+        O guia está dividido em <strong>blocos progressivos</strong>. Cada bloco
+        depende do anterior — não pula. Estimativa total: 60–90 horas de estudo
+        ativo (ler + executar + repetir).
+      </p>
+
+      <CommandTable
+        title="Trilha recomendada (do iniciante ao avançado)"
+        variations={[
+          {
+            cmd: "1. Fundamentos",
+            desc: "Terminal, filesystem, usuários, permissões, redes, serviços.",
+            output: "20-25h. Base obrigatória. Sem isso, nada faz sentido depois.",
+          },
+          {
+            cmd: "2. Ferramentas core",
+            desc: "Nmap, Hydra, John, Hashcat, Metasploit, Burp, Wireshark.",
+            output: "15-20h. As 'mãos' do pentester. Use em cada lab.",
+          },
+          {
+            cmd: "3. Recon & OSINT",
+            desc: "TheHarvester, Maltego, Shodan, Recon-ng, Google Dorks.",
+            output: "8-10h. Antes de atacar, você precisa saber QUEM é o alvo.",
+          },
+          {
+            cmd: "4. Web pentest",
+            desc: "OWASP Top 10, SQLMap, XSS, CSRF, SSRF, LFI/RFI, ZAP.",
+            output: "15-20h. Onde está 80% do bug bounty hoje.",
+          },
+          {
+            cmd: "5. Redes & MITM",
+            desc: "ARP spoofing, Ettercap, Responder, Aircrack, Bluetooth.",
+            output: "10h. Atacar o cabo/Wi-Fi/sinal antes do app.",
+          },
+          {
+            cmd: "6. Active Directory",
+            desc: "Impacket, BloodHound, Kerberoasting, CrackMapExec.",
+            output: "12-15h. 90% das empresas brasileiras rodam AD.",
+          },
+          {
+            cmd: "7. Pós-exploração",
+            desc: "Privesc Linux/Windows, túneis SSH, proxychains, persistência.",
+            output: "10h. Entrou? Agora vira root e mantém acesso.",
+          },
+          {
+            cmd: "8. Forense & relatório",
+            desc: "Autopsy, Volatility, anti-forense, redação de laudo.",
+            output: "5-8h. O cliente paga pelo PDF, não pelo shell.",
+          },
+        ]}
+      />
+
+      <h2>O que você precisa antes de começar</h2>
+      <CommandTable
+        title="Pré-requisitos"
+        variations={[
+          {
+            cmd: "Computador com 8GB+ RAM",
+            desc: "Pode ser laptop antigo. Kali em VM precisa de 4GB livres.",
+            output: "Se tem 4GB total, dá. Lento, mas dá.",
+          },
+          {
+            cmd: "20GB de disco livre",
+            desc: "Para a VM do Kali + wordlists + screenshots de lab.",
+            output: "Wordlists boas (rockyou.txt) sozinhas pesam 130MB.",
+          },
+          {
+            cmd: "Internet estável",
+            desc: "Para baixar imagem do Kali (~4GB) e atualizações de pacote.",
+            output: "Banda larga residencial brasileira já basta.",
+          },
+          {
+            cmd: "Inglês básico de leitura",
+            desc: "Mensagens de erro vêm em inglês. man pages vêm em inglês.",
+            output: "Não precisa falar — só conseguir ler com Google Tradutor do lado.",
+          },
+          {
+            cmd: "Paciência",
+            desc: "Vai dar erro. Vai travar. Vai precisar reinstalar.",
+            output: "É parte do jogo. Quem não erra não aprende terminal.",
+          },
+        ]}
+      />
+
+      <AlertBox type="info" title="Não tem PC potente?">
+        Vai de <strong>Kali em USB live</strong> (boota direto do pendrive, não
+        precisa instalar) ou usa o <strong>Kali Linux NetHunter no Android</strong>{" "}
+        (desempenho limitado mas funciona). Detalhes em{" "}
+        <Link href="/instalacao">
+          <a className="underline">Instalação</a>
+        </Link>{" "}
+        e{" "}
+        <Link href="/nethunter">
+          <a className="underline">NetHunter</a>
+        </Link>
+        .
+      </AlertBox>
+
+      <h2>O que é o terminal (e por que ele importa)</h2>
       <p>
         O <strong>terminal</strong> (também chamado de "shell", "console" ou
-        "linha de comando") é um programa onde você escreve <em>comandos</em>{" "}
-        e o computador responde com texto. É como conversar com o sistema
-        operacional sem usar o mouse.
+        "linha de comando") é um programa onde você digita <em>comandos</em> e o
+        computador responde com texto. É como conversar com o sistema operacional
+        sem usar o mouse.
       </p>
       <p>
-        No Windows existe o <code>CMD</code> e o <code>PowerShell</code>. No
-        Mac e no Linux existe o <strong>Bash</strong> ou o <strong>Zsh</strong>.
-        No Kali Linux, o padrão é o <strong>Zsh</strong> (mas a maioria dos
+        No Windows existe o <code>CMD</code> e o <code>PowerShell</code>. No Mac
+        e no Linux existe o <strong>Bash</strong> ou o <strong>Zsh</strong>. No
+        Kali Linux, o padrão é o <strong>Zsh</strong> (mas a maioria dos
         comandos é igual ao Bash).
       </p>
-
       <p>
         <strong>Por que profissionais de segurança vivem no terminal?</strong>{" "}
-        Porque quase toda ferramenta séria do Kali (Nmap, Metasploit, Hydra,
-        SQLMap, etc.) só funciona por linha de comando. Aprender o terminal
-        não é opcional — é o alicerce de tudo o que vem depois.
+        Porque quase toda ferramenta séria do Kali — Nmap, Metasploit, Hydra,
+        SQLMap, CrackMapExec — só funciona por linha de comando. Aprender o
+        terminal não é opcional: é o alicerce de tudo o que vem depois.
       </p>
 
-      <h2>2. Como abrir o terminal no Kali</h2>
-      <p>Você tem três caminhos:</p>
-      <ul>
-        <li>
-          <strong>Atalho do teclado:</strong> pressione{" "}
-          <code>Ctrl</code> + <code>Alt</code> + <code>T</code>.
-        </li>
-        <li>
-          <strong>Ícone na barra superior:</strong> procure o ícone preto com
-          um <code>$</code> ou <code>{">_"}</code>.
-        </li>
-        <li>
-          <strong>Menu de aplicativos:</strong> clique no menu do Kali e
-          procure "Terminal" ou "QTerminal".
-        </li>
-      </ul>
-      <p>
-        Quando abrir, vai aparecer uma janela preta (ou colorida) com algo
-        parecido com isso:
-      </p>
-      <pre className="text-sm font-mono bg-black/60 text-green-400 p-4 rounded-lg overflow-x-auto">
-{`┌──(kali㉿kali)-[~]
-└─$ `}
-      </pre>
+      <h2>Anatomia do prompt do Kali</h2>
+      <OutputBlock label="prompt padrão do Kali Zsh" type="info">
+{`┌──(wallyson㉿kali)-[~]
+└─$ 
 
-      <h2>3. Anatomia do prompt — leia antes de digitar</h2>
-      <p>
-        Aquela linha esquisita que aparece é chamada de <strong>prompt</strong>.
-        Cada parte tem significado:
-      </p>
+   wallyson  → seu nome de usuário (quem está logado)
+   ㉿        → separador decorativo (Kali usa esse caractere)
+   kali      → nome do computador (hostname)
+   [~]       → diretório onde você está agora (~ = sua pasta pessoal)
+   $         → você é usuário comum
+   #         → se aparecer #, você é root (administrador) — CUIDADO`}
+      </OutputBlock>
 
-      <div className="my-6 bg-card border border-border rounded-xl p-5 space-y-3">
-        <div className="font-mono text-sm bg-black/40 text-green-400 p-3 rounded">
-          kali@kali:~$
-        </div>
-        <ul className="text-sm space-y-2 m-0">
-          <li>
-            <code className="text-primary">kali</code> →{" "}
-            <strong>seu nome de usuário</strong> (quem está logado).
-          </li>
-          <li>
-            <code className="text-primary">@</code> → separador.
-          </li>
-          <li>
-            <code className="text-primary">kali</code> (depois do @) →{" "}
-            <strong>nome do computador</strong> (hostname).
-          </li>
-          <li>
-            <code className="text-primary">:</code> → separador.
-          </li>
-          <li>
-            <code className="text-primary">~</code> →{" "}
-            <strong>diretório onde você está agora</strong>. O caractere{" "}
-            <code>~</code> é um atalho para "minha pasta pessoal" (em geral{" "}
-            <code>/home/kali</code>).
-          </li>
-          <li>
-            <code className="text-primary">$</code> →{" "}
-            <strong>você é um usuário comum</strong>. Se aparecer{" "}
-            <code>#</code> no lugar, você é o <strong>root</strong>{" "}
-            (administrador) — tome muito cuidado.
-          </li>
-        </ul>
-      </div>
-
-      <AlertBox type="info" title="Cuidado com $ vs #">
-        Se você ver <code>#</code>, você está rodando como <strong>root</strong>.
-        Root pode apagar o sistema inteiro com um comando errado. Use{" "}
-        <code>sudo</code> apenas quando precisar, em vez de logar como root.
+      <AlertBox type="warning" title="Cuidado com $ vs #">
+        Se o prompt mostrar <code>#</code>, você está rodando como{" "}
+        <strong>root</strong>. Root pode apagar o sistema inteiro com um
+        comando errado. Use <code>sudo</code> apenas quando precisar, em vez de
+        logar como root o tempo todo.
       </AlertBox>
 
-      <h2>4. As 5 regras de ouro do terminal</h2>
-      <ol>
-        <li>
-          <strong>Você só pode digitar depois do prompt.</strong> Tudo o que
-          aparece antes do <code>$</code> ou <code>#</code> é informativo.
-        </li>
-        <li>
-          <strong>Pressione Enter para executar.</strong> O comando não roda
-          até você apertar <code>Enter</code>.
-        </li>
-        <li>
-          <strong>Diferencia maiúsculas/minúsculas.</strong>{" "}
-          <code>LS</code> não é a mesma coisa que <code>ls</code>. Quase tudo é
-          minúsculo no Linux.
-        </li>
-        <li>
-          <strong>Nada de erro = sucesso.</strong> Comandos bem-sucedidos
-          frequentemente não imprimem nada. Silêncio é boa notícia.
-        </li>
-        <li>
-          <strong>Use Tab para autocompletar e ↑/↓ para o histórico.</strong>{" "}
-          Isso vai te economizar horas.
-        </li>
-      </ol>
-
-      <h2>5. Seu primeiro comando: descobrindo quem você é</h2>
+      <h2>Seu primeiro comando — quem sou eu, onde estou</h2>
       <p>
-        Vamos começar com o comando mais inofensivo que existe:{" "}
-        <code>whoami</code> ("quem sou eu"). Ele só imprime o nome do usuário
-        logado.
+        Vamos começar pelo mais inofensivo. Abra o terminal (
+        <code>Ctrl + Alt + T</code>) e execute:
       </p>
 
-      <PracticeBox
-        title="1 — whoami, pwd, date"
-        goal="Executar três comandos seguros e entender a saída de cada um."
-        steps={[
-          "Abra o terminal (Ctrl + Alt + T).",
-          "Digite whoami e pressione Enter.",
-          "Digite pwd e pressione Enter.",
-          "Digite date e pressione Enter.",
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "1) descobrir o nome de usuário logado",
+            cmd: "whoami",
+            out: "wallyson",
+            outType: "info",
+          },
+          {
+            comment: "2) descobrir onde você está no filesystem",
+            cmd: "pwd",
+            out: "/home/wallyson",
+            outType: "info",
+          },
+          {
+            comment: "3) data e hora do sistema (pega timezone do Brasil)",
+            cmd: "date",
+            out: "Sex 25 Abr 2026 15:42:08 -03",
+            outType: "info",
+          },
+          {
+            comment: "4) versão completa do kernel + arquitetura",
+            cmd: "uname -a",
+            out: "Linux kali 6.10.0-kali3-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.10.7-1kali1 (2026-09-15) x86_64 GNU/Linux",
+            outType: "default",
+          },
+          {
+            comment: "5) versão da distro (vai dizer 'Kali GNU/Linux Rolling')",
+            cmd: "cat /etc/os-release | head -5",
+            out: `PRETTY_NAME="Kali GNU/Linux Rolling"
+NAME="Kali GNU/Linux"
+VERSION="2026.1"
+VERSION_ID="2026.1"
+VERSION_CODENAME="kali-rolling"`,
+            outType: "muted",
+          },
+          {
+            comment: "6) há quanto tempo a maquina está ligada + load",
+            cmd: "uptime",
+            out: " 15:43:22 up  1:02,  1 user,  load average: 0.18, 0.12, 0.10",
+            outType: "default",
+          },
         ]}
-        command={`whoami
-pwd
-date`}
-        expected={`kali
-/home/kali
-Sex 25 Abr 2026 15:42:08 -03`}
-        verify="Você viu três linhas de saída diferentes, uma para cada comando, e o prompt voltou após cada execução."
       />
 
       <p>
-        <strong>O que cada comando fez:</strong>
+        <strong>O que aconteceu aí em cima:</strong> 6 comandos diferentes, e
+        nenhum deles "fez" nada destrutivo. Eles só <em>perguntaram</em> coisas
+        ao sistema. Isso é metade do trabalho de qualquer pentest:{" "}
+        <strong>perguntar antes de agir</strong>.
       </p>
-      <ul>
-        <li>
-          <code>whoami</code> mostrou o seu nome de usuário —{" "}
-          <strong>kali</strong>.
-        </li>
-        <li>
-          <code>pwd</code> ("print working directory") mostrou{" "}
-          <strong>onde você está agora</strong>. Você está em{" "}
-          <code>/home/kali</code>, que é a sua pasta pessoal.
-        </li>
-        <li>
-          <code>date</code> mostrou data e hora do sistema.
-        </li>
-      </ul>
 
       <AlertBox type="success" title="Você acabou de usar o terminal">
-        Parabéns. Esses três comandos já te ensinaram três coisas: identidade
-        (quem você é), localização (onde você está) e estado (que horas são).
-        Toda investigação em segurança começa com essas três perguntas.
+        Esses comandos te ensinaram três perguntas universais que toda
+        investigação em segurança começa fazendo: <strong>quem sou eu?</strong>{" "}
+        (whoami), <strong>onde estou?</strong> (pwd), <strong>o que é essa
+        máquina?</strong> (uname/os-release). Decora esse padrão.
       </AlertBox>
 
-      <h2>6. Mais comandos úteis e inofensivos</h2>
-      <CodeBlock
-        language="bash"
-        code={`# Versão e arquitetura do sistema
-uname -a
-
-# Informações da distribuição (Kali, Debian, etc.)
-cat /etc/os-release
-
-# Quantos usuários estão logados agora
-who
-
-# Há quanto tempo o sistema está ligado
-uptime
-
-# Calendário do mês atual
-cal
-
-# Limpar a tela (também: Ctrl + L)
-clear`}
-      />
-
-      <PracticeBox
-        title="2 — Inspecione seu sistema"
-        goal="Coletar informações básicas do seu próprio sistema. É a primeira coisa que se faz em qualquer máquina nova."
-        steps={[
-          "Execute uname -a — anote o nome do kernel.",
-          "Execute cat /etc/os-release — anote a versão do Kali.",
-          "Execute uptime — anote há quanto tempo a máquina está ligada.",
+      <h2>As 5 regras de ouro do terminal</h2>
+      <CommandTable
+        title="Leia, releia, decora"
+        variations={[
+          {
+            cmd: "1. Só digite depois do prompt",
+            desc: "Tudo que vem antes do $ ou # é informativo, não é para copiar.",
+            output: "Iniciante copia '└─$ ls' inteiro e pergunta por que deu erro.",
+          },
+          {
+            cmd: "2. Enter executa",
+            desc: "O comando não roda até apertar Enter. Pode editar antes à vontade.",
+            output: "Use Home/End/setas para mover o cursor na linha.",
+          },
+          {
+            cmd: "3. Diferencia maiúsc/minúsc",
+            desc: "LS ≠ ls. Quase tudo no Linux é minúsculo.",
+            output: "'LS' → 'command not found'. 'ls' → lista arquivos.",
+          },
+          {
+            cmd: "4. Sem erro = sucesso",
+            desc: "Comandos bem sucedidos frequentemente NÃO imprimem nada.",
+            output: "Silêncio é boa notícia. Mensagem normalmente é problema.",
+          },
+          {
+            cmd: "5. Tab e setas ↑↓",
+            desc: "Tab autocompleta nomes; setas navegam o histórico de comandos.",
+            output: "Vai te economizar centenas de horas em 1 ano de uso.",
+          },
         ]}
-        command={`uname -a
-cat /etc/os-release | head -3
-uptime`}
-        expected={`Linux kali 6.10.0-kali3-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.10.7-1kali1 (2026-09-15) x86_64 GNU/Linux
-PRETTY_NAME="Kali GNU/Linux Rolling"
-NAME="Kali GNU/Linux"
-VERSION_ID="2026.1"
- 15:43:22 up  1:02,  1 user,  load average: 0.18, 0.12, 0.10`}
-        verify="Os três comandos rodaram sem erro e você sabe agora a versão do seu Kali e há quanto tempo a máquina está ligada."
       />
 
-      <h2>7. Onde estou? Para onde posso ir?</h2>
+      <h2>Onde estou? Para onde posso ir?</h2>
       <p>
         O Linux organiza tudo em uma <strong>árvore de diretórios</strong>. A
-        raiz se chama <code>/</code> (apenas a barra). A sua pasta pessoal é{" "}
-        <code>/home/kali</code>. Você pode caminhar por essa árvore com três
-        comandos:
+        raiz se chama <code>/</code> (uma única barra). Sua pasta pessoal é{" "}
+        <code>/home/wallyson</code>. Você navega com três comandos:
       </p>
-      <ul>
-        <li>
-          <code>pwd</code> — mostra onde você está.
-        </li>
-        <li>
-          <code>ls</code> — lista o que tem no diretório atual.
-        </li>
-        <li>
-          <code>cd PASTA</code> — entra na pasta. <code>cd ..</code> sobe um
-          nível. <code>cd ~</code> volta para a sua pasta pessoal. <code>cd -</code>{" "}
-          volta ao último diretório.
-        </li>
-      </ul>
 
-      <PracticeBox
-        title="3 — Caminhe pela árvore de diretórios"
-        goal="Entrar e sair de várias pastas e sempre saber onde está."
-        steps={[
-          "pwd — confirme que está em /home/kali.",
-          "ls — veja o que tem na sua pasta.",
-          "cd / — vá para a raiz.",
-          "ls — veja as pastas principais do sistema.",
-          "cd /etc — entre na pasta de configurações.",
-          "ls — veja quantos arquivos existem ali.",
-          "cd ~ — volte para a sua pasta pessoal.",
-          "pwd — confirme que voltou para /home/kali.",
+      <CommandTable
+        title="Navegação básica"
+        variations={[
+          { cmd: "pwd", desc: "Mostra o diretório onde você está agora.", output: "/home/wallyson" },
+          { cmd: "ls", desc: "Lista o conteúdo do diretório atual.", output: "Desktop  Documents  Downloads  Pictures" },
+          { cmd: "ls -la", desc: "Lista incluindo arquivos ocultos (que começam com '.') e detalhes.", output: "drwxr-xr-x 18 wallyson wallyson 4096 Apr 25 15:42 ." },
+          { cmd: "cd /etc", desc: "Entra na pasta de configurações do sistema.", output: "(silencioso. Use pwd para confirmar.)" },
+          { cmd: "cd ..", desc: "Sobe um nível na árvore (para a pasta pai).", output: "Se estava em /etc/apache2 → vai para /etc." },
+          { cmd: "cd ~", desc: "Volta para sua pasta pessoal (/home/wallyson).", output: "Atalho universal. Funciona de qualquer lugar." },
+          { cmd: "cd -", desc: "Volta para o ÚLTIMO diretório onde você esteve.", output: "Como Alt+Tab entre janelas, mas para pastas." },
         ]}
-        command={`pwd
-ls
-cd /
-ls
-cd /etc
-ls | head -10
-cd ~
-pwd`}
-        expected={`/home/kali
-Desktop  Documents  Downloads  Music  Pictures  Public  Templates  Videos
-bin   dev   home   lib32  libx32  mnt  proc  run   srv  tmp  var
-boot  etc   lib    lib64  media   opt  root  sbin  sys  usr
-NetworkManager  X11  acpi  adduser.conf  alsa  alternatives
-apache2  apparmor  apt  audisp  audit  avahi
-/home/kali`}
-        verify="Você passou por 3 diretórios diferentes (/home/kali → / → /etc → /home/kali) e em cada parada o ls mostrou conteúdo diferente."
       />
 
-      <AlertBox type="info" title="Atalho que vai te salvar: Tab">
-        Não digite nomes de pasta inteiros. Digite as primeiras letras e
-        pressione <code>Tab</code>. O terminal completa para você. Se houver
-        ambiguidade, pressione <code>Tab</code> duas vezes para ver as opções.
-      </AlertBox>
-
-      <h2>8. Como pedir ajuda — você nunca precisa decorar</h2>
+      <h2>Como pedir ajuda — você nunca precisa decorar</h2>
       <p>
         Toda ferramenta séria do Linux tem documentação embutida. Você não
         precisa saber tudo de cor. Você precisa saber{" "}
         <strong>como descobrir</strong>:
       </p>
 
-      <CodeBlock
-        language="bash"
-        code={`# Ajuda rápida (resumida)
-ls --help
-cd --help          # nem sempre funciona, cd é interno do shell
-pwd --help
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "ajuda rápida (resumo das flags)",
+            cmd: "ls --help | head -15",
+            out: `Usage: ls [OPTION]... [FILE]...
+List information about the FILEs (the current directory by default).
 
-# Manual completo (use as setas para rolar, q para sair)
-man ls
-man cd
-man bash
+Mandatory arguments to long options are mandatory for short options too.
+  -a, --all                  do not ignore entries starting with .
+  -A, --almost-all           do not ignore entries starting with . except . and ..
+  -B, --ignore-backups       do not list implied entries ending with ~
+  -c                         with -lt: sort by, and show, ctime
+  -d, --directory            list directories themselves, not their contents
+  -h, --human-readable       with -l and -s, print sizes like 1K 234M 2G
+  -l                         use a long listing format
+  -R, --recursive            list subdirectories recursively
+  -S                         sort by file size, largest first
+  -t                         sort by modification time, newest first`,
+            outType: "muted",
+          },
+          {
+            comment: "manual completo (use as setas para rolar, q para sair)",
+            cmd: "man nmap",
+            out: `NMAP(1)                       Nmap Reference Guide                      NMAP(1)
 
-# Versão simplificada com exemplos (instale antes: sudo apt install tldr)
-tldr ls
-tldr find`}
+NAME
+       nmap - Network exploration tool and security / port scanner
+
+SYNOPSIS
+       nmap [Scan Type...] [Options] {target specification}
+
+DESCRIPTION
+       Nmap ("Network Mapper") is an open source tool for network exploration...
+       
+(use 'q' para sair, '/' para buscar, 'n' para próxima ocorrência)`,
+            outType: "default",
+          },
+          {
+            comment: "tldr — versão simplificada com EXEMPLOS reais",
+            cmd: "sudo apt install -y tldr && tldr nmap",
+            out: `nmap
+
+  Network exploration tool and security / port scanner.
+  More information: https://nmap.org.
+
+  - Scan the top 1000 ports of a host with default options:
+    nmap host
+
+  - Scan all 65535 ports:
+    nmap -p- host
+
+  - Service version + OS detection:
+    sudo nmap -sV -O host
+
+  - Aggressive scan (faster, more noisy):
+    nmap -A host`,
+            outType: "info",
+          },
+        ]}
+      />
+
+      <AlertBox type="info" title="Tab é seu melhor amigo">
+        Não digite nomes inteiros. Digite as primeiras letras e pressione{" "}
+        <code>Tab</code>. O terminal completa pra você. Se houver ambiguidade,
+        pressione <code>Tab</code> duas vezes para ver as opções. Isso vale para
+        comandos, arquivos, pastas e até flags.
+      </AlertBox>
+
+      <h2>Ordem recomendada de leitura</h2>
+      <OutputBlock label="trilha sequencial — siga nessa ordem" type="success">
+{`Semana 1-2  ▸  Aviso Legal → Comece Aqui (você está aqui!)
+            ▸  História do Kali → Instalação → Interface
+            ▸  Terminal → Primeiros Arquivos → Filesystem
+            ▸  Pacotes (apt) → Usuários → Permissões → Serviços
+
+Semana 3-4  ▸  Redes → SSH → Tor → Proxychains
+            ▸  Personalização Setup → Docker no Kali
+
+Semana 5-6  ▸  OSINT → Google Dorks → TheHarvester → Maltego
+            ▸  Shodan → Recon-ng → Nmap (capítulo central!)
+            ▸  Masscan → Whatweb → Nikto
+
+Semana 7-8  ▸  OWASP Top 10 → Burp Suite → ZAP Proxy
+            ▸  SQLMap → XSS Manual → CSRF → SSRF
+            ▸  LFI/RFI → Command Injection → WebShells
+
+Semana 9-10 ▸  Hydra → John → Hashcat → Crunch → Seclists
+            ▸  Metasploit (capítulo grande!) → Msfvenom
+            ▸  Buffer Overflow → CVE Research → Searchsploit
+
+Semana 11-12 ▸ ARP Spoofing → Ettercap → Wireshark
+             ▸ Aircrack → Reaver → Wifiphisher
+             ▸ Bluetooth → Phishing → SET → BeEF
+
+Semana 13-14 ▸ Active Directory:
+             ▸  Enum4linux → Responder → Impacket
+             ▸  CrackMapExec → Kerberoasting → BloodHound
+
+Semana 15-16 ▸ Pós-exploração:
+             ▸  Privesc Linux → Privesc Windows → SSH Tunneling
+             ▸  Netcat → Payload Obfuscation → Post Exploração
+
+Semana 17+   ▸ Especialização — escolha 1:
+             ▸  Forense (Autopsy, Volatility, Anti-forense, Steg)
+             ▸  Mobile Pentest (NetHunter)
+             ▸  API/Cloud Pentest
+             ▸  Reverse Engineering / CTF / Bug Bounty
+
+Sempre       ▸ Relatórios → Metodologia → Referências`}
+      </OutputBlock>
+
+      <h2>Como tirar o máximo desse guia</h2>
+      <CommandTable
+        title="Método de estudo"
+        variations={[
+          {
+            cmd: "Leia → Execute → Quebre",
+            desc: "Não pula a parte de executar. Você só aprende digitando.",
+            output: "Leitura passiva = 10% retenção. Lab ativo = 75%+.",
+          },
+          {
+            cmd: "1 capítulo por dia",
+            desc: "Não tenta engolir 5 ferramentas por noite.",
+            output: "Spaced repetition: 30min/dia > 5h/semana.",
+          },
+          {
+            cmd: "Anote em md",
+            desc: "Mantenha um cheatsheet pessoal com seus comandos preferidos.",
+            output: "Use Obsidian, VS Code ou um arquivo .md no GitHub seu.",
+          },
+          {
+            cmd: "Refaça os labs",
+            desc: "1 vez não basta. Refaça depois de 3 dias e depois de 1 mês.",
+            output: "Memória muscular. Você precisa digitar nmap sem pensar.",
+          },
+          {
+            cmd: "Use ambiente isolado",
+            desc: "Suba VMs vulneráveis (Metasploitable, DVWA, HTB).",
+            output: "Nunca, jamais, em nenhuma hipótese, mire em alvos sem RoE.",
+          },
+        ]}
+      />
+
+      <h2>Onde praticar de forma legal</h2>
+      <CommandTable
+        title="Plataformas para treinar sem virar réu"
+        variations={[
+          { cmd: "TryHackMe", desc: "Trilhas guiadas para iniciante e intermediário.", output: "Plano grátis serve. Pago US$10/mês destrava o que importa." },
+          { cmd: "HackTheBox", desc: "Máquinas reais, mais difíceis. Cenário pro de OSCP.", output: "Tem versão acadêmica e CTF semanal." },
+          { cmd: "OverTheWire", desc: "Wargame clássico para aprender Linux + cripto + binex.", output: "Bandit é OBRIGATÓRIO antes de qualquer outra coisa." },
+          { cmd: "PortSwigger Web Security", desc: "Lab oficial de Web. Grátis. Melhor recurso de OWASP do mundo.", output: "Termina o programa = você está nível pleno em web." },
+          { cmd: "VulnHub", desc: "VMs vulneráveis para baixar e rodar local.", output: "Sem internet, sem custo, sem registro." },
+          { cmd: "DVWA / Metasploitable / OWASP Juice Shop", desc: "Aplicações vulneráveis para subir no seu PC.", output: "Docker em 1 comando: docker run dvwa/dvwa." },
+          { cmd: "Bug Bounty (HackerOne, BugCrowd)", desc: "Empresas pagam para você achar bug — DENTRO do escopo.", output: "Comece pequeno: programas com 'Hall of Fame' antes de cash." },
+        ]}
       />
 
       <PracticeBox
-        title="4 — Use o manual"
-        goal="Descobrir uma flag do ls que você ainda não conhece."
+        title="Lab 0 — Confirme que você consegue executar"
+        goal="Garantir que você abre o terminal, executa 4 comandos sem erro, e entende a saída de cada um. Esse é o teste de pré-aptidão para o resto do guia."
         steps={[
-          "Execute man ls.",
-          "Aperte / e digite size para procurar a palavra 'size'.",
-          "Pressione n para ir para a próxima ocorrência.",
-          "Aperte q para sair.",
-          "Tente usar a flag que você descobriu. Por exemplo: ls -lh.",
+          "Abra o terminal: Ctrl + Alt + T (ou ícone na barra superior).",
+          "Digite whoami e pressione Enter — anote o nome.",
+          "Digite pwd e pressione Enter — anote o caminho.",
+          "Digite uname -r e pressione Enter — anote a versão do kernel.",
+          "Digite history | tail -5 — você verá os 5 últimos comandos digitados (ou seja: você executou pelo menos 4 coisas hoje).",
         ]}
-        verify="Você abriu um manual, navegou nele, saiu sem fechar o terminal, e usou uma nova flag."
+        command={`whoami
+pwd
+uname -r
+history | tail -5`}
+        expected={`wallyson
+/home/wallyson
+6.10.0-kali3-amd64
+  101  whoami
+  102  pwd
+  103  uname -r
+  104  history | tail -5`}
+        verify="Você viu 4 saídas distintas, todas começando com o que você esperava (seu user, sua pasta, versão do kernel, lista do histórico). Se algum comando deu 'command not found', você não está no Kali — confirme que abriu o terminal certo."
       />
 
-      <h2>9. Próximo passo</h2>
-      <p>
-        Você já sabe abrir o terminal, ler o prompt, identificar onde está e
-        navegar. Mas <strong>ainda não criou nenhum arquivo</strong>. E você
-        não pode aprender comandos como <code>cat</code>, <code>less</code> ou{" "}
-        <code>grep</code> sem ter um arquivo seu para testar.
-      </p>
-      <p>
-        Por isso o próximo capítulo é{" "}
-        <Link href="/primeiros-arquivos">
-          <a className="underline font-semibold text-primary">
-            Primeiros Arquivos
-          </a>
-        </Link>
-        : você vai criar, escrever, ler, copiar, mover e apagar arquivos com
-        as próprias mãos. Só depois disso vamos aprofundar no Terminal.
-      </p>
+      <AlertBox type="success" title="Pronto para o próximo passo">
+        Se o lab acima funcionou, você está pronto. Você já sabe abrir o
+        terminal, ler o prompt, identificar onde está e pedir ajuda. Agora vamos
+        criar arquivos com as próprias mãos no próximo capítulo —{" "}
+        <strong>sem isso, não dá pra aprender cat, less, grep, find</strong> e
+        toda a manipulação de texto que você vai usar em pentest todo dia.
+      </AlertBox>
 
-      <div className="mt-8 flex justify-end">
-        <Link href="/primeiros-arquivos">
+      <h2>Próximo passo</h2>
+      <p>
+        Sequência sugerida (clica e segue):
+      </p>
+      <ul>
+        <li>
+          <Link href="/aviso-legal">
+            <a className="underline font-semibold text-primary">Aviso Legal &amp; Ética</a>
+          </Link>{" "}
+          — leia ANTES de qualquer comando ofensivo. Curto e obrigatório.
+        </li>
+        <li>
+          <Link href="/historia">
+            <a className="underline font-semibold text-primary">História do Kali</a>
+          </Link>{" "}
+          — 5 minutos de contexto. Vale.
+        </li>
+        <li>
+          <Link href="/instalacao">
+            <a className="underline font-semibold text-primary">Instalação</a>
+          </Link>{" "}
+          — VirtualBox, VMware, USB live, WSL2 ou bare metal.
+        </li>
+        <li>
+          <Link href="/interface">
+            <a className="underline font-semibold text-primary">Interface</a>
+          </Link>{" "}
+          — passeio pelo XFCE/menu/atalhos.
+        </li>
+        <li>
+          <Link href="/terminal">
+            <a className="underline font-semibold text-primary">Terminal (capítulo profundo)</a>
+          </Link>{" "}
+          — pipes, redirecionamento, jobs, variáveis. Aqui mora o ouro.
+        </li>
+      </ul>
+
+      <div className="mt-10 flex justify-end">
+        <Link href="/aviso-legal">
           <button className="inline-flex items-center gap-2 px-5 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:opacity-90 transition-opacity">
-            Ir para Primeiros Arquivos <ArrowRight className="w-4 h-4" />
+            Ir para Aviso Legal <ArrowRight className="w-4 h-4" />
           </button>
         </Link>
       </div>

