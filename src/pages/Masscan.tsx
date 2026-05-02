@@ -10,9 +10,8 @@ export default function Masscan() {
     <PageContainer
       title="Masscan — varredura em escala de internet"
       subtitle="Sintaxe parecida com nmap, mas com TCP stack próprio: 10 milhões de pacotes/s."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="10 min"
-      prompt="recon/masscan"
     >
       <h2>Por que masscan</h2>
       <p>

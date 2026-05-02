@@ -11,9 +11,8 @@ export default function LfiRfi() {
     <PageContainer
       title="LFI / RFI — Local & Remote File Inclusion"
       subtitle="Ler arquivos do servidor (LFI) ou incluir arquivos remotos (RFI). Caminho clássico até RCE."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="14 min"
-      prompt="web/lfi"
     >
       <h2>O bug</h2>
       <CodeBlock

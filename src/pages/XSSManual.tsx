@@ -11,9 +11,8 @@ export default function XSSManual() {
     <PageContainer
       title="XSS — Cross-Site Scripting (manual)"
       subtitle="Reflected, Stored, DOM-based. Polyglots, bypass de filtros e roubo de sessão."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="18 min"
-      prompt="web/xss"
     >
       <h2>Os 3 tipos de XSS</h2>
       <CommandTable

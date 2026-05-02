@@ -10,9 +10,8 @@ export default function WebShells() {
     <PageContainer
       title="Web Shells — RCE persistente via web"
       subtitle="Quando você consegue subir um arquivo, ele vira sua porta de entrada. Tipos, evasão e detecção."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="13 min"
-      prompt="web/webshells"
     >
       <h2>O conceito</h2>
       <p>

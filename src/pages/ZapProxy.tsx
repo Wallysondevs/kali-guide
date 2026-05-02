@@ -12,7 +12,6 @@ export default function ZapProxy() {
       subtitle="Alternativa gratuita ao Burp Pro: Active Scanner, Spider/Ajax, Fuzzer, automação CLI."
       difficulty="iniciante"
       timeToRead="14 min"
-      prompt="web/zap"
     >
       <h2>Por que ZAP</h2>
       <p>

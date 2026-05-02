@@ -13,7 +13,6 @@ export default function BufferOverflow() {
       subtitle="Stack-based BOF clássico em x86: fuzz → offset → bad chars → JMP ESP → shellcode → SHELL."
       difficulty="avancado"
       timeToRead="20 min"
-      prompt="binary/bof"
     >
       <h2>Por que estudar?</h2>
       <p>

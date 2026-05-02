@@ -1,5 +1,6 @@
 import { PageContainer } from "@/components/layout/PageContainer";
 import { AlertBox } from "@/components/ui/AlertBox";
+import { CodeBlock } from "@/components/ui/CodeBlock";
 import { CommandTable } from "@/components/ui/CommandTable";
 import { OutputBlock } from "@/components/ui/OutputBlock";
 import { PracticeBox } from "@/components/ui/PracticeBox";
@@ -10,9 +11,8 @@ export default function Wifiphisher() {
     <PageContainer
       title="Wifiphisher — Evil Twin + Phishing WiFi"
       subtitle="Sobe AP falso idêntico ao real, força clientes a se associarem e mostra captive portal de phishing."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="13 min"
-      prompt="wireless/wifiphisher"
     >
       <h2>Como funciona</h2>
       <p>

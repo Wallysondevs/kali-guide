@@ -14,7 +14,6 @@ export default function ComeceAqui() {
       subtitle="Você nunca abriu um terminal? Perfeito. Esta é a sua porta de entrada para o mundo do Kali Linux e da segurança ofensiva — sem pular etapas, sem exigir conhecimento prévio."
       difficulty="iniciante"
       timeToRead="14 min"
-      prompt="intro/comece-aqui"
     >
       <AlertBox type="danger" title="Antes de tudo: leia o Aviso Legal">
         Este guia ensina técnicas reais de segurança ofensiva. Usar essas técnicas

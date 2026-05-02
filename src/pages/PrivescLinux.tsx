@@ -11,16 +11,14 @@ export default function PrivescLinux() {
     <PageContainer
       title="PrivEsc — Escalação de privilégio (Linux)"
       subtitle="Você é www-data ou shellguy? Vire root. SUID, sudo NOPASSWD, capabilities, kernel exploits, cron."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="22 min"
-      prompt="post/privesc-linux"
     >
       <h2>Recon obrigatório</h2>
       <Terminal
         user="www-data"
         host="target"
         path="/var/www/html"
-        prompt="$"
         lines={[
           {
             cmd: "id",
@@ -59,7 +57,6 @@ VERSION_ID="22.04"`,
         user="www-data"
         host="target"
         path="/tmp"
-        prompt="$"
         lines={[
           {
             comment: "do atacante: subir um servidor para baixar tools",
@@ -95,7 +92,6 @@ sudo version 1.8.31
         user="www-data"
         host="target"
         path="/tmp"
-        prompt="$"
         lines={[
           {
             cmd: "sudo -l",
@@ -139,7 +135,6 @@ root`,
         user="www-data"
         host="target"
         path="/tmp"
-        prompt="$"
         lines={[
           {
             cmd: "find / -perm -4000 -type f 2>/dev/null",
@@ -171,7 +166,6 @@ uid=33(www-data) gid=33(www-data) euid=0(root) groups=33(www-data)`,
         user="www-data"
         host="target"
         path="/tmp"
-        prompt="$"
         lines={[
           {
             cmd: "getcap -r / 2>/dev/null",
@@ -195,7 +189,6 @@ uid=0(root) gid=33(www-data) groups=33(www-data)`,
         user="www-data"
         host="target"
         path="/tmp"
-        prompt="$"
         lines={[
           {
             cmd: "cat /etc/crontab",
@@ -234,7 +227,6 @@ uid=33(www-data) gid=33(www-data) euid=0(root) egid=0(root) groups=33(www-data)`
         user="www-data"
         host="target"
         path="/tmp"
-        prompt="$"
         lines={[
           {
             comment: "binário SUID que chama 'ps' SEM caminho absoluto",
@@ -268,7 +260,6 @@ uid=33(www-data) euid=0(root)`,
         user="www-data"
         host="target"
         path="/tmp"
-        prompt="$"
         lines={[
           {
             cmd: "uname -r",
@@ -317,7 +308,6 @@ uid=0(root) gid=0(root) groups=0(root)`,
         user="www-data"
         host="target"
         path="/var/www/html"
-        prompt="$"
         lines={[
           {
             cmd: "grep -ri 'password' . 2>/dev/null | head -5",

@@ -189,6 +189,154 @@ const NAVIGATION = [
     ],
   },
   {
+    title: "Pacotes (Profundo)",
+    items: [
+      { path: "/apt", label: "APT internals", icon: Package },
+      { path: "/dpkg", label: "dpkg low-level", icon: Package },
+      { path: "/ppa", label: "Repos & PPA", icon: GitBranch },
+      { path: "/snap-flatpak", label: "Snap & Flatpak", icon: Package },
+      { path: "/appimage", label: "AppImage", icon: Package },
+      { path: "/codigo-fonte", label: "Compilar do source", icon: Code },
+    ],
+  },
+  {
+    title: "Sistema, Kernel & Hardware",
+    items: [
+      { path: "/boot", label: "Boot & GRUB", icon: Zap },
+      { path: "/kernel", label: "Kernel & módulos", icon: Cpu },
+      { path: "/hardware", label: "Hardware (lshw/lspci)", icon: HardDrive },
+      { path: "/compressao", label: "Compressão", icon: Package },
+      { path: "/disco", label: "Diagnóstico de disco", icon: HardDrive },
+      { path: "/particoes", label: "Particionamento", icon: HardDrive },
+    ],
+  },
+  {
+    title: "Storage & Backup",
+    items: [
+      { path: "/lvm", label: "LVM", icon: Layers },
+      { path: "/luks", label: "LUKS (criptografia)", icon: Lock },
+      { path: "/fstab", label: "fstab", icon: FileText },
+      { path: "/backup", label: "Backup (rsync/borg)", icon: HardDrive },
+      { path: "/timeshift", label: "Timeshift", icon: HardDrive },
+    ],
+  },
+  {
+    title: "Processos & Logs",
+    items: [
+      { path: "/processos", label: "Processos", icon: Activity },
+      { path: "/cron", label: "Cron & agendamento", icon: Activity },
+      { path: "/journalctl", label: "journalctl", icon: FileSearch },
+      { path: "/iostat", label: "I/O & monitoring", icon: Activity },
+      { path: "/man-pages", label: "Man pages & help", icon: BookOpen },
+      { path: "/localizacao", label: "Locale & timezone", icon: Globe },
+    ],
+  },
+  {
+    title: "Bash (Shell)",
+    items: [
+      { path: "/shell-bash", label: "Shell Bash", icon: Terminal },
+      { path: "/variaveis-ambiente", label: "Variáveis & PATH", icon: Code },
+      { path: "/aliases", label: "Aliases & funções", icon: Code },
+      { path: "/expansoes-bash", label: "Expansões", icon: Code },
+      { path: "/redirecionamento", label: "Redirecionamento", icon: Terminal },
+      { path: "/bash-avancado", label: "One-liners avançado", icon: Terminal },
+    ],
+  },
+  {
+    title: "Editores & Scripts",
+    items: [
+      { path: "/scripts-bash", label: "Scripts Bash", icon: FileCode },
+      { path: "/zsh", label: "Zsh & OMZ", icon: Terminal },
+      { path: "/vim", label: "Vim", icon: FileCode },
+      { path: "/navegacao", label: "Navegação no shell", icon: FolderOpen },
+      { path: "/manipulacao-arquivos", label: "Manipulação de arquivos", icon: FolderOpen },
+    ],
+  },
+  {
+    title: "Files, Multimedia & GUI",
+    items: [
+      { path: "/visualizacao", label: "Visualizar arquivos", icon: Eye },
+      { path: "/multimedia", label: "Multimedia & exiftool", icon: FileSearch },
+      { path: "/wine", label: "Wine", icon: MonitorSmartphone },
+      { path: "/troubleshooting", label: "Troubleshooting", icon: AlertTriangle },
+      { path: "/ambiente-grafico", label: "Ambiente Gráfico", icon: MonitorSmartphone },
+    ],
+  },
+  {
+    title: "Redes (Profundo)",
+    items: [
+      { path: "/netplan", label: "Netplan & NM", icon: Network },
+      { path: "/dns", label: "DNS", icon: Globe },
+      { path: "/vpn", label: "VPN (OpenVPN/WG)", icon: Shield },
+      { path: "/samba", label: "Samba & SMB", icon: Network },
+    ],
+  },
+  {
+    title: "Containers & Servidores Web",
+    items: [
+      { path: "/docker", label: "Docker", icon: Container },
+      { path: "/docker-compose", label: "Docker Compose", icon: Container },
+      { path: "/kvm", label: "KVM/QEMU/libvirt", icon: Server },
+      { path: "/nginx", label: "Nginx", icon: Server },
+      { path: "/apache", label: "Apache", icon: Server },
+      { path: "/php", label: "PHP", icon: Code },
+    ],
+  },
+  {
+    title: "Bancos & Hardening",
+    items: [
+      { path: "/mysql", label: "MySQL/MariaDB", icon: Database },
+      { path: "/postgresql", label: "PostgreSQL", icon: Database },
+      { path: "/apparmor", label: "AppArmor", icon: Shield },
+      { path: "/fail2ban", label: "Fail2Ban", icon: Shield },
+    ],
+  },
+  {
+    title: "Defensiva & Dev",
+    items: [
+      { path: "/gpg", label: "GPG", icon: Key },
+      { path: "/seguranca", label: "UFW/iptables/sudoers", icon: Shield },
+      { path: "/python", label: "Python", icon: Code },
+      { path: "/nodejs", label: "Node.js", icon: Code },
+      { path: "/git", label: "Git", icon: GitBranch },
+    ],
+  },
+  {
+    title: "Dev Tooling Pentest",
+    items: [
+      { path: "/java", label: "Java (JDK)", icon: Code },
+      { path: "/vscode", label: "VS Code", icon: FileCode },
+      { path: "/ansible", label: "Ansible", icon: Server },
+      { path: "/pwncat", label: "Pwncat-cs", icon: Terminal },
+      { path: "/chisel", label: "Chisel (pivot)", icon: GitBranch },
+    ],
+  },
+  {
+    title: "C2 Frameworks",
+    items: [
+      { path: "/sliver", label: "Sliver C2", icon: Skull },
+      { path: "/havoc", label: "Havoc", icon: Skull },
+      { path: "/mythic", label: "Mythic", icon: Skull },
+    ],
+  },
+  {
+    title: "AD Tooling",
+    items: [
+      { path: "/mimikatz", label: "Mimikatz", icon: Key },
+      { path: "/rubeus", label: "Rubeus", icon: Key },
+      { path: "/sharphound", label: "SharpHound", icon: Crosshair },
+    ],
+  },
+  {
+    title: "Phishing, Fuzzing & Detection",
+    items: [
+      { path: "/evilginx", label: "Evilginx2", icon: Target },
+      { path: "/gophish", label: "Gophish", icon: Target },
+      { path: "/wfuzz", label: "Wfuzz & ffuf", icon: Search },
+      { path: "/atomic-red-team", label: "Atomic Red Team", icon: Swords },
+    ],
+  },
+  {
     title: "Referências & Carreira",
     items: [
       { path: "/cve", label: "Pesquisa de CVEs", icon: AlertTriangle },
@@ -320,7 +468,7 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         {/* Footer estilo prompt */}
         <div className="px-4 py-3 border-t border-white/5 font-mono text-[10px] sticky bottom-0" style={{ background: "hsl(var(--kali-bg-2))" }}>
           <p className="text-[hsl(var(--kali-dim))] m-0 leading-tight">
-            <span className="text-[hsl(var(--kali-green))]">●</span> 90+ tópicos
+            <span className="text-[hsl(var(--kali-green))]">●</span> 160+ tópicos
           </p>
           <p className="text-[hsl(var(--kali-dim))] m-0 leading-tight">
             <span className="text-[hsl(var(--kali-cyan))]">$</span> Pentest Profissional PT-BR

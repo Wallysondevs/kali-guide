@@ -10,9 +10,8 @@ export default function Maltego() {
     <PageContainer
       title="Maltego — visualização gráfica de OSINT"
       subtitle="GUI de investigação que liga entidades (pessoas, domínios, emails, IPs) por transformações."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="11 min"
-      prompt="recon/maltego"
     >
       <h2>Conceitos</h2>
       <p>

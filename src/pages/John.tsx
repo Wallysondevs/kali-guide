@@ -11,9 +11,8 @@ export default function John() {
     <PageContainer
       title="John the Ripper — cracking offline"
       subtitle="Quebra hashes (shadow, NTLM, MD5, bcrypt, Kerberos, ZIP) usando wordlists, regras e bruteforce."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="16 min"
-      prompt="passwords/john"
     >
       <h2>Versão Jumbo (a única que importa)</h2>
       <Terminal

@@ -13,7 +13,6 @@ export default function PersonalizacaoSetup() {
       subtitle="zsh + oh-my-zsh + powerlevel10k, tmux, dotfiles no git, Neovim/LazyVim, Nerd Fonts, temas XFCE, Alacritty/Kitty, Ansible para reprovisionar a máquina em minutos."
       difficulty="iniciante"
       timeToRead="28 min"
-      prompt="setup/dotfiles"
     >
       <AlertBox type="danger" title="Antes de tudo: Kali NÃO é para uso diário">
         Kali é distro de <strong>segurança ofensiva</strong>: roda muita coisa

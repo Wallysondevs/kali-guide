@@ -11,9 +11,8 @@ export default function Forense() {
     <PageContainer
       title="Forense Digital — visão geral"
       subtitle="Cadeia de custódia, imagem bit a bit, hash de integridade, montagem read-only, timeline."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="16 min"
-      prompt="forense/intro"
     >
       <h2>Princípios da cadeia de custódia</h2>
       <ol>

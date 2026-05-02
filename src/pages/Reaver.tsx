@@ -9,9 +9,8 @@ export default function Reaver() {
     <PageContainer
       title="Reaver — WPS PIN brute force"
       subtitle="Quebra a chave WPA2 explorando o PIN de 8 dígitos do WPS (Wi-Fi Protected Setup)."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="11 min"
-      prompt="wireless/reaver"
     >
       <h2>Por que WPS é fraco</h2>
       <p>

@@ -12,7 +12,6 @@ export default function Filesystem() {
       subtitle="Hierarquia padrão do Linux (FHS), navegação, manipulação de arquivos e diretórios."
       difficulty="iniciante"
       timeToRead="14 min"
-      prompt="sistema/filesystem"
     >
       <h2>A árvore do Linux (FHS)</h2>
       <p>

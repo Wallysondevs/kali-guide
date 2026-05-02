@@ -12,7 +12,6 @@ export default function Netcat() {
       subtitle="Listener, banner grabbing, transferência de arquivos, port scan e reverse shells."
       difficulty="iniciante"
       timeToRead="14 min"
-      prompt="recon/netcat"
     >
       <h2>Versões</h2>
       <p>

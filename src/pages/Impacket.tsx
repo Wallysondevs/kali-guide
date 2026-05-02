@@ -10,9 +10,8 @@ export default function Impacket() {
     <PageContainer
       title="Impacket — toolkit Python para Windows/AD"
       subtitle="psexec, smbexec, secretsdump, GetUserSPNs, ntlmrelayx, mssqlclient — o canivete do AD pentest."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="18 min"
-      prompt="ad/impacket"
     >
       <h2>Setup</h2>
       <Terminal
@@ -285,7 +284,6 @@ SQL (ACME\\svc_sql  guest@master)>`,
         user="SQL"
         host="ACME\\svc_sql"
         path="master"
-        prompt=">"
         lines={[
           {
             cmd: "enable_xp_cmdshell",

@@ -13,7 +13,6 @@ export default function PayloadObfuscation() {
       subtitle="msfvenom encoders, Shellter, Veil, packers (UPX/Themida), in-memory loading via memfd_create, AMSI bypass, donut, sgn, loaders em Nim/Rust, Process Hollowing, Direct Syscalls e ETW patching."
       difficulty="avancado"
       timeToRead="32 min"
-      prompt="redteam/evasion"
     >
       <AlertBox type="danger" title="Uso restrito a red team com RoE assinado">
         Toda técnica abaixo só pode ser usada em ambiente próprio (lab) ou em engagement com

@@ -11,7 +11,6 @@ export default function Nikto() {
       subtitle="Varredura clássica de servidores web: arquivos perigosos, configurações default, versões antigas."
       difficulty="iniciante"
       timeToRead="9 min"
-      prompt="web/nikto"
     >
       <h2>O que faz</h2>
       <p>

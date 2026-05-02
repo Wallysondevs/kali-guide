@@ -24,7 +24,6 @@ export default function CTF() {
       subtitle="Como funcionam os desafios, quais categorias existem e como abordar cada uma com ferramentas reais."
       difficulty="intermediario"
       timeToRead="16 min"
-      prompt="ctf"
     >
       <h2>O que é CTF</h2>
       <p>

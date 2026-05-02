@@ -11,9 +11,8 @@ export default function Metasploit() {
     <PageContainer
       title="Metasploit Framework — Exploração"
       subtitle="msfconsole, módulos exploit/auxiliary/post, payloads, sessions, meterpreter, db_*."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="25 min"
-      prompt="exploit/metasploit"
     >
       <h2>Setup</h2>
       <Terminal
@@ -50,7 +49,6 @@ Console  : 6.4.42-dev`,
         user="msf6"
         host=""
         path=""
-        prompt=">"
         lines={[
           {
             cmd: "workspace -a htb_lame",
@@ -99,7 +97,6 @@ host         port  proto  name         state  info
         user="msf6"
         host=""
         path=""
-        prompt=">"
         lines={[
           {
             cmd: "search type:exploit name:samba",
@@ -170,7 +167,6 @@ Payload options (cmd/unix/reverse_netcat):
         user="msf6"
         host="exploit(multi/samba/usermap_script)"
         path=""
-        prompt=">"
         lines={[
           {
             cmd: "set RHOSTS 10.10.10.5",
@@ -230,7 +226,6 @@ lame`,
         user="msf6"
         host=""
         path=""
-        prompt=">"
         lines={[
           {
             comment: "Ctrl+Z para enviar a session ao background",
@@ -295,7 +290,6 @@ meterpreter > `,
         user="msf6"
         host=""
         path=""
-        prompt=">"
         lines={[
           {
             cmd: "use auxiliary/scanner/smb/smb_version",
@@ -366,7 +360,6 @@ exploit -j -z
         user="meterpreter"
         host=""
         path=""
-        prompt=">"
         lines={[
           {
             comment: "ALVO está em 192.168.50.10 (rede interna). Você só vê o pivot 10.10.10.5",
@@ -397,7 +390,6 @@ exploit -j -z
         user="msf6"
         host=""
         path=""
-        prompt=">"
         lines={[
           {
             cmd: "loot",

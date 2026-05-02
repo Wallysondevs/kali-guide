@@ -30,7 +30,6 @@ export default function Relatorios() {
       subtitle="Estrutura padrão, scoring CVSS, template de finding, ferramentas de automação (Serpico, Dradis, Pwndoc), exportação MD→PDF."
       difficulty="avancado"
       timeToRead="14 min"
-      prompt="docs/report"
     >
       <h2>Por que o relatório É o pentest</h2>
       <p>

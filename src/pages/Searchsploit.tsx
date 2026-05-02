@@ -11,7 +11,6 @@ export default function Searchsploit() {
       subtitle="Banco de exploits offline (50000+) navegável por keyword, CVE, autor, plataforma."
       difficulty="iniciante"
       timeToRead="9 min"
-      prompt="exploit/searchsploit"
     >
       <h2>Setup</h2>
       <Terminal

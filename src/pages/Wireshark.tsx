@@ -11,9 +11,8 @@ export default function Wireshark() {
     <PageContainer
       title="Wireshark + tshark — Análise de pacotes"
       subtitle="GUI e CLI do Wireshark. Capture, filtre, decodifique e extraia evidências de tráfego."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="22 min"
-      prompt="recon/wireshark"
     >
       <h2>Setup — capture sem ser root</h2>
       <Terminal

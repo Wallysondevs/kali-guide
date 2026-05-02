@@ -11,7 +11,6 @@ export default function Enum4linux() {
       subtitle="Faz enumeração completa de hosts Windows/Samba: shares, usuários, grupos, password policy."
       difficulty="iniciante"
       timeToRead="10 min"
-      prompt="recon/smb"
     >
       <h2>Setup</h2>
       <Terminal

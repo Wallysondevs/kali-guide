@@ -13,7 +13,6 @@ export default function Burpsuite() {
       subtitle="A Suíça do pentest web: proxy, repeater, intruder, scanner. Community e Pro."
       difficulty="iniciante"
       timeToRead="22 min"
-      prompt="web/burp"
     >
       <h2>Setup</h2>
       <Terminal

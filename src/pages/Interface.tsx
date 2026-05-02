@@ -13,7 +13,6 @@ export default function Interface() {
       subtitle="Ambientes gráficos do Kali (XFCE, GNOME, KDE, i3), kali-undercover, terminais alternativos e customização do shell."
       difficulty="iniciante"
       timeToRead="10 min"
-      prompt="setup/desktop"
     >
       <h2>Ambientes Gráficos (DE) disponíveis</h2>
       <p>

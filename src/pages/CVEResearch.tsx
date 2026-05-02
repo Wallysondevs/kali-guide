@@ -13,7 +13,6 @@ export default function CVEResearch() {
       subtitle="NVD, MITRE, vulners, nuclei, searchsploit, GitHub PoCs. Da CVE ao exploit em < 10 min."
       difficulty="intermediario"
       timeToRead="14 min"
-      prompt="vuln/cve"
     >
       <h2>O que é uma CVE</h2>
       <p>

@@ -13,7 +13,6 @@ export default function OwaspTop10() {
       subtitle="Mapa do que QUASE TODO pentest web encontra. Baseado no OWASP Top 10 2021."
       difficulty="iniciante"
       timeToRead="18 min"
-      prompt="web/owasp-top10"
     >
       <h2>O que é o Top 10</h2>
       <p>

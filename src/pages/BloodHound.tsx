@@ -11,9 +11,8 @@ export default function BloodHound() {
     <PageContainer
       title="BloodHound — mapeamento de Active Directory"
       subtitle="Visualiza relacionamentos no AD: usuários, grupos, sessões, ACLs, GPOs — e calcula caminhos para Domain Admin."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="16 min"
-      prompt="ad/bloodhound"
     >
       <h2>O que faz</h2>
       <p>
@@ -110,7 +109,6 @@ INFO: Compressing output into 20260403164218_bloodhound.zip`,
         user="user"
         host="WIN"
         path="C:\\Temp"
-        prompt=">"
         lines={[
           {
             cmd: "powershell -ep bypass -c \". .\\SharpHound.ps1; Invoke-BloodHound -CollectionMethod All -OutputDirectory C:\\Temp -ZipFileName loot.zip\"",

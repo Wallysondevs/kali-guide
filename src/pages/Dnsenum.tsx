@@ -11,7 +11,6 @@ export default function Dnsenum() {
       subtitle="Descubra zone transfer, subdomínios, MX, SPF, NS e infra DNS do alvo."
       difficulty="iniciante"
       timeToRead="12 min"
-      prompt="recon/dns"
     >
       <h2>Por que enumerar DNS</h2>
       <p>

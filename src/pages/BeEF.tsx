@@ -13,7 +13,6 @@ export default function BeEF() {
       subtitle="Hookar navegadores via XSS e controlá-los: keylog, screenshots, port scan da rede interna, social engineering."
       difficulty="avancado"
       timeToRead="16 min"
-      prompt="exploit/beef"
     >
       <h2>Setup</h2>
       <Terminal

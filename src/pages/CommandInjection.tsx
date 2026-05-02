@@ -10,9 +10,8 @@ export default function CommandInjection() {
     <PageContainer
       title="Command Injection — RCE via input"
       subtitle="Quando input do usuário vai para o shell. Detectção, execução cega e bypass de filtros."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="13 min"
-      prompt="web/cmdi"
     >
       <h2>O bug</h2>
       <CodeBlock

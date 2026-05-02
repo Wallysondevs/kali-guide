@@ -13,7 +13,6 @@ export default function Proxychains() {
       subtitle="Roteia TCP de qualquer comando por proxies (Tor, SSH -D, Burp, ntlmrelayx). Essencial para pivoting e anonimato."
       difficulty="intermediario"
       timeToRead="10 min"
-      prompt="redes/proxychains"
     >
       <h2>Como funciona</h2>
       <p>

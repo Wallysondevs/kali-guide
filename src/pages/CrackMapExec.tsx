@@ -13,7 +13,6 @@ export default function CrackMapExec() {
       subtitle="Spray, enum, exec, dump em SMB/LDAP/WinRM/MSSQL/RDP. A ferramenta mais usada em pentest interno Windows."
       difficulty="avancado"
       timeToRead="20 min"
-      prompt="ad/cme"
     >
       <h2>CME → NetExec (fork mantido)</h2>
       <p>

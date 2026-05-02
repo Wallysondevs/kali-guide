@@ -12,7 +12,6 @@ export default function Metodologia() {
       subtitle="As 7 fases padrão (PTES + OWASP) com comandos de exemplo em cada uma."
       difficulty="intermediario"
       timeToRead="14 min"
-      prompt="docs/metodologia"
     >
       <h2>As 7 fases (PTES)</h2>
       <OutputBlock label="Penetration Testing Execution Standard" type="muted">

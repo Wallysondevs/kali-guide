@@ -11,7 +11,6 @@ export default function TheHarvester() {
       subtitle="Coleta passiva (e ativa) de informação de funcionários a partir de search engines, PGP, certificados e redes sociais."
       difficulty="iniciante"
       timeToRead="10 min"
-      prompt="recon/theharvester"
     >
       <h2>Setup</h2>
       <Terminal

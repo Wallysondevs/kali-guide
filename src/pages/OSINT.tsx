@@ -12,7 +12,6 @@ export default function OSINT() {
       subtitle="Open Source INTelligence — coleta passiva de informação a partir de fontes públicas."
       difficulty="iniciante"
       timeToRead="14 min"
-      prompt="recon/osint"
     >
       <h2>O que é OSINT</h2>
       <p>

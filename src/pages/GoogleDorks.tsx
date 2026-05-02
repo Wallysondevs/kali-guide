@@ -12,7 +12,6 @@ export default function GoogleDorks() {
       subtitle="Operadores de busca avançada — encontram painéis, .env, backups e dados sensíveis indexados pelo Google."
       difficulty="iniciante"
       timeToRead="11 min"
-      prompt="recon/dorks"
     >
       <h2>Operadores essenciais do Google</h2>
       <CommandTable

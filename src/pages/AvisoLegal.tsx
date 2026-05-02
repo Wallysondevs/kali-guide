@@ -15,7 +15,6 @@ export default function AvisoLegal() {
       subtitle="Este guia ensina técnicas reais de segurança ofensiva. Esta página explica onde elas são legais, onde são crime, e como praticar sem ir para a cadeia."
       difficulty="iniciante"
       timeToRead="14 min"
-      prompt="legal/aviso"
     >
       <AlertBox type="danger" title="Este aviso não é figurativo">
         Tudo o que está escrito a partir daqui pode ser usado para invadir sistemas alheios.{" "}

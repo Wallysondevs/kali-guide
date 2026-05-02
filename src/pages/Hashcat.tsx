@@ -10,9 +10,8 @@ export default function Hashcat() {
     <PageContainer
       title="Hashcat — cracking GPU"
       subtitle="O cracker mais rápido do mundo. Aceita 350+ tipos de hash. CPU, GPU AMD/NVIDIA, Apple Metal."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="18 min"
-      prompt="passwords/hashcat"
     >
       <h2>Verificar hardware</h2>
       <Terminal

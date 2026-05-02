@@ -12,7 +12,6 @@ export default function Gobuster() {
       subtitle="Descobre paths escondidos, subdomínios, virtual hosts e parâmetros via wordlist."
       difficulty="iniciante"
       timeToRead="13 min"
-      prompt="web/gobuster"
     >
       <h2>Setup</h2>
       <Terminal

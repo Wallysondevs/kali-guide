@@ -13,7 +13,6 @@ export default function Tor() {
       subtitle="Daemon Tor, Tor Browser, hidden services, controle via stem, OPSEC para anonimato real."
       difficulty="intermediario"
       timeToRead="14 min"
-      prompt="anon/tor"
     >
       <h2>Como funciona (em 30s)</h2>
       <OutputBlock label="onion routing" type="muted">

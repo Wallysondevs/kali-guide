@@ -11,9 +11,8 @@ export default function Sqlmap() {
     <PageContainer
       title="SQLMap — exploração automatizada de SQL Injection"
       subtitle="Detecta, explora e extrai bancos via injection. Suporta MySQL, PostgreSQL, MSSQL, Oracle, SQLite, MongoDB, etc."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="22 min"
-      prompt="web/sqlmap"
     >
       <h2>Setup</h2>
       <Terminal

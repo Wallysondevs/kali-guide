@@ -13,7 +13,6 @@ export default function PythonHacking() {
       subtitle="Bibliotecas essenciais (requests, scapy, paramiko, pwntools, impacket) com scripts prontos."
       difficulty="intermediario"
       timeToRead="20 min"
-      prompt="dev/python"
     >
       <h2>Setup do ambiente</h2>
       <Terminal

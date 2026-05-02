@@ -11,9 +11,8 @@ export default function Aircrack() {
     <PageContainer
       title="aircrack-ng — Suíte WiFi"
       subtitle="Captura de handshake WPA/WPA2/WPA3, ataque PMKID, deauth, fake AP. Tudo precisa de placa em monitor mode."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="20 min"
-      prompt="wireless/aircrack"
     >
       <h2>Hardware</h2>
       <p>

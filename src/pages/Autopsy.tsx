@@ -10,9 +10,8 @@ export default function Autopsy() {
     <PageContainer
       title="Autopsy — GUI forense (TSK)"
       subtitle="Interface gráfica para Sleuthkit. Casos, ingest modules, timeline, keyword search, web/mobile artifacts."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="13 min"
-      prompt="forense/autopsy"
     >
       <h2>Setup</h2>
       <Terminal

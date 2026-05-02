@@ -12,7 +12,6 @@ export default function PostExploracao() {
       subtitle="Estabilizar shell, situational awareness, dump de credenciais, persistência, lateral movement, exfiltração."
       difficulty="avancado"
       timeToRead="22 min"
-      prompt="postexp"
     >
       <h2>Fase 1 — Estabilizar a shell</h2>
       <Terminal

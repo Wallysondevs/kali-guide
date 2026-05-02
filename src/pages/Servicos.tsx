@@ -12,7 +12,6 @@ export default function Servicos() {
       subtitle="Iniciar, parar, habilitar serviços, ler logs no journal e criar units customizadas."
       difficulty="iniciante"
       timeToRead="14 min"
-      prompt="sistema/services"
     >
       <h2>Por que systemd importa</h2>
       <p>

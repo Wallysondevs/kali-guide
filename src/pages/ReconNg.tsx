@@ -10,9 +10,8 @@ export default function ReconNg() {
     <PageContainer
       title="Recon-ng — framework modular de OSINT"
       subtitle="Estilo Metasploit, mas para coleta de inteligência: workspaces, módulos, banco SQLite, relatórios."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="14 min"
-      prompt="recon/recon-ng"
     >
       <h2>Setup</h2>
       <Terminal
@@ -58,7 +57,6 @@ _/    _/  _/_/_/_/    _/_/_/    _/_/_/    _/      _/            _/      _/    _/
         user="recon-ng"
         host="default"
         path=""
-        prompt=">"
         lines={[
           {
             cmd: "workspaces create acme",
@@ -105,7 +103,6 @@ _/    _/  _/_/_/_/    _/_/_/    _/_/_/    _/      _/            _/      _/    _/
         user="recon-ng"
         host="acme"
         path=""
-        prompt=">"
         lines={[
           {
             cmd: "marketplace search hackertarget",
@@ -145,7 +142,6 @@ _/    _/  _/_/_/_/    _/_/_/    _/_/_/    _/      _/            _/      _/    _/
         user="recon-ng"
         host="acme"
         path=""
-        prompt=">"
         lines={[
           {
             comment: "1) inserir o domínio alvo no banco",
@@ -215,7 +211,6 @@ KALI.ORG
         user="recon-ng"
         host="acme"
         path=""
-        prompt=">"
         lines={[
           {
             cmd: "modules load recon/hosts-hosts/resolve",
@@ -255,7 +250,6 @@ KALI.ORG
         user="recon-ng"
         host="acme"
         path=""
-        prompt=">"
         lines={[
           {
             cmd: "keys list",
@@ -305,7 +299,6 @@ KALI.ORG
         user="recon-ng"
         host="acme"
         path=""
-        prompt=">"
         lines={[
           {
             cmd: "modules load reporting/html",

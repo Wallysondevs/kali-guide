@@ -13,7 +13,6 @@ export default function Instalacao() {
       subtitle="VM (VirtualBox/VMware), WSL2 + Win-KeX, dual boot, live USB e Raspberry Pi — passo a passo, com outputs reais."
       difficulty="iniciante"
       timeToRead="15 min"
-      prompt="setup/install"
     >
       <h2>Opções de Instalação</h2>
       <p>

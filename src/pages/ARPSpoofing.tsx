@@ -11,9 +11,8 @@ export default function ARPSpoofing() {
     <PageContainer
       title="ARP Spoofing — MITM clássico"
       subtitle="Falsifica tabelas ARP para se colocar entre 2 hosts da LAN. Base de muito MITM."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="13 min"
-      prompt="mitm/arp-spoof"
     >
       <h2>Como o ataque funciona</h2>
       <OutputBlock label="rede normal" type="muted">
@@ -181,7 +180,6 @@ Hit 'h' for inline help
         user=""
         host="bettercap"
         path=""
-        prompt=">>"
         lines={[
           {
             cmd: "net.probe on",

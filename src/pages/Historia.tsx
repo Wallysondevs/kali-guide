@@ -12,7 +12,6 @@ export default function Historia() {
       subtitle="A história, origem e propósito do sistema operacional mais usado em segurança ofensiva."
       difficulty="iniciante"
       timeToRead="8 min"
-      prompt="intro/historia"
     >
       <h2>Origens: de BackTrack ao Kali</h2>
       <p>

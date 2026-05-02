@@ -13,7 +13,6 @@ export default function OpenVAS() {
       subtitle="Greenbone Vulnerability Management: setup, NVT feeds, targets, scan configs (Full and fast, deep), tasks agendadas, relatórios HTML/PDF/XML/CSV e CLI via gvm-cli."
       difficulty="intermediario"
       timeToRead="35 min"
-      prompt="vuln-scan/openvas"
     >
       <h2>O que é o OpenVAS</h2>
       <p>

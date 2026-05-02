@@ -10,9 +10,8 @@ export default function SSRF() {
     <PageContainer
       title="SSRF — Server-Side Request Forgery"
       subtitle="O servidor faz requests HTTP para URL controlada pelo atacante. Caminho clássico até roubar credenciais cloud."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="14 min"
-      prompt="web/ssrf"
     >
       <h2>O bug</h2>
       <CodeBlock

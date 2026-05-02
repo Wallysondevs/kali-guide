@@ -13,7 +13,6 @@ export default function Responder() {
       subtitle="Captura hashes NetNTLMv2 em LANs Windows envenenando broadcast de resolução de nomes."
       difficulty="avancado"
       timeToRead="14 min"
-      prompt="ad/responder"
     >
       <h2>Como funciona</h2>
       <p>

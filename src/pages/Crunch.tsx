@@ -12,7 +12,6 @@ export default function Crunch() {
       subtitle="Cria listas de senhas por comprimento, charset, padrão (mask) ou regras customizadas."
       difficulty="iniciante"
       timeToRead="9 min"
-      prompt="passwords/crunch"
     >
       <h2>Sintaxe</h2>
       <OutputBlock label="estrutura do comando" type="muted">

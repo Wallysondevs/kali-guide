@@ -13,7 +13,6 @@ export default function BugBounty() {
       subtitle="Plataformas, recon massivo, escolha de alvo, escrita de relatório aceito, programa de monetização."
       difficulty="intermediario"
       timeToRead="20 min"
-      prompt="bb/bountyhunter"
     >
       <h2>O que é bug bounty</h2>
       <p>

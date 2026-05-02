@@ -12,7 +12,6 @@ export default function Seclists() {
       subtitle="Coleção de Daniel Miessler com discoveries, payloads, fuzzing, usernames, passwords e mais."
       difficulty="iniciante"
       timeToRead="11 min"
-      prompt="passwords/seclists"
     >
       <h2>Setup</h2>
       <Terminal

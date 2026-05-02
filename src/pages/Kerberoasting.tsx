@@ -11,9 +11,8 @@ export default function Kerberoasting() {
     <PageContainer
       title="Kerberoasting + AS-REP Roasting"
       subtitle="Solicita TGS de service accounts, crackeia offline. Vetor #1 de comprometimento de AD."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="14 min"
-      prompt="ad/kerberoasting"
     >
       <h2>Conceito</h2>
       <p>

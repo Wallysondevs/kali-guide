@@ -11,7 +11,6 @@ export default function Whatweb() {
       subtitle="Identifica CMS, frameworks, plugins, servidores e versões a partir do tráfego HTTP."
       difficulty="iniciante"
       timeToRead="8 min"
-      prompt="recon/whatweb"
     >
       <h2>Por que importa</h2>
       <p>

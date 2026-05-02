@@ -12,7 +12,6 @@ export default function Shodan() {
       subtitle="Indexa portas e banners de toda a internet IPv4. CLI, API e dorks de busca."
       difficulty="iniciante"
       timeToRead="13 min"
-      prompt="recon/shodan"
     >
       <h2>O que é Shodan</h2>
       <p>

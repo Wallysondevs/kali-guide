@@ -14,7 +14,6 @@ export default function TerminalPage() {
       subtitle="Navegação, leitura, busca, pipes, redirecionamento, awk/sed, job control, history, brace expansion, set -euxo. Tudo o que separa um operador júnior de um sênior."
       difficulty="iniciante"
       timeToRead="35 min"
-      prompt="bash/mastery"
     >
       <AlertBox type="info" title="Esta página assume o básico">
         Se você nunca abriu um terminal, comece em{" "}

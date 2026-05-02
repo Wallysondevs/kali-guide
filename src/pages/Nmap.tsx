@@ -13,7 +13,6 @@ export default function Nmap() {
       subtitle="Descoberta de hosts, varredura de portas, fingerprinting de serviços, NSE scripts e evasão."
       difficulty="iniciante"
       timeToRead="25 min"
-      prompt="recon/nmap"
     >
       <h2>Conferindo a versão</h2>
       <Terminal

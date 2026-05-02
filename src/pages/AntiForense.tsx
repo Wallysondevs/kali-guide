@@ -13,7 +13,6 @@ export default function AntiForense() {
       subtitle="Limpar logs, timestamps, swap, free space. Quando usar (red team), quando não usar (pentest), o que sempre sobra."
       difficulty="avancado"
       timeToRead="16 min"
-      prompt="postexp/cleanup"
     >
       <AlertBox type="danger" title="Pentest ≠ Red Team ≠ Crime">
         Em <strong>pentest</strong> você LOGA TUDO para o cliente — anti-forense é <em>contra</em>

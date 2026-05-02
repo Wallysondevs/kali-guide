@@ -13,7 +13,6 @@ export default function SSH() {
       subtitle="Cliente, servidor, chaves, agentes, tunelamento e hardening — o canivete do pentester."
       difficulty="iniciante"
       timeToRead="20 min"
-      prompt="redes/ssh"
     >
       <h2>Conexão básica</h2>
       <Terminal

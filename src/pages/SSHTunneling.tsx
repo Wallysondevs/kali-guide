@@ -13,7 +13,6 @@ export default function SSHTunneling() {
       subtitle="-L (local), -R (remote), -D (dynamic SOCKS), -J (jump), sshuttle, chisel."
       difficulty="intermediario"
       timeToRead="14 min"
-      prompt="redes/ssh-tunnel"
     >
       <h2>3 tipos de tunel</h2>
       <OutputBlock label="resumo visual" type="muted">

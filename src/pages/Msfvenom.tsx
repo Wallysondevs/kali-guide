@@ -10,9 +10,8 @@ export default function Msfvenom() {
     <PageContainer
       title="msfvenom — Gerador de payloads"
       subtitle="Cria binários reversos para Linux/Windows/PHP/JSP/aspx, encoders, formatos de saída."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="14 min"
-      prompt="exploit/msfvenom"
     >
       <h2>Anatomia</h2>
       <p>

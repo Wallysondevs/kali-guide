@@ -10,9 +10,8 @@ export default function WirelessBluetooth() {
     <PageContainer
       title="Wireless: Bluetooth + outras tecnologias"
       subtitle="bluetoothctl, hcitool, l2ping, BLE, RFID/NFC, SDR (RTL-SDR), Zigbee."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="14 min"
-      prompt="wireless/bluetooth"
     >
       <h2>Bluetooth Classic — bluez stack</h2>
       <Terminal
@@ -101,7 +100,6 @@ Protocol Descriptor List:
         user=""
         host="bluetooth"
         path=""
-        prompt="]#"
         lines={[
           {
             cmd: "scan on",
@@ -196,7 +194,6 @@ Connection successful`,
         user=""
         host="LE"
         path=""
-        prompt=">"
         lines={[
           {
             cmd: "primary",

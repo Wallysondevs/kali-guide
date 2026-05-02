@@ -13,7 +13,6 @@ export default function Redes() {
       subtitle="Interfaces, IP/rota, DNS, portas, NAT e modos de placa wifi — base de TUDO em pentest."
       difficulty="iniciante"
       timeToRead="18 min"
-      prompt="redes/basics"
     >
       <h2>Descobrir interfaces e IPs</h2>
       <Terminal

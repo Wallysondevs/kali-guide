@@ -13,7 +13,6 @@ export default function NetHunter() {
       subtitle="Chroot completo + kernel custom + app companion. WiFi pentest, BadUSB, MITM, NetHunter Store. 3 sabores de instalação."
       difficulty="avancado"
       timeToRead="16 min"
-      prompt="mobile/nethunter"
     >
       <h2>3 sabores de instalação</h2>
       <CommandTable

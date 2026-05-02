@@ -13,7 +13,6 @@ export default function Deserialization() {
       subtitle="Java (ysoserial / CommonsCollections), .NET (ysoserial.net / BinaryFormatter), Python (pickle), PHP (POP chains / phpggc), Node (serialize-javascript) e Ruby (Marshal). Como detectar, gerar payload e ganhar shell."
       difficulty="avancado"
       timeToRead="32 min"
-      prompt="webexp/deser"
     >
       <AlertBox type="danger" title="OWASP A08:2021 — Software and Data Integrity Failures">
         Desserialização insegura dá <strong>RCE não-autenticado</strong> em quase todo CVE

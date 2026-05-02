@@ -13,7 +13,6 @@ export default function DockerKali() {
       subtitle="Subir DVWA, Metasploitable, Juice Shop, Vulhub e Kali em minutos. Lab inteiro reproducível com docker-compose."
       difficulty="intermediario"
       timeToRead="15 min"
-      prompt="lab/docker"
     >
       <h2>Instalação no Kali</h2>
       <Terminal

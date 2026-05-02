@@ -13,7 +13,6 @@ export default function Phishing() {
       subtitle="Gophish, Evilginx2 (proxy reverso para MFA bypass), domínio + SPF/DKIM/DMARC, payloads Office, OPSEC."
       difficulty="avancado"
       timeToRead="22 min"
-      prompt="redteam/phishing"
     >
       <AlertBox type="danger" title="LEGAL antes de tudo">
         Phishing fora do escopo de RoE assinado é <strong>fraude eletrônica</strong> (CP Art. 171,

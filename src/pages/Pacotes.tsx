@@ -13,7 +13,6 @@ export default function Pacotes() {
       subtitle="APT, dpkg, pip, meta-pacotes Kali — instalar, remover e manter ferramentas atualizadas."
       difficulty="iniciante"
       timeToRead="15 min"
-      prompt="sistema/pacotes"
     >
       <h2>APT — o gerenciador principal</h2>
       <p>

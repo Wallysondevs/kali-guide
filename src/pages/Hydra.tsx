@@ -11,7 +11,6 @@ export default function Hydra() {
       subtitle="Brute força contra serviços de rede vivos: SSH, FTP, RDP, SMB, HTTP forms, Telnet, MySQL."
       difficulty="iniciante"
       timeToRead="14 min"
-      prompt="passwords/hydra"
     >
       <h2>Quando usar</h2>
       <p>

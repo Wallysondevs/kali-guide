@@ -13,7 +13,6 @@ export default function Usuarios() {
       subtitle="/etc/passwd, /etc/shadow, useradd, sudoers — gestão de identidade no Linux."
       difficulty="iniciante"
       timeToRead="12 min"
-      prompt="sistema/usuarios"
     >
       <h2>Onde os usuários ficam armazenados</h2>
       <Terminal

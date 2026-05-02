@@ -13,7 +13,6 @@ export default function Permissoes() {
       subtitle="O modelo rwx, chmod, chown, SUID/SGID e ACLs — base de toda escalação de privilégios."
       difficulty="iniciante"
       timeToRead="14 min"
-      prompt="sistema/permissoes"
     >
       <h2>Anatomia de uma permissão</h2>
       <p>

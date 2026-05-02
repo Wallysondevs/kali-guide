@@ -10,9 +10,8 @@ export default function CSRF() {
     <PageContainer
       title="CSRF — Cross-Site Request Forgery"
       subtitle="Forçar a vítima logada a executar ação no app sem perceber. Bypass de tokens e SameSite."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="12 min"
-      prompt="web/csrf"
     >
       <h2>Como funciona</h2>
       <p>

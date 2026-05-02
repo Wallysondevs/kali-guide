@@ -10,9 +10,8 @@ export default function Volatility() {
     <PageContainer
       title="Volatility 3 — análise forense de memória"
       subtitle="Extrai processos, conexões, hashes, malware, drivers, registry hives a partir de dump RAM."
-      difficulty="intermediário"
+      difficulty="intermediario"
       timeToRead="15 min"
-      prompt="forense/volatility"
     >
       <h2>Setup</h2>
       <Terminal

@@ -13,7 +13,6 @@ export default function Ettercap() {
       subtitle="ARP poisoning, sniffing de credenciais HTTP/FTP/Telnet, DNS spoof, plugins. Padrão histórico para MITM em LAN."
       difficulty="intermediario"
       timeToRead="16 min"
-      prompt="redes/ettercap"
     >
       <h2>Setup</h2>
       <Terminal

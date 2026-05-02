@@ -13,7 +13,6 @@ export default function SET() {
       subtitle="setoolkit do TrustedSec: clone de site, spear phishing, payload USB infectado, QR code malicioso."
       difficulty="avancado"
       timeToRead="14 min"
-      prompt="se/setoolkit"
     >
       <h2>Setup</h2>
       <Terminal

@@ -13,7 +13,6 @@ export default function ReverseEngineering() {
       subtitle="ELF/PE, file/strings, Ghidra, radare2, gdb-pwndbg, IDA Free, decompiladores. Análise estática + dinâmica."
       difficulty="avancado"
       timeToRead="20 min"
-      prompt="re/main"
     >
       <h2>Triagem inicial — sempre nessa ordem</h2>
       <Terminal

@@ -12,7 +12,6 @@ export default function PrimeirosArquivos() {
       subtitle="Estrutura do sistema (FHS), comandos de navegação e leitura, permissões ugo+rwx, SUID/SGID/sticky e links — tudo que você precisa antes de pôr a mão em ferramentas ofensivas."
       difficulty="iniciante"
       timeToRead="18 min"
-      prompt="basico/arquivos"
     >
       <AlertBox type="info" title="Por que esta página vem ANTES de Nmap, Hydra & cia">
         Pentest é 70% navegar em filesystem, ler logs e mexer em arquivos de
