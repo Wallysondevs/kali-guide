@@ -67,7 +67,7 @@ Created symlink /etc/systemd/system/sockets.target.wants/snapd.socket.`,
 snapd   2.66.1+24.10
 series  16
 kali    2025.1
-kernel  6.12.0-kali2-amd64`,
+kernel  6.16.0-kali1-amd64`,
             outType: "success",
           },
         ]}

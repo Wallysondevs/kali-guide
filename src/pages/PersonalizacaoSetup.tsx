@@ -77,7 +77,7 @@ x11`,
 -------------
 OS: Kali GNU/Linux Rolling x86_64
 Host: VirtualBox 1.2
-Kernel: 6.5.0-kali3-amd64
+Kernel: 6.16.0-kali1-amd64
 Uptime: 2 hours, 14 mins
 Packages: 3142 (dpkg), 12 (flatpak)
 Shell: zsh 5.9

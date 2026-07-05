@@ -37,7 +37,7 @@ Available nsock engines: epoll poll select`,
           {
             comment: "ping scan — só descobre QUEM está vivo, não escaneia portas",
             cmd: "sudo nmap -sn 192.168.1.0/24",
-            out: `Starting Nmap 7.95 ( https://nmap.org )
+            out: `Starting Nmap 7.96 ( https://nmap.org )
 Nmap scan report for 192.168.1.1
 Host is up (0.0019s latency).
 MAC Address: 24:5E:BE:1A:2C:01 (Zyxel Communications)
@@ -55,7 +55,7 @@ Nmap done: 256 IP addresses (4 hosts up) scanned in 4.21 seconds`,
           {
             comment: "lista de alvos sem PINGAR (útil quando ICMP é bloqueado)",
             cmd: "nmap -sL 192.168.1.0/30",
-            out: `Starting Nmap 7.95 ( https://nmap.org )
+            out: `Starting Nmap 7.96 ( https://nmap.org )
 Nmap scan report for 192.168.1.0
 Nmap scan report for 192.168.1.1
 Nmap scan report for 192.168.1.2
@@ -66,7 +66,7 @@ Nmap done: 4 IP addresses (0 hosts up) scanned in 0.04 seconds`,
           {
             comment: "FORÇAR scan mesmo sem ping (alvos que filtram ICMP)",
             cmd: "sudo nmap -Pn -p 22,80,443 scanme.nmap.org",
-            out: `Starting Nmap 7.95 ( https://nmap.org )
+            out: `Starting Nmap 7.96 ( https://nmap.org )
 Nmap scan report for scanme.nmap.org (45.33.32.156)
 Host is up (0.18s latency).
 
@@ -150,7 +150,7 @@ PORT    STATE  SERVICE
           {
             comment: "varredura completa com versão e scripts default",
             cmd: "sudo nmap -sS -sV -sC -O -p- -T4 -oA scan_target scanme.nmap.org",
-            out: `Starting Nmap 7.95 ( https://nmap.org )
+            out: `Starting Nmap 7.96 ( https://nmap.org )
 Nmap scan report for scanme.nmap.org (45.33.32.156)
 Host is up (0.184s latency).
 Other addresses for scanme.nmap.org (not scanned): 2600:3c01::f03c:91ff:fe18:bb2f
@@ -337,7 +337,7 @@ echo "Portas abertas: $PORTS"
 
 # 3) deep scan só nelas
 sudo nmap -sS -sV -sC -O -p $PORTS --script vuln -T4 -oA deep 10.10.10.5`}
-        expected={`Starting Nmap 7.95
+        expected={`Starting Nmap 7.96
 Nmap scan report for 10.10.10.5
 PORT     STATE SERVICE   VERSION
 22/tcp   open  ssh       OpenSSH 8.9p1 Ubuntu

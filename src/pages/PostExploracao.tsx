@@ -329,7 +329,7 @@ PORT     STATE SERVICE      VERSION
           {
             comment: "agora qualquer ferramenta com proxychains",
             cmd: "proxychains -q nmap -sT -Pn --top-ports=20 192.168.50.10",
-            out: `Starting Nmap 7.95
+            out: `Starting Nmap 7.96
 Nmap scan report for 192.168.50.10
 22/tcp   open  ssh
 53/tcp   open  domain

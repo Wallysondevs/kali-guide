@@ -26,11 +26,11 @@ export default function Boot() {
         lines={[
           {
             cmd: "ls /boot/",
-            out: `config-6.11.0-kali1-amd64
+            out: `config-6.16.0-kali1-amd64
 grub
-initrd.img-6.11.0-kali1-amd64
-System.map-6.11.0-kali1-amd64
-vmlinuz-6.11.0-kali1-amd64`,
+initrd.img-6.16.0-kali1-amd64
+System.map-6.16.0-kali1-amd64
+vmlinuz-6.16.0-kali1-amd64`,
             outType: "info",
           },
           {
@@ -76,8 +76,8 @@ GRUB_GFXMODE=1024x768`}
             cmd: "sudo update-grub",
             out: `Sourcing file \`/etc/default/grub'
 Generating grub configuration file ...
-Found linux image: /boot/vmlinuz-6.11.0-kali1-amd64
-Found initrd image: /boot/initrd.img-6.11.0-kali1-amd64
+Found linux image: /boot/vmlinuz-6.16.0-kali1-amd64
+Found initrd image: /boot/initrd.img-6.16.0-kali1-amd64
 Found memtest86+ 64bit EFI image: /boot/memtest86+x64.efi
 done`,
             outType: "success",
@@ -107,7 +107,7 @@ done`,
           {
             comment: "ver os parâmetros que o kernel atual recebeu",
             cmd: "cat /proc/cmdline",
-            out: "BOOT_IMAGE=/boot/vmlinuz-6.11.0-kali1-amd64 root=UUID=8a4f-... ro quiet splash",
+            out: "BOOT_IMAGE=/boot/vmlinuz-6.16.0-kali1-amd64 root=UUID=8a4f-... ro quiet splash",
             outType: "info",
           },
         ]}
@@ -142,8 +142,8 @@ done`,
             cmd: "grep -E 'menuentry |submenu ' /boot/grub/grub.cfg | cut -d\"'\" -f2",
             out: `Kali GNU/Linux
 Advanced options for Kali GNU/Linux
-Kali GNU/Linux, with Linux 6.11.0-kali1-amd64
-Kali GNU/Linux, with Linux 6.11.0-kali1-amd64 (recovery mode)`,
+Kali GNU/Linux, with Linux 6.16.0-kali1-amd64
+Kali GNU/Linux, with Linux 6.16.0-kali1-amd64 (recovery mode)`,
             outType: "info",
           },
           {

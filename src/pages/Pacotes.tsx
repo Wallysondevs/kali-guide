@@ -305,7 +305,7 @@ Done.`}
       />
 
       <AlertBox type="info" title="Kali é Rolling Release">
-        Não existe "Kali 2025.1 estável final" — o sistema está sempre atualizando.
+        Não existe "Kali 2026.1 estável final" — o sistema está sempre atualizando.
         Rode <code>sudo apt update && sudo apt full-upgrade -y</code> pelo menos uma vez por semana
         para receber correções de segurança e novas versões de ferramentas.
       </AlertBox>

@@ -5,3 +5,5 @@ dist/
 
 # Replit
 .replit-artifact/
+
+pnpm-lock.yaml

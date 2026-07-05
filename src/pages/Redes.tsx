@@ -180,7 +180,7 @@ kali.org.		180	IN	NS	britney.ns.cloudflare.com.`,
           {
             comment: "descobrir vivos com nmap (-sn = no port scan, só ping ARP)",
             cmd: "sudo nmap -sn 192.168.1.0/24",
-            out: `Starting Nmap 7.95 ( https://nmap.org )
+            out: `Starting Nmap 7.96 ( https://nmap.org )
 Nmap scan report for 192.168.1.1
 Host is up (0.0021s latency).
 MAC Address: 24:5E:BE:1A:2C:01 (Zyxel Communications)
@@ -229,7 +229,7 @@ tcp   LISTEN 0      128              [::]:22            [::]:*          users:((
           {
             comment: "portas REMOTAS de um alvo (4 portas mais comuns)",
             cmd: "nmap -p 22,80,443,3306 scanme.nmap.org",
-            out: `Starting Nmap 7.95 ( https://nmap.org )
+            out: `Starting Nmap 7.96 ( https://nmap.org )
 Nmap scan report for scanme.nmap.org (45.33.32.156)
 Host is up (0.18s latency).
 

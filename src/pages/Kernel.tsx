@@ -19,22 +19,22 @@ export default function Kernel() {
         lines={[
           {
             cmd: "uname -a",
-            out: "Linux kali 6.11.0-kali1-amd64 #1 SMP PREEMPT_DYNAMIC Kali 6.11.5-1kali1 (2024-10-29) x86_64 GNU/Linux",
+            out: "Linux kali 6.16.0-kali1-amd64 #1 SMP PREEMPT_DYNAMIC Kali 6.11.5-1kali1 (2024-10-29) x86_64 GNU/Linux",
             outType: "info",
           },
           {
             cmd: "uname -r",
-            out: "6.11.0-kali1-amd64",
+            out: "6.16.0-kali1-amd64",
             outType: "success",
           },
           {
             cmd: "cat /proc/version",
-            out: "Linux version 6.11.0-kali1-amd64 (devel@kali.org) (gcc-13 (Debian 13.2.0-25) 13.2.0, GNU ld (GNU Binutils for Debian) 2.43.1) #1 SMP PREEMPT_DYNAMIC Kali 6.11.5-1kali1 (2024-10-29)",
+            out: "Linux version 6.16.0-kali1-amd64 (devel@kali.org) (gcc-13 (Debian 13.2.0-25) 13.2.0, GNU ld (GNU Binutils for Debian) 2.43.1) #1 SMP PREEMPT_DYNAMIC Kali 6.11.5-1kali1 (2024-10-29)",
             outType: "default",
           },
           {
             cmd: "ls /lib/modules/",
-            out: "6.11.0-kali1-amd64",
+            out: "6.16.0-kali1-amd64",
             outType: "muted",
           },
         ]}
@@ -51,16 +51,16 @@ export default function Kernel() {
         lines={[
           {
             cmd: "sudo apt update && sudo apt install -y linux-image-amd64 linux-headers-amd64",
-            out: `linux-image-6.11.0-kali1-amd64 is already the newest version (6.11.5-1kali1).
+            out: `linux-image-6.16.0-kali1-amd64 is already the newest version (6.11.5-1kali1).
 The following NEW packages will be installed:
-  linux-headers-6.11.0-kali1-amd64 linux-headers-6.11.0-kali1-common
+  linux-headers-6.16.0-kali1-amd64 linux-headers-6.16.0-kali1-common
 0 upgraded, 3 newly installed.`,
             outType: "success",
           },
           {
             comment: "depois de instalar nova versão, sempre regere o initramfs e o GRUB",
             cmd: "sudo update-initramfs -u -k all && sudo update-grub",
-            out: `update-initramfs: Generating /boot/initrd.img-6.11.0-kali1-amd64
+            out: `update-initramfs: Generating /boot/initrd.img-6.16.0-kali1-amd64
 Generating grub configuration file ...
 done`,
             outType: "info",
@@ -89,7 +89,7 @@ libcrc32c              12288  4 nf_conntrack,nf_nat,nf_tables,raid456`,
           },
           {
             cmd: "modinfo nf_conntrack | head -8",
-            out: `filename:       /lib/modules/6.11.0-kali1-amd64/kernel/net/netfilter/nf_conntrack.ko.xz
+            out: `filename:       /lib/modules/6.16.0-kali1-amd64/kernel/net/netfilter/nf_conntrack.ko.xz
 license:        GPL
 alias:          ip_conntrack
 description:    Connection tracking module for IPv4 and IPv6
@@ -156,8 +156,8 @@ phy0    wlan0           rt2800usb       Ralink RT5572
         lines={[
           {
             cmd: "dkms status",
-            out: `realtek-rtl88xxau/5.13.6, 6.11.0-kali1-amd64, x86_64: installed
-v4l2loopback/0.13.2, 6.11.0-kali1-amd64, x86_64: installed`,
+            out: `realtek-rtl88xxau/5.13.6, 6.16.0-kali1-amd64, x86_64: installed
+v4l2loopback/0.13.2, 6.16.0-kali1-amd64, x86_64: installed`,
             outType: "info",
           },
           {
@@ -165,8 +165,8 @@ v4l2loopback/0.13.2, 6.11.0-kali1-amd64, x86_64: installed`,
             cmd: "sudo apt install -y realtek-rtl88xxau-dkms",
             out: `Building module:
 Cleaning build area...
-'make' -j8 KERNELRELEASE=6.11.0-kali1-amd64 KVER=6.11.0-kali1-amd64...(bad exit status: 2)
-ERROR (dkms apport): kernel package linux-headers-6.11.0-kali1-amd64 is not supported`,
+'make' -j8 KERNELRELEASE=6.16.0-kali1-amd64 KVER=6.16.0-kali1-amd64...(bad exit status: 2)
+ERROR (dkms apport): kernel package linux-headers-6.16.0-kali1-amd64 is not supported`,
             outType: "warning",
           },
           {

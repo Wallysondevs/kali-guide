@@ -199,13 +199,13 @@ Codename:       kali-rolling`,
           {
             comment: "kernel + arquitetura + hostname",
             cmd: "uname -a",
-            out: `Linux kali 6.11.0-kali4-amd64 #1 SMP PREEMPT_DYNAMIC Kali 6.11.5-1kali1 (2025-01-08) x86_64 GNU/Linux`,
+            out: `Linux kali 6.16.0-kali1-amd64 #1 SMP PREEMPT_DYNAMIC Kali 6.11.5-1kali1 (2025-01-08) x86_64 GNU/Linux`,
             outType: "default",
           },
           {
             comment: "só kernel",
             cmd: "uname -r",
-            out: "6.11.0-kali4-amd64",
+            out: "6.16.0-kali1-amd64",
             outType: "muted",
           },
           {
@@ -295,7 +295,7 @@ echo "=== Metapacotes ==="; dpkg -l | awk '/^ii  kali-/ {print $2}' | head -10`}
         expected={`=== Distro ===
 PRETTY_NAME="Kali GNU/Linux Rolling"
 === Kernel ===
-6.11.0-kali4-amd64
+6.16.0-kali1-amd64
 === Mirror ===
 deb http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmware
 === Metapacotes ===

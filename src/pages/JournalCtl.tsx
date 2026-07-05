@@ -62,7 +62,7 @@ drwxr-sr-x+ 3 root systemd-journal      4096 Mar 12 11:21 ..
           { cmd: "journalctl -u ssh -u nginx", desc: "Múltiplos units de uma vez.", output: "Concatena ordenado por tempo." },
           { cmd: "journalctl -u 'cron*' -u 'apt*'", desc: "Wildcards funcionam.", output: "Útil pra famílias de unit." },
           { cmd: "journalctl -b", desc: "Só boot atual (-b 0). -b -1 = boot anterior.", output: "Lista todos os boots: journalctl --list-boots" },
-          { cmd: "journalctl -k", desc: "Só mensagens do kernel (= dmesg, mas com timestamp absoluto).", output: "Apr 03 08:42 kali kernel: Linux version 6.11.0-kali2-amd64 ..." },
+          { cmd: "journalctl -k", desc: "Só mensagens do kernel (= dmesg, mas com timestamp absoluto).", output: "Apr 03 08:42 kali kernel: Linux version 6.16.0-kali1-amd64 ..." },
           { cmd: "journalctl -p err", desc: "Prioridade err ou pior. Níveis: emerg(0) alert(1) crit(2) err(3) warning(4) notice(5) info(6) debug(7).", output: "Apr 03 09:11 sshd[12947]: error: maximum authentication attempts exceeded" },
           { cmd: "journalctl -p warning..err", desc: "Range de prioridades.", output: "Só warning e err (ignora info/debug)." },
           { cmd: "journalctl --since today", desc: "A partir de hoje 00:00.", output: "Aliases: yesterday, now, '2 hours ago'." },
@@ -282,7 +282,7 @@ MaxLevelStore=info`}
             cmd: "last -n 5",
             out: `wallyson pts/1        10.10.14.5       Fri Apr  3 14:50   still logged in
 wallyson pts/0        :0               Fri Apr  3 08:43   still logged in
-reboot   system boot  6.11.0-kali2-amd Fri Apr  3 08:42   still running
+reboot   system boot  6.16.0-kali1-amd Fri Apr  3 08:42   still running
 wallyson pts/0        :0               Thu Apr  2 09:11 - 23:48 (14:37)`,
             outType: "default",
           },

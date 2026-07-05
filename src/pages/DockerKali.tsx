@@ -291,7 +291,7 @@ msf2    tleemcjr/metasploitable2    Up 12s    labnet      10.10.10.30`,
           },
           {
             cmd: "docker exec -it kali bash -c 'apt update -qq && apt install -y nmap -qq && nmap -sV 10.10.10.0/24'",
-            out: `Starting Nmap 7.95 ( https://nmap.org )
+            out: `Starting Nmap 7.96 ( https://nmap.org )
 Nmap scan report for 10.10.10.10  (dvwa)
 80/tcp open http Apache 2.4.10
 Nmap scan report for 10.10.10.20  (juice)

@@ -201,7 +201,7 @@ python3 -c 'import pty; pty.spawn("/bin/bash")'
           {
             comment: "ver na tela E salvar em arquivo",
             cmd: "nmap -sV 10.10.10.5 | tee scan.txt",
-            out: `Starting Nmap 7.95 ( https://nmap.org )
+            out: `Starting Nmap 7.96 ( https://nmap.org )
 Nmap scan report for 10.10.10.5
 PORT     STATE SERVICE VERSION
 22/tcp   open  ssh     OpenSSH 8.9p1

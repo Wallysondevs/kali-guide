@@ -161,7 +161,7 @@ bash é hashed (/usr/bin/bash)`,
             comment: "repete o último comando",
             cmd: "!!",
             out: `nmap -sV 10.10.10.5
-Starting Nmap 7.95 ( https://nmap.org )...`,
+Starting Nmap 7.96 ( https://nmap.org )...`,
             outType: "default",
           },
           {

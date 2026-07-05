@@ -11,8 +11,10 @@ import {
   Flame, Skull, Target, Activity, Swords, Brain,
   MonitorSmartphone, Container, BookMarked, Trophy,
   Telescope, Link2, Radar, Scan, GitBranch, Binary,
-  Cloud, Smartphone, Hash, FileCode, Webhook, Dot,
+  Cloud, Smartphone, Hash, FileCode, Webhook, Dot, Check,
 } from "lucide-react";
+import { KaliLogo } from "@/components/ui/KaliLogo";
+import { useProgress, TOTAL_LESSONS } from "@/lib/course";
 
 const NAVIGATION = [
   {
@@ -355,6 +357,7 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const [location] = useHashLocation();
+  const { has, count, percent } = useProgress();
 
   return (
     <>
@@ -379,21 +382,19 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           className="flex items-center justify-between px-4 py-3 border-b border-white/5 sticky top-0 z-10"
           style={{ background: "hsl(var(--kali-bg-2))" }}
         >
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="flex gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
-            </div>
-            <div className="min-w-0">
-              <h1 className="font-mono font-bold text-sm leading-tight text-[hsl(var(--kali-cyan))]">
-                kali@dragon
-              </h1>
-              <p className="text-[10px] text-[hsl(var(--kali-dim))] font-mono leading-tight">
-                /usr/share/guide
-              </p>
-            </div>
-          </div>
+          <Link href="/">
+            <a className="flex items-center gap-2.5 min-w-0 group">
+              <KaliLogo size={30} className="shrink-0 group-hover:scale-105 transition-transform" />
+              <div className="min-w-0">
+                <h1 className="font-mono font-bold text-sm leading-tight text-[hsl(var(--kali-cyan))]">
+                  kali@dragon
+                </h1>
+                <p className="text-[10px] text-[hsl(var(--kali-dim))] font-mono leading-tight">
+                  /usr/share/curso
+                </p>
+              </div>
+            </a>
+          </Link>
           <button
             onClick={() => setIsOpen(false)}
             className="lg:hidden p-1 rounded text-gray-400 hover:text-white hover:bg-white/10"
@@ -420,6 +421,28 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           <span className="text-[hsl(var(--kali-cyan))]">/topicos</span>
         </div>
 
+        {/* Progresso do curso */}
+        <div
+          className="px-4 py-2.5 border-b border-white/5 font-mono"
+          style={{ background: "hsl(var(--kali-bg))" }}
+        >
+          <div className="flex items-center justify-between text-[11px] mb-1.5">
+            <span className="text-[hsl(var(--kali-dim))]">
+              <span className="text-[hsl(var(--kali-green))]">▓</span> progresso
+            </span>
+            <span className="text-[hsl(var(--kali-cyan))] font-bold">{percent}%</span>
+          </div>
+          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "hsl(var(--kali-bg-2))" }}>
+            <div
+              className="h-full transition-[width] duration-500"
+              style={{ width: `${percent}%`, background: "linear-gradient(90deg, hsl(var(--kali-cyan)), hsl(var(--kali-magenta)))" }}
+            />
+          </div>
+          <p className="text-[10px] text-[hsl(var(--kali-dim))] mt-1.5 m-0">
+            {count}/{TOTAL_LESSONS} tópicos concluídos
+          </p>
+        </div>
+
         {/* Navigation */}
         <nav className="p-3 space-y-5 pb-8">
           {NAVIGATION.map((section, sIdx) => (
@@ -433,6 +456,7 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               <ul className="space-y-0.5">
                 {section.items.map((item) => {
                   const isActive = location === item.path;
+                  const isDone = item.path !== "/" && has(item.path);
                   const Icon = item.icon;
                   return (
                     <li key={item.path}>
@@ -448,6 +472,8 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                         >
                           {isActive ? (
                             <ChevronRight className="w-3.5 h-3.5 flex-shrink-0 text-[hsl(var(--kali-magenta))]" />
+                          ) : isDone ? (
+                            <Check className="w-3.5 h-3.5 flex-shrink-0 text-[hsl(var(--kali-green))]" />
                           ) : (
                             <Dot className="w-3.5 h-3.5 flex-shrink-0 text-[hsl(var(--kali-dim))]" />
                           )}

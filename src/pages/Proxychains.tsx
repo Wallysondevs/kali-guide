@@ -141,7 +141,7 @@ LISTEN  0  4096  127.0.0.1:9051  0.0.0.0:*  users:(("tor",pid=4421))`,
           },
           {
             cmd: "proxychains4 -q nmap -sT -Pn --top-ports=20 192.168.50.10",
-            out: `Starting Nmap 7.95 ( https://nmap.org )
+            out: `Starting Nmap 7.96 ( https://nmap.org )
 Nmap scan report for 192.168.50.10
 Host is up.
 PORT     STATE    SERVICE

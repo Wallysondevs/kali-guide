@@ -76,7 +76,7 @@ Created symlink /etc/systemd/system/sysstat.service.wants/...`,
         lines={[
           {
             cmd: "iostat -xz 2 3",
-            out: `Linux 6.11.0-kali2-amd64 (kali)         03/04/2026      _x86_64_        (8 CPU)
+            out: `Linux 6.16.0-kali1-amd64 (kali)         03/04/2026      _x86_64_        (8 CPU)
 
 avg-cpu:  %user   %nice %system %iowait  %steal   %idle
            4.21    0.00    1.32    0.42    0.00   94.05
@@ -177,7 +177,7 @@ unknown TCP                 0.000        0.412`,
         lines={[
           {
             cmd: "mpstat -P ALL 2 1",
-            out: `Linux 6.11.0-kali2-amd64 (kali)         03/04/2026      _x86_64_        (8 CPU)
+            out: `Linux 6.16.0-kali1-amd64 (kali)         03/04/2026      _x86_64_        (8 CPU)
 
 15:02:11     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
 15:02:13     all   28.42    0.00    8.71    1.21    0.00    0.12    0.00    0.00    0.00   61.54
@@ -230,7 +230,7 @@ unknown TCP                 0.000        0.412`,
         lines={[
           {
             cmd: "sar -u -s 03:00:00 -e 04:00:00 -f /var/log/sysstat/sa02",
-            out: `Linux 6.11.0-kali2-amd64 (kali)         02/04/2026      _x86_64_        (8 CPU)
+            out: `Linux 6.16.0-kali1-amd64 (kali)         02/04/2026      _x86_64_        (8 CPU)
 
 03:00:01    CPU     %user     %nice   %system   %iowait    %steal     %idle
 03:10:01    all      4.12      0.00      1.42      0.42      0.00     94.04

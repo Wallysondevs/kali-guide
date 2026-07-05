@@ -18,7 +18,7 @@ export default function Hardware() {
         lines={[
           {
             cmd: "inxi -Fxz",
-            out: `System:    Kernel: 6.11.0-kali1-amd64 x86_64 bits: 64 Desktop: Xfce 4.20.0
+            out: `System:    Kernel: 6.16.0-kali1-amd64 x86_64 bits: 64 Desktop: Xfce 4.20.0
            Distro: Kali GNU/Linux Rolling
 Machine:   Type: Laptop System: Dell product: XPS 15 9520 v: 1.5.0
            Mobo: Dell model: 0NHWMR v: A00 serial: <filter> UEFI: Dell v: 1.21.0

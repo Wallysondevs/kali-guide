@@ -534,7 +534,7 @@ Reading package lists... Done
 142 packages can be upgraded. Run 'apt list --upgradable' to see them.
 [...]
 The following packages will be REMOVED:
-  linux-image-6.11.0-kali1-amd64 (substituído por 6.11.0-kali3)
+  linux-image-6.16.0-kali1-amd64 (substituído por 6.16.0-kali1)
 0 upgraded, 0 newly installed, 1 to remove.`,
             outType: "success",
           },
@@ -604,7 +604,7 @@ Generation complete.
         lines={[
           {
             cmd: "uname -a && lsb_release -a",
-            out: `Linux kali 6.11.0-kali3-amd64 #1 SMP PREEMPT_DYNAMIC Kali 6.11.5-1kali1 (2025-02-14) x86_64 GNU/Linux
+            out: `Linux kali 6.16.0-kali1-amd64 #1 SMP PREEMPT_DYNAMIC Kali 6.11.5-1kali1 (2025-02-14) x86_64 GNU/Linux
 No LSB modules are available.
 Distributor ID: Kali
 Description:    Kali GNU/Linux Rolling
@@ -683,7 +683,7 @@ df -h
 ip -br a
 lsmod | grep vbox
 sudo apt list --installed 2>/dev/null | grep -E 'kali-linux|nmap|metasploit' | head`}
-        expected={`Linux kali 6.11.0-kali3-amd64 #1 SMP PREEMPT_DYNAMIC Kali 6.11.5-1kali1 x86_64
+        expected={`Linux kali 6.16.0-kali1-amd64 #1 SMP PREEMPT_DYNAMIC Kali 6.11.5-1kali1 x86_64
 Distributor ID: Kali  |  Release: 2025.2  |  Codename: kali-rolling
 
 Mem: 4.0Gi total  |  Disk: 49G size, 8.4G used

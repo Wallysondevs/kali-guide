@@ -61,7 +61,7 @@ Distributor ID: Kali
 Description:    Kali GNU/Linux Rolling
 Release:        2025.2
 Codename:       kali-rolling
-Linux kali 6.11.0-kali3-amd64 #1 SMP PREEMPT_DYNAMIC Kali 6.11.5-1kali1 (2025-02-14) x86_64 GNU/Linux`,
+Linux kali 6.16.0-kali1-amd64 #1 SMP PREEMPT_DYNAMIC Kali 6.11.5-1kali1 (2025-02-14) x86_64 GNU/Linux`,
             outType: "success",
           },
           {

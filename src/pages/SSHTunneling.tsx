@@ -132,7 +132,7 @@ socks5 127.0.0.1 1080`,
           },
           {
             cmd: "proxychains -q nmap -sT -Pn --top-ports=20 192.168.50.10",
-            out: `Starting Nmap 7.95
+            out: `Starting Nmap 7.96
 Nmap scan report for 192.168.50.10
 Host is up.
 PORT     STATE    SERVICE

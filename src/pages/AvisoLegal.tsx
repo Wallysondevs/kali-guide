@@ -106,7 +106,7 @@ export default function AvisoLegal() {
           {
             comment: "✅ AUTORIZADO — empresa cliente assinou contrato, IP está no escopo",
             cmd: "nmap -sV -sC 198.51.100.42   # IP listado no anexo A do RoE",
-            out: `Starting Nmap 7.94 ( https://nmap.org )
+            out: `Starting Nmap 7.96 ( https://nmap.org )
 Nmap scan report for portal.cliente.com.br (198.51.100.42)
 Host is up (0.012s latency).
 PORT    STATE SERVICE  VERSION
@@ -121,7 +121,7 @@ PORT    STATE SERVICE  VERSION
           {
             comment: "❌ CRIME — mesmo comando, alvo aleatório, sem autorização. Art. 154-A CP.",
             cmd: "nmap -sV -sC 200.123.45.67   # 'só queria testar'",
-            out: `Starting Nmap 7.94 ( https://nmap.org )
+            out: `Starting Nmap 7.96 ( https://nmap.org )
 Nmap scan report for vitima-aleatoria.com (200.123.45.67)
 [...]
 

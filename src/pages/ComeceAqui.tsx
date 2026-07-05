@@ -223,7 +223,7 @@ export default function ComeceAqui() {
           {
             comment: "4) versão completa do kernel + arquitetura",
             cmd: "uname -a",
-            out: "Linux kali 6.10.0-kali3-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.10.7-1kali1 (2026-09-15) x86_64 GNU/Linux",
+            out: "Linux kali 6.16.0-kali1-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.10.7-1kali1 (2026-09-15) x86_64 GNU/Linux",
             outType: "default",
           },
           {
@@ -493,7 +493,7 @@ uname -r
 history | tail -5`}
         expected={`wallyson
 /home/wallyson
-6.10.0-kali3-amd64
+6.16.0-kali1-amd64
   101  whoami
   102  pwd
   103  uname -r
