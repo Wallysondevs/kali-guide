@@ -11,7 +11,8 @@ export const MODULES: Module[] = [
       { path: "/aviso-legal", label: "Aviso Legal & Ética" },
       { path: "/comece-aqui", label: "Do Zero Absoluto" },
       { path: "/primeiros-arquivos", label: "Primeiros Arquivos" },
-      { path: "/personalizacao-setup", label: "Personalização" }
+      { path: "/personalizacao-setup", label: "Personalização" },
+      { path: "/glossario", label: "Glossário" },
     ],
   },
   {
@@ -32,11 +33,53 @@ export const MODULES: Module[] = [
     ],
   },
   {
+    title: "Bash (Shell)",
+    lessons: [
+      { path: "/shell-bash", label: "Shell Bash" },
+      { path: "/variaveis-ambiente", label: "Variáveis & PATH" },
+      { path: "/aliases", label: "Aliases & funções" },
+      { path: "/expansoes-bash", label: "Expansões" },
+      { path: "/redirecionamento", label: "Redirecionamento" },
+      { path: "/bash-avancado", label: "One-liners avançado" }
+    ],
+  },
+  {
+    title: "Editores & Scripts",
+    lessons: [
+      { path: "/scripts-bash", label: "Scripts Bash" },
+      { path: "/zsh", label: "Zsh & OMZ" },
+      { path: "/vim", label: "Vim" },
+      { path: "/navegacao", label: "Navegação no shell" },
+      { path: "/manipulacao-arquivos", label: "Manipulação de arquivos" }
+    ],
+  },
+  {
+    title: "Files, Multimedia & GUI",
+    lessons: [
+      { path: "/visualizacao", label: "Visualizar arquivos" },
+      { path: "/multimedia", label: "Multimedia & exiftool" },
+      { path: "/wine", label: "Wine" },
+      { path: "/troubleshooting", label: "Troubleshooting" },
+      { path: "/ambiente-grafico", label: "Ambiente Gráfico" }
+    ],
+  },
+  {
     title: "Gerenciamento",
     lessons: [
       { path: "/pacotes", label: "Gerência de Pacotes" },
       { path: "/usuarios", label: "Usuários e Grupos" },
       { path: "/servicos", label: "Serviços (systemd)" }
+    ],
+  },
+  {
+    title: "Processos & Logs",
+    lessons: [
+      { path: "/processos", label: "Processos" },
+      { path: "/cron", label: "Cron & agendamento" },
+      { path: "/journalctl", label: "journalctl" },
+      { path: "/iostat", label: "I/O & monitoring" },
+      { path: "/man-pages", label: "Man pages & help" },
+      { path: "/localizacao", label: "Locale & timezone" }
     ],
   },
   {
@@ -108,18 +151,29 @@ export const MODULES: Module[] = [
     ],
   },
   {
-    title: "Escalação de Privilégios",
-    lessons: [
-      { path: "/privesc-linux", label: "PrivEsc — Linux" },
-      { path: "/privesc-windows", label: "PrivEsc — Windows" }
-    ],
-  },
-  {
     title: "Redes & MITM",
     lessons: [
       { path: "/arp-spoofing", label: "ARP Spoofing & MITM" },
       { path: "/ettercap", label: "Ettercap" },
       { path: "/responder", label: "Responder (NTLM)" }
+    ],
+  },
+  {
+    title: "Wireless",
+    lessons: [
+      { path: "/aircrack", label: "Aircrack-ng" },
+      { path: "/wifiphisher", label: "Wifiphisher" },
+      { path: "/reaver", label: "Reaver (WPS)" },
+      { path: "/bluetooth", label: "Bluetooth Hacking" }
+    ],
+  },
+  {
+    title: "Phishing, Fuzzing & Detection",
+    lessons: [
+      { path: "/evilginx", label: "Evilginx2" },
+      { path: "/gophish", label: "Gophish" },
+      { path: "/wfuzz", label: "Wfuzz & ffuf" },
+      { path: "/atomic-red-team", label: "Atomic Red Team" }
     ],
   },
   {
@@ -132,6 +186,21 @@ export const MODULES: Module[] = [
     ],
   },
   {
+    title: "AD Tooling",
+    lessons: [
+      { path: "/mimikatz", label: "Mimikatz" },
+      { path: "/rubeus", label: "Rubeus" },
+      { path: "/sharphound", label: "SharpHound" }
+    ],
+  },
+  {
+    title: "Escalação de Privilégios",
+    lessons: [
+      { path: "/privesc-linux", label: "PrivEsc — Linux" },
+      { path: "/privesc-windows", label: "PrivEsc — Windows" }
+    ],
+  },
+  {
     title: "Pivoting & Tunelamento",
     lessons: [
       { path: "/ssh-tunneling", label: "SSH Tunneling & Chisel" },
@@ -140,12 +209,11 @@ export const MODULES: Module[] = [
     ],
   },
   {
-    title: "Wireless",
+    title: "C2 Frameworks",
     lessons: [
-      { path: "/aircrack", label: "Aircrack-ng" },
-      { path: "/wifiphisher", label: "Wifiphisher" },
-      { path: "/reaver", label: "Reaver (WPS)" },
-      { path: "/bluetooth", label: "Bluetooth Hacking" }
+      { path: "/sliver", label: "Sliver C2" },
+      { path: "/havoc", label: "Havoc" },
+      { path: "/mythic", label: "Mythic" }
     ],
   },
   {
@@ -210,48 +278,6 @@ export const MODULES: Module[] = [
     ],
   },
   {
-    title: "Processos & Logs",
-    lessons: [
-      { path: "/processos", label: "Processos" },
-      { path: "/cron", label: "Cron & agendamento" },
-      { path: "/journalctl", label: "journalctl" },
-      { path: "/iostat", label: "I/O & monitoring" },
-      { path: "/man-pages", label: "Man pages & help" },
-      { path: "/localizacao", label: "Locale & timezone" }
-    ],
-  },
-  {
-    title: "Bash (Shell)",
-    lessons: [
-      { path: "/shell-bash", label: "Shell Bash" },
-      { path: "/variaveis-ambiente", label: "Variáveis & PATH" },
-      { path: "/aliases", label: "Aliases & funções" },
-      { path: "/expansoes-bash", label: "Expansões" },
-      { path: "/redirecionamento", label: "Redirecionamento" },
-      { path: "/bash-avancado", label: "One-liners avançado" }
-    ],
-  },
-  {
-    title: "Editores & Scripts",
-    lessons: [
-      { path: "/scripts-bash", label: "Scripts Bash" },
-      { path: "/zsh", label: "Zsh & OMZ" },
-      { path: "/vim", label: "Vim" },
-      { path: "/navegacao", label: "Navegação no shell" },
-      { path: "/manipulacao-arquivos", label: "Manipulação de arquivos" }
-    ],
-  },
-  {
-    title: "Files, Multimedia & GUI",
-    lessons: [
-      { path: "/visualizacao", label: "Visualizar arquivos" },
-      { path: "/multimedia", label: "Multimedia & exiftool" },
-      { path: "/wine", label: "Wine" },
-      { path: "/troubleshooting", label: "Troubleshooting" },
-      { path: "/ambiente-grafico", label: "Ambiente Gráfico" }
-    ],
-  },
-  {
     title: "Redes (Profundo)",
     lessons: [
       { path: "/netplan", label: "Netplan & NM" },
@@ -301,31 +327,6 @@ export const MODULES: Module[] = [
     ],
   },
   {
-    title: "C2 Frameworks",
-    lessons: [
-      { path: "/sliver", label: "Sliver C2" },
-      { path: "/havoc", label: "Havoc" },
-      { path: "/mythic", label: "Mythic" }
-    ],
-  },
-  {
-    title: "AD Tooling",
-    lessons: [
-      { path: "/mimikatz", label: "Mimikatz" },
-      { path: "/rubeus", label: "Rubeus" },
-      { path: "/sharphound", label: "SharpHound" }
-    ],
-  },
-  {
-    title: "Phishing, Fuzzing & Detection",
-    lessons: [
-      { path: "/evilginx", label: "Evilginx2" },
-      { path: "/gophish", label: "Gophish" },
-      { path: "/wfuzz", label: "Wfuzz & ffuf" },
-      { path: "/atomic-red-team", label: "Atomic Red Team" }
-    ],
-  },
-  {
     title: "Referências & Carreira",
     lessons: [
       { path: "/cve", label: "Pesquisa de CVEs" },
@@ -334,7 +335,7 @@ export const MODULES: Module[] = [
       { path: "/relatorios", label: "Relatórios de Pentest" },
       { path: "/referencias", label: "Referências" }
     ],
-  }
+  },
 ];
 
 export const COURSE: (Lesson & { module: string; index: number })[] = MODULES.flatMap(

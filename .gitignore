@@ -7,3 +7,6 @@ dist/
 .replit-artifact/
 
 pnpm-lock.yaml
+
+# backups dos scripts de patch
+*.bak-*

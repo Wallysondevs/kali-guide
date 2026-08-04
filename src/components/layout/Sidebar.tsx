@@ -1,10 +1,11 @@
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { useHashLocation } from "wouter/use-hash-location";
 import { cn } from "@/lib/utils";
 import {
   BookOpen, Terminal, Shield, Settings, FileText, Users,
   Network, X, Package, Code, FolderOpen, Key,
-  Globe, ChevronRight, Search, Layers, Wifi,
+  Globe, ChevronRight, ChevronDown, Search, Layers, Wifi,
   Lock, HardDrive, Zap, Bug, Eye, Radio, Database,
   Server, AlertTriangle, Award, FileSearch, Cpu,
   Crosshair, Map, Fingerprint, Biohazard, ShieldAlert,
@@ -14,6 +15,8 @@ import {
   Cloud, Smartphone, Hash, FileCode, Webhook, Dot, Check,
 } from "lucide-react";
 import { KaliLogo } from "@/components/ui/KaliLogo";
+import { CommandPalette, EVENTO_ABRIR_BUSCA } from "@/components/layout/CommandPalette";
+import { LEVELS, LEVEL_COUNTS, LEVEL_LABEL, LEVEL_SHORT, LEVEL_COLOR, type Nivel } from "@/lib/levels";
 import { useProgress, TOTAL_LESSONS } from "@/lib/course";
 
 const NAVIGATION = [
@@ -25,6 +28,7 @@ const NAVIGATION = [
       { path: "/comece-aqui", label: "Do Zero Absoluto", icon: Zap },
       { path: "/primeiros-arquivos", label: "Primeiros Arquivos", icon: FileText },
       { path: "/personalizacao-setup", label: "Personalização", icon: Settings },
+      { path: "/glossario", label: "Glossário", icon: BookMarked },
     ],
   },
   {
@@ -45,11 +49,53 @@ const NAVIGATION = [
     ],
   },
   {
+    title: "Bash (Shell)",
+    items: [
+      { path: "/shell-bash", label: "Shell Bash", icon: Terminal },
+      { path: "/variaveis-ambiente", label: "Variáveis & PATH", icon: Code },
+      { path: "/aliases", label: "Aliases & funções", icon: Code },
+      { path: "/expansoes-bash", label: "Expansões", icon: Code },
+      { path: "/redirecionamento", label: "Redirecionamento", icon: Terminal },
+      { path: "/bash-avancado", label: "One-liners avançado", icon: Terminal },
+    ],
+  },
+  {
+    title: "Editores & Scripts",
+    items: [
+      { path: "/scripts-bash", label: "Scripts Bash", icon: FileCode },
+      { path: "/zsh", label: "Zsh & OMZ", icon: Terminal },
+      { path: "/vim", label: "Vim", icon: FileCode },
+      { path: "/navegacao", label: "Navegação no shell", icon: FolderOpen },
+      { path: "/manipulacao-arquivos", label: "Manipulação de arquivos", icon: FolderOpen },
+    ],
+  },
+  {
+    title: "Files, Multimedia & GUI",
+    items: [
+      { path: "/visualizacao", label: "Visualizar arquivos", icon: Eye },
+      { path: "/multimedia", label: "Multimedia & exiftool", icon: FileSearch },
+      { path: "/wine", label: "Wine", icon: MonitorSmartphone },
+      { path: "/troubleshooting", label: "Troubleshooting", icon: AlertTriangle },
+      { path: "/ambiente-grafico", label: "Ambiente Gráfico", icon: MonitorSmartphone },
+    ],
+  },
+  {
     title: "Gerenciamento",
     items: [
       { path: "/pacotes", label: "Gerência de Pacotes", icon: Package },
       { path: "/usuarios", label: "Usuários e Grupos", icon: Users },
       { path: "/servicos", label: "Serviços (systemd)", icon: Server },
+    ],
+  },
+  {
+    title: "Processos & Logs",
+    items: [
+      { path: "/processos", label: "Processos", icon: Activity },
+      { path: "/cron", label: "Cron & agendamento", icon: Activity },
+      { path: "/journalctl", label: "journalctl", icon: FileSearch },
+      { path: "/iostat", label: "I/O & monitoring", icon: Activity },
+      { path: "/man-pages", label: "Man pages & help", icon: BookOpen },
+      { path: "/localizacao", label: "Locale & timezone", icon: Globe },
     ],
   },
   {
@@ -121,18 +167,29 @@ const NAVIGATION = [
     ],
   },
   {
-    title: "Escalação de Privilégios",
-    items: [
-      { path: "/privesc-linux", label: "PrivEsc — Linux", icon: Flame },
-      { path: "/privesc-windows", label: "PrivEsc — Windows", icon: ShieldAlert },
-    ],
-  },
-  {
     title: "Redes & MITM",
     items: [
       { path: "/arp-spoofing", label: "ARP Spoofing & MITM", icon: Swords },
       { path: "/ettercap", label: "Ettercap", icon: Activity },
       { path: "/responder", label: "Responder (NTLM)", icon: Target },
+    ],
+  },
+  {
+    title: "Wireless",
+    items: [
+      { path: "/aircrack", label: "Aircrack-ng", icon: Wifi },
+      { path: "/wifiphisher", label: "Wifiphisher", icon: Radio },
+      { path: "/reaver", label: "Reaver (WPS)", icon: Lock },
+      { path: "/bluetooth", label: "Bluetooth Hacking", icon: Radio },
+    ],
+  },
+  {
+    title: "Phishing, Fuzzing & Detection",
+    items: [
+      { path: "/evilginx", label: "Evilginx2", icon: Target },
+      { path: "/gophish", label: "Gophish", icon: Target },
+      { path: "/wfuzz", label: "Wfuzz & ffuf", icon: Search },
+      { path: "/atomic-red-team", label: "Atomic Red Team", icon: Swords },
     ],
   },
   {
@@ -145,6 +202,21 @@ const NAVIGATION = [
     ],
   },
   {
+    title: "AD Tooling",
+    items: [
+      { path: "/mimikatz", label: "Mimikatz", icon: Key },
+      { path: "/rubeus", label: "Rubeus", icon: Key },
+      { path: "/sharphound", label: "SharpHound", icon: Crosshair },
+    ],
+  },
+  {
+    title: "Escalação de Privilégios",
+    items: [
+      { path: "/privesc-linux", label: "PrivEsc — Linux", icon: Flame },
+      { path: "/privesc-windows", label: "PrivEsc — Windows", icon: ShieldAlert },
+    ],
+  },
+  {
     title: "Pivoting & Tunelamento",
     items: [
       { path: "/ssh-tunneling", label: "SSH Tunneling & Chisel", icon: GitBranch },
@@ -153,12 +225,11 @@ const NAVIGATION = [
     ],
   },
   {
-    title: "Wireless",
+    title: "C2 Frameworks",
     items: [
-      { path: "/aircrack", label: "Aircrack-ng", icon: Wifi },
-      { path: "/wifiphisher", label: "Wifiphisher", icon: Radio },
-      { path: "/reaver", label: "Reaver (WPS)", icon: Lock },
-      { path: "/bluetooth", label: "Bluetooth Hacking", icon: Radio },
+      { path: "/sliver", label: "Sliver C2", icon: Skull },
+      { path: "/havoc", label: "Havoc", icon: Skull },
+      { path: "/mythic", label: "Mythic", icon: Skull },
     ],
   },
   {
@@ -223,48 +294,6 @@ const NAVIGATION = [
     ],
   },
   {
-    title: "Processos & Logs",
-    items: [
-      { path: "/processos", label: "Processos", icon: Activity },
-      { path: "/cron", label: "Cron & agendamento", icon: Activity },
-      { path: "/journalctl", label: "journalctl", icon: FileSearch },
-      { path: "/iostat", label: "I/O & monitoring", icon: Activity },
-      { path: "/man-pages", label: "Man pages & help", icon: BookOpen },
-      { path: "/localizacao", label: "Locale & timezone", icon: Globe },
-    ],
-  },
-  {
-    title: "Bash (Shell)",
-    items: [
-      { path: "/shell-bash", label: "Shell Bash", icon: Terminal },
-      { path: "/variaveis-ambiente", label: "Variáveis & PATH", icon: Code },
-      { path: "/aliases", label: "Aliases & funções", icon: Code },
-      { path: "/expansoes-bash", label: "Expansões", icon: Code },
-      { path: "/redirecionamento", label: "Redirecionamento", icon: Terminal },
-      { path: "/bash-avancado", label: "One-liners avançado", icon: Terminal },
-    ],
-  },
-  {
-    title: "Editores & Scripts",
-    items: [
-      { path: "/scripts-bash", label: "Scripts Bash", icon: FileCode },
-      { path: "/zsh", label: "Zsh & OMZ", icon: Terminal },
-      { path: "/vim", label: "Vim", icon: FileCode },
-      { path: "/navegacao", label: "Navegação no shell", icon: FolderOpen },
-      { path: "/manipulacao-arquivos", label: "Manipulação de arquivos", icon: FolderOpen },
-    ],
-  },
-  {
-    title: "Files, Multimedia & GUI",
-    items: [
-      { path: "/visualizacao", label: "Visualizar arquivos", icon: Eye },
-      { path: "/multimedia", label: "Multimedia & exiftool", icon: FileSearch },
-      { path: "/wine", label: "Wine", icon: MonitorSmartphone },
-      { path: "/troubleshooting", label: "Troubleshooting", icon: AlertTriangle },
-      { path: "/ambiente-grafico", label: "Ambiente Gráfico", icon: MonitorSmartphone },
-    ],
-  },
-  {
     title: "Redes (Profundo)",
     items: [
       { path: "/netplan", label: "Netplan & NM", icon: Network },
@@ -314,31 +343,6 @@ const NAVIGATION = [
     ],
   },
   {
-    title: "C2 Frameworks",
-    items: [
-      { path: "/sliver", label: "Sliver C2", icon: Skull },
-      { path: "/havoc", label: "Havoc", icon: Skull },
-      { path: "/mythic", label: "Mythic", icon: Skull },
-    ],
-  },
-  {
-    title: "AD Tooling",
-    items: [
-      { path: "/mimikatz", label: "Mimikatz", icon: Key },
-      { path: "/rubeus", label: "Rubeus", icon: Key },
-      { path: "/sharphound", label: "SharpHound", icon: Crosshair },
-    ],
-  },
-  {
-    title: "Phishing, Fuzzing & Detection",
-    items: [
-      { path: "/evilginx", label: "Evilginx2", icon: Target },
-      { path: "/gophish", label: "Gophish", icon: Target },
-      { path: "/wfuzz", label: "Wfuzz & ffuf", icon: Search },
-      { path: "/atomic-red-team", label: "Atomic Red Team", icon: Swords },
-    ],
-  },
-  {
     title: "Referências & Carreira",
     items: [
       { path: "/cve", label: "Pesquisa de CVEs", icon: AlertTriangle },
@@ -355,12 +359,83 @@ interface SidebarProps {
   setIsOpen: (open: boolean) => void;
 }
 
+const CHAVE_SECOES = "kali-sidebar-secoes";
+const CHAVE_NIVEL = "kali-sidebar-nivel";
+type Filtro = Nivel | "todos";
+const FILTROS: Filtro[] = ["todos", "iniciante", "intermediario", "avancado"];
+/** Só as duas primeiras seções abertas por padrão: menos rolagem para quem chega. */
+const ABERTAS_PADRAO = ["Comece Aqui", "Introdução"];
+
+function lerSecoesAbertas(): string[] {
+  try {
+    const raw = localStorage.getItem(CHAVE_SECOES);
+    if (!raw) return ABERTAS_PADRAO;
+    const valor = JSON.parse(raw);
+    return Array.isArray(valor) ? valor : ABERTAS_PADRAO;
+  } catch {
+    return ABERTAS_PADRAO;
+  }
+}
+
+function lerNivel(): Filtro {
+  try {
+    const raw = localStorage.getItem(CHAVE_NIVEL) as Filtro | null;
+    return raw && FILTROS.includes(raw) ? raw : "todos";
+  } catch {
+    return "todos";
+  }
+}
+
 export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const [location] = useHashLocation();
   const { has, count, percent } = useProgress();
+  const [abertas, setAbertas] = useState<string[]>(lerSecoesAbertas);
+  const [nivel, setNivel] = useState<Filtro>(lerNivel);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CHAVE_NIVEL, nivel);
+    } catch {
+      /* sem localStorage: filtro vale so nesta sessao */
+    }
+  }, [nivel]);
+
+  // Guarda quais seções ficaram abertas.
+  useEffect(() => {
+    try {
+      localStorage.setItem(CHAVE_SECOES, JSON.stringify(abertas));
+    } catch {
+      /* localStorage indisponível: segue sem persistir */
+    }
+  }, [abertas]);
+
+  // Abre sozinha a seção do tópico atual, para o menu nunca "esconder" onde você está.
+  useEffect(() => {
+    const secao = NAVIGATION.find((s) => s.items.some((i) => i.path === location));
+    if (!secao) return;
+    setAbertas((a) => (a.includes(secao.title) ? a : [...a, secao.title]));
+  }, [location]);
+
+  const todasAbertas = abertas.length >= NAVIGATION.length;
+
+  function alternarSecao(titulo: string) {
+    setAbertas((a) =>
+      a.includes(titulo) ? a.filter((t) => t !== titulo) : [...a, titulo],
+    );
+  }
+
+  function alternarTudo() {
+    setAbertas(todasAbertas ? [] : NAVIGATION.map((s) => s.title));
+  }
+
+  function abrirBusca() {
+    window.dispatchEvent(new Event(EVENTO_ABRIR_BUSCA));
+  }
 
   return (
     <>
+      <CommandPalette />
+
       {/* Mobile overlay */}
       {isOpen && (
         <div
@@ -404,6 +479,21 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           </button>
         </div>
 
+        {/* Busca */}
+        <div className="px-3 py-2.5 border-b border-white/5" style={{ background: "hsl(var(--kali-bg))" }}>
+          <button
+            onClick={abrirBusca}
+            className="w-full flex items-center gap-2 px-2.5 py-2 rounded-md font-mono text-[12px] text-[hsl(var(--kali-dim))] border border-white/10 hover:border-[hsl(var(--kali-cyan))]/40 hover:text-[hsl(var(--kali-cyan))] transition-colors"
+            style={{ background: "hsl(var(--kali-bg-2))" }}
+          >
+            <Search className="w-3.5 h-3.5 shrink-0" />
+            <span className="flex-1 text-left">Buscar tópico...</span>
+            <kbd className="px-1.5 py-0.5 rounded border border-white/10 text-[10px] bg-black/30">
+              Ctrl K
+            </kbd>
+          </button>
+        </div>
+
         {/* Mini prompt */}
         <div
           className="px-4 py-2 border-b border-white/5 font-mono text-[11px]"
@@ -443,58 +533,162 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           </p>
         </div>
 
+        {/* Filtro por nivel */}
+        <div
+          className="px-3 py-2 border-b border-white/5 flex items-center gap-1 font-mono text-[10px]"
+          style={{ background: "hsl(var(--kali-bg))" }}
+        >
+          <span className="text-[hsl(var(--kali-dim))] mr-0.5">nível:</span>
+          {FILTROS.map((f) => {
+            const ativo = nivel === f;
+            const total = f === "todos" ? TOTAL_LESSONS : LEVEL_COUNTS[f];
+            const cor = f === "todos" ? "--kali-cyan" : LEVEL_COLOR[f];
+            return (
+              <button
+                key={f}
+                onClick={() => setNivel(f)}
+                title={`${f === "todos" ? "Todos os tópicos" : LEVEL_LABEL[f]} (${total})`}
+                className={cn(
+                  "px-1.5 py-0.5 rounded border transition-colors",
+                  ativo
+                    ? "border-transparent font-bold"
+                    : "border-white/10 text-[hsl(var(--kali-dim))] hover:border-white/25"
+                )}
+                style={
+                  ativo
+                    ? { background: `hsl(var(${cor}) / 0.18)`, color: `hsl(var(${cor}))` }
+                    : undefined
+                }
+              >
+                {f === "todos" ? "todos" : LEVEL_SHORT[f]} {total}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Controle de expandir/recolher */}
+        <div className="flex items-center justify-between px-4 py-1.5 border-b border-white/5 font-mono text-[10px]">
+          <span className="text-[hsl(var(--kali-dim))]">
+            {NAVIGATION.length} módulos · {abertas.length} aberto{abertas.length === 1 ? "" : "s"}
+          </span>
+          <button
+            onClick={alternarTudo}
+            className="text-[hsl(var(--kali-cyan))]/80 hover:text-[hsl(var(--kali-cyan))] transition-colors"
+          >
+            {todasAbertas ? "recolher tudo" : "expandir tudo"}
+          </button>
+        </div>
+
         {/* Navigation */}
-        <nav className="p-3 space-y-5 pb-8">
-          {NAVIGATION.map((section, sIdx) => (
-            <div key={section.title}>
-              <h2 className="text-[10px] font-mono font-semibold text-[hsl(var(--kali-cyan))]/80 uppercase tracking-wider px-2 mb-1.5 flex items-center gap-1.5">
-                <span className="text-[hsl(var(--kali-magenta))]">
-                  [{String(sIdx + 1).padStart(2, "0")}]
-                </span>
-                {section.title}
-              </h2>
-              <ul className="space-y-0.5">
-                {section.items.map((item) => {
-                  const isActive = location === item.path;
-                  const isDone = item.path !== "/" && has(item.path);
-                  const Icon = item.icon;
-                  return (
-                    <li key={item.path}>
-                      <Link href={item.path}>
-                        <a
-                          className={cn(
-                            "flex items-center gap-2 px-2 py-1.5 rounded-md text-[13px] font-mono transition-colors",
-                            isActive
-                              ? "bg-[hsl(var(--kali-cyan))]/15 text-[hsl(var(--kali-cyan))] font-semibold"
-                              : "text-[hsl(var(--kali-fg))]/75 hover:text-[hsl(var(--kali-cyan))] hover:bg-white/5"
-                          )}
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {isActive ? (
-                            <ChevronRight className="w-3.5 h-3.5 flex-shrink-0 text-[hsl(var(--kali-magenta))]" />
-                          ) : isDone ? (
-                            <Check className="w-3.5 h-3.5 flex-shrink-0 text-[hsl(var(--kali-green))]" />
-                          ) : (
-                            <Dot className="w-3.5 h-3.5 flex-shrink-0 text-[hsl(var(--kali-dim))]" />
-                          )}
-                          <Icon className="w-3.5 h-3.5 flex-shrink-0 opacity-80" />
-                          <span className="flex-1 leading-tight truncate">
-                            {item.label}
-                          </span>
-                        </a>
-                      </Link>
-                    </li>
+        <nav className="p-3 space-y-1 pb-8">
+          {NAVIGATION.map((section, sIdx) => {
+            const aberta = abertas.includes(section.title);
+            const itens =
+              nivel === "todos"
+                ? section.items
+                : section.items.filter(
+                    (i) => i.path === "/" || LEVELS[i.path] === nivel,
                   );
-                })}
-              </ul>
-            </div>
-          ))}
+            // Secao sem nenhum topico do nivel escolhido simplesmente desaparece.
+            if (itens.length === 0) return null;
+            const contaveis = itens.filter((i) => i.path !== "/");
+            const feitas = contaveis.filter((i) => has(i.path)).length;
+            const completa = contaveis.length > 0 && feitas === contaveis.length;
+            const temAtivo = section.items.some((i) => i.path === location);
+
+            return (
+              <div key={section.title}>
+                <button
+                  onClick={() => alternarSecao(section.title)}
+                  className={cn(
+                    "w-full flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] font-mono font-semibold uppercase tracking-wider transition-colors",
+                    temAtivo
+                      ? "text-[hsl(var(--kali-cyan))] bg-white/5"
+                      : "text-[hsl(var(--kali-cyan))]/80 hover:bg-white/5"
+                  )}
+                  aria-expanded={aberta}
+                >
+                  <ChevronDown
+                    className={cn(
+                      "w-3 h-3 shrink-0 transition-transform duration-200",
+                      aberta ? "rotate-0" : "-rotate-90"
+                    )}
+                  />
+                  <span className="text-[hsl(var(--kali-magenta))]">
+                    [{String(sIdx + 1).padStart(2, "0")}]
+                  </span>
+                  <span className="flex-1 text-left truncate normal-case">
+                    {section.title}
+                  </span>
+                  {contaveis.length > 0 && (
+                    <span
+                      className={cn(
+                        "shrink-0 tabular-nums",
+                        completa
+                          ? "text-[hsl(var(--kali-green))]"
+                          : "text-[hsl(var(--kali-dim))]"
+                      )}
+                    >
+                      {completa ? "✓ " : ""}
+                      {feitas}/{contaveis.length}
+                    </span>
+                  )}
+                </button>
+
+                {aberta && (
+                  <ul className="space-y-0.5 mt-1 mb-2">
+                    {itens.map((item) => {
+                      const isActive = location === item.path;
+                      const isDone = item.path !== "/" && has(item.path);
+                      const Icon = item.icon;
+                      return (
+                        <li key={item.path}>
+                          <Link href={item.path}>
+                            <a
+                              className={cn(
+                                "flex items-center gap-2 px-2 py-1.5 rounded-md text-[13px] font-mono transition-colors",
+                                isActive
+                                  ? "bg-[hsl(var(--kali-cyan))]/15 text-[hsl(var(--kali-cyan))] font-semibold"
+                                  : "text-[hsl(var(--kali-fg))]/75 hover:text-[hsl(var(--kali-cyan))] hover:bg-white/5"
+                              )}
+                              onClick={() => setIsOpen(false)}
+                            >
+                              {isActive ? (
+                                <ChevronRight className="w-3.5 h-3.5 flex-shrink-0 text-[hsl(var(--kali-magenta))]" />
+                              ) : isDone ? (
+                                <Check className="w-3.5 h-3.5 flex-shrink-0 text-[hsl(var(--kali-green))]" />
+                              ) : (
+                                <Dot className="w-3.5 h-3.5 flex-shrink-0 text-[hsl(var(--kali-dim))]" />
+                              )}
+                              <Icon className="w-3.5 h-3.5 flex-shrink-0 opacity-80" />
+                              <span className="flex-1 leading-tight truncate">
+                                {item.label}
+                              </span>
+                              {item.path !== "/" && LEVELS[item.path] && (
+                                <span
+                                  className="shrink-0 text-[9px] font-bold opacity-60"
+                                  style={{ color: `hsl(var(${LEVEL_COLOR[LEVELS[item.path]]}))` }}
+                                  title={LEVEL_LABEL[LEVELS[item.path]]}
+                                >
+                                  {LEVEL_SHORT[LEVELS[item.path]]}
+                                </span>
+                              )}
+                            </a>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
         </nav>
 
         {/* Footer estilo prompt */}
         <div className="px-4 py-3 border-t border-white/5 font-mono text-[10px] sticky bottom-0" style={{ background: "hsl(var(--kali-bg-2))" }}>
           <p className="text-[hsl(var(--kali-dim))] m-0 leading-tight">
-            <span className="text-[hsl(var(--kali-green))]">●</span> 160+ tópicos
+            <span className="text-[hsl(var(--kali-green))]">●</span> {TOTAL_LESSONS} tópicos
           </p>
           <p className="text-[hsl(var(--kali-dim))] m-0 leading-tight">
             <span className="text-[hsl(var(--kali-cyan))]">$</span> Pentest Profissional PT-BR
