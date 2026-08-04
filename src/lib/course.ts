@@ -118,6 +118,7 @@ export const MODULES: Module[] = [
       { path: "/ssti", label: "SSTI (Templates)" },
       { path: "/xxe", label: "XXE (XML)" },
       { path: "/jwt", label: "JWT (Tokens)" },
+      { path: "/nuclei", label: "Nuclei (Scanner)" },
       { path: "/lfi-rfi", label: "LFI & RFI" },
       { path: "/nikto", label: "Nikto" },
       { path: "/gobuster", label: "Gobuster" },
