@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Check, Copy, FileCode2 } from "lucide-react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { PrismAsyncLight as SyntaxHighlighter } from "react-syntax-highlighter";
+import vscDarkPlus from "react-syntax-highlighter/dist/esm/styles/prism/vsc-dark-plus";
 
 interface CodeBlockProps {
   code: string;
@@ -9,6 +9,57 @@ interface CodeBlockProps {
   /** Caminho do arquivo / título (ex: "/etc/apache2/sites-available/default.conf"). */
   title?: string;
 }
+
+/**
+ * Apelidos: nomes que usamos nas páginas -> nome real da gramática do Prism.
+ */
+const ALIASES: Record<string, string> = {
+  html: "markup",
+  xml: "markup",
+  svg: "markup",
+  apache: "apacheconf",
+  dockerfile: "docker",
+  "ssh-config": "ini",
+  conf: "ini",
+  cfg: "ini",
+  js: "javascript",
+  py: "python",
+  sh: "bash",
+  shell: "bash",
+  console: "bash",
+  yml: "yaml",
+  ps1: "powershell",
+  md: "markdown",
+};
+
+/**
+ * Gramáticas que o Prism carrega sob demanda. Qualquer coisa fora daqui
+ * (text, vim, asm, ...) é mostrada sem realce, sem baixar chunk nenhum.
+ */
+const SUPPORTED = new Set([
+  "apacheconf",
+  "bash",
+  "c",
+  "cypher",
+  "docker",
+  "graphql",
+  "http",
+  "ini",
+  "javascript",
+  "json",
+  "lua",
+  "markdown",
+  "markup",
+  "nginx",
+  "nim",
+  "php",
+  "powershell",
+  "python",
+  "rust",
+  "sql",
+  "toml",
+  "yaml",
+]);
 
 /**
  * Bloco para mostrar conteúdo de arquivo (config, código fonte, etc.).
@@ -22,6 +73,11 @@ export function CodeBlock({ code, language = "bash", title }: CodeBlockProps) {
     setCopied(true);
     setTimeout(() => setCopied(false), 1800);
   };
+
+  const key = language.toLowerCase();
+  const grammar = ALIASES[key] ?? key;
+  const highlight = SUPPORTED.has(grammar);
+  const body = code.trim();
 
   return (
     <div
@@ -61,20 +117,29 @@ export function CodeBlock({ code, language = "bash", title }: CodeBlockProps) {
         </button>
       </div>
       <div className="kali-scroll p-4 text-sm font-mono overflow-x-auto">
-        <SyntaxHighlighter
-          language={language}
-          style={vscDarkPlus}
-          customStyle={{
-            margin: 0,
-            padding: 0,
-            background: "transparent",
-            fontSize: "13px",
-            lineHeight: 1.6,
-          }}
-          wrapLines={true}
-        >
-          {code.trim()}
-        </SyntaxHighlighter>
+        {highlight ? (
+          <SyntaxHighlighter
+            language={grammar}
+            style={vscDarkPlus}
+            customStyle={{
+              margin: 0,
+              padding: 0,
+              background: "transparent",
+              fontSize: "13px",
+              lineHeight: 1.6,
+            }}
+            wrapLines={true}
+          >
+            {body}
+          </SyntaxHighlighter>
+        ) : (
+          <pre
+            className="m-0 p-0 text-gray-300"
+            style={{ fontSize: "13px", lineHeight: 1.6, background: "transparent" }}
+          >
+            {body}
+          </pre>
+        )}
       </div>
     </div>
   );
