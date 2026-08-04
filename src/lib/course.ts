@@ -123,6 +123,7 @@ export const MODULES: Module[] = [
       { path: "/adcs", label: "ADCS / Certipy" },
       { path: "/recon-moderno", label: "Recon moderno" },
       { path: "/delegacoes-ad", label: "Delegacoes AD + Relay" },
+      { path: "/owasp-llm", label: "OWASP LLM Top 10" },
       { path: "/lfi-rfi", label: "LFI & RFI" },
       { path: "/nikto", label: "Nikto" },
       { path: "/gobuster", label: "Gobuster" },
