@@ -136,6 +136,7 @@ const NAVIGATION = [
       { path: "/jwt", label: "JWT (Tokens)", icon: Code },
       { path: "/nuclei", label: "Nuclei (Scanner)", icon: Code },
       { path: "/laboratorio", label: "Monte seu laboratorio", icon: Code },
+      { path: "/adcs", label: "ADCS / Certipy", icon: Code },
       { path: "/lfi-rfi", label: "LFI & RFI", icon: FolderOpen },
       { path: "/nikto", label: "Nikto", icon: AlertTriangle },
       { path: "/gobuster", label: "Gobuster", icon: Search },
