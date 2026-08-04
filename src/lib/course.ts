@@ -121,6 +121,7 @@ export const MODULES: Module[] = [
       { path: "/nuclei", label: "Nuclei (Scanner)" },
       { path: "/laboratorio", label: "Monte seu laboratorio" },
       { path: "/adcs", label: "ADCS / Certipy" },
+      { path: "/recon-moderno", label: "Recon moderno" },
       { path: "/lfi-rfi", label: "LFI & RFI" },
       { path: "/nikto", label: "Nikto" },
       { path: "/gobuster", label: "Gobuster" },
