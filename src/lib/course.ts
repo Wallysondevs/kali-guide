@@ -115,6 +115,7 @@ export const MODULES: Module[] = [
       { path: "/zap", label: "OWASP ZAP" },
       { path: "/sqlmap", label: "SQLMap" },
       { path: "/xss", label: "XSS Manual" },
+      { path: "/ssti", label: "SSTI (Templates)" },
       { path: "/lfi-rfi", label: "LFI & RFI" },
       { path: "/nikto", label: "Nikto" },
       { path: "/gobuster", label: "Gobuster" },

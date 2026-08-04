@@ -85,6 +85,7 @@ const Metodologia = lazy(() => import("@/pages/Metodologia"));
 const BugBounty = lazy(() => import("@/pages/BugBounty"));
 const OpenVAS = lazy(() => import("@/pages/OpenVAS"));
 const SSRF = lazy(() => import("@/pages/SSRF"));
+const SSTI = lazy(() => import("@/pages/SSTI"));
 const CSRF = lazy(() => import("@/pages/CSRF"));
 const CommandInjection = lazy(() => import("@/pages/CommandInjection"));
 const WebShells = lazy(() => import("@/pages/WebShells"));
@@ -309,6 +310,7 @@ function Router() {
 
         <Route path="/openvas" component={OpenVAS} />
         <Route path="/ssrf" component={SSRF} />
+        <Route path="/ssti" component={SSTI} />
         <Route path="/csrf" component={CSRF} />
         <Route path="/command-injection" component={CommandInjection} />
         <Route path="/webshells" component={WebShells} />
