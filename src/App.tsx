@@ -89,6 +89,7 @@ const SSTI = lazy(() => import("@/pages/SSTI"));
 const XXE = lazy(() => import("@/pages/XXE"));
 const JWT = lazy(() => import("@/pages/JWT"));
 const Nuclei = lazy(() => import("@/pages/Nuclei"));
+const Laboratorio = lazy(() => import("@/pages/Laboratorio"));
 const CSRF = lazy(() => import("@/pages/CSRF"));
 const CommandInjection = lazy(() => import("@/pages/CommandInjection"));
 const WebShells = lazy(() => import("@/pages/WebShells"));
@@ -317,6 +318,7 @@ function Router() {
         <Route path="/xxe" component={XXE} />
         <Route path="/jwt" component={JWT} />
         <Route path="/nuclei" component={Nuclei} />
+        <Route path="/laboratorio" component={Laboratorio} />
         <Route path="/csrf" component={CSRF} />
         <Route path="/command-injection" component={CommandInjection} />
         <Route path="/webshells" component={WebShells} />
