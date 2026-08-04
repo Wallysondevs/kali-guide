@@ -1,6 +1,6 @@
 // ARQUIVO GERADO por gen_levels.py a partir da prop `difficulty` de cada pagina.
 // Nao edite a mao: rode o script de novo depois de mudar o nivel de um topico.
-// Gerado em 2026-08-04 16:59
+// Gerado em 2026-08-04 17:10
 
 export type Nivel = "iniciante" | "intermediario" | "avancado";
 
@@ -84,6 +84,7 @@ export const LEVELS: Record<string, Nivel> = {
   "/openvas": "intermediario",
   "/ssrf": "intermediario",
   "/ssti": "avancado",
+  "/xxe": "avancado",
   "/csrf": "intermediario",
   "/command-injection": "intermediario",
   "/webshells": "intermediario",
@@ -177,7 +178,7 @@ export const LEVELS: Record<string, Nivel> = {
 export const LEVEL_COUNTS: Record<Nivel, number> = {
   iniciante: 52,
   intermediario: 85,
-  avancado: 30,
+  avancado: 31,
 };
 
 export const LEVEL_LABEL: Record<Nivel, string> = {

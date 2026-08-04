@@ -132,6 +132,7 @@ const NAVIGATION = [
       { path: "/sqlmap", label: "SQLMap", icon: Database },
       { path: "/xss", label: "XSS Manual", icon: Code },
       { path: "/ssti", label: "SSTI (Templates)", icon: Code },
+      { path: "/xxe", label: "XXE (XML)", icon: Code },
       { path: "/lfi-rfi", label: "LFI & RFI", icon: FolderOpen },
       { path: "/nikto", label: "Nikto", icon: AlertTriangle },
       { path: "/gobuster", label: "Gobuster", icon: Search },

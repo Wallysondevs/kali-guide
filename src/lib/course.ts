@@ -116,6 +116,7 @@ export const MODULES: Module[] = [
       { path: "/sqlmap", label: "SQLMap" },
       { path: "/xss", label: "XSS Manual" },
       { path: "/ssti", label: "SSTI (Templates)" },
+      { path: "/xxe", label: "XXE (XML)" },
       { path: "/lfi-rfi", label: "LFI & RFI" },
       { path: "/nikto", label: "Nikto" },
       { path: "/gobuster", label: "Gobuster" },
