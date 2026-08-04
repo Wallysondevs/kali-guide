@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import {
   Shield, Terminal, Network, Lock, Bug, Wifi, Award,
-  ChevronRight, AlertTriangle, ShieldAlert, Scale, Play, GraduationCap,
+  ChevronRight, AlertTriangle, ShieldAlert, Scale, Play, GraduationCap, CheckCircle2,
 } from "lucide-react";
 import { KaliLogo } from "@/components/ui/KaliLogo";
 import { COURSE, TOTAL_LESSONS, MODULES, useProgress } from "@/lib/course";
@@ -183,6 +183,50 @@ export default function Home() {
               <div className="text-xs md:text-sm text-muted-foreground uppercase tracking-wider font-medium">{s.l}</div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ---------------- PROGRESSO POR MODULO ---------------- */}
+      <section className="py-16 px-4 max-w-6xl mx-auto relative z-10">
+        <div className="mb-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-3 border-0 before:content-none">Seu progresso por módulo</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            {started
+              ? `Você concluiu ${count} de ${TOTAL_LESSONS} tópicos. Veja como está em cada módulo:`
+              : "Marque tópicos como concluídos (na barra lateral) para acompanhar seu avanço em cada módulo aqui."}
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {MODULES.map((m, i) => {
+            const total = m.lessons.length;
+            const done = m.lessons.filter((l) => has(l.path)).length;
+            const pct = total ? Math.round((done / total) * 100) : 0;
+            const complete = done === total && total > 0;
+            return (
+              <div key={i} className="bg-card border border-border rounded-xl p-4">
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <h3 className="font-semibold text-sm text-foreground m-0 border-0 truncate">{m.title}</h3>
+                  {complete ? (
+                    <CheckCircle2 className="w-4 h-4 text-[hsl(var(--kali-green))] shrink-0" />
+                  ) : (
+                    <span className="text-xs font-mono text-muted-foreground shrink-0">{done}/{total}</span>
+                  )}
+                </div>
+                <div className="h-2 rounded-full bg-muted overflow-hidden">
+                  <div
+                    className="h-full transition-[width] duration-500"
+                    style={{
+                      width: `${pct}%`,
+                      background: complete
+                        ? "hsl(var(--kali-green))"
+                        : "linear-gradient(90deg, hsl(var(--kali-cyan)), hsl(var(--kali-magenta)))",
+                    }}
+                  />
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-1.5 font-mono">{pct}%</p>
+              </div>
+            );
+          })}
         </div>
       </section>
 
