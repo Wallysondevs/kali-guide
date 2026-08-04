@@ -138,6 +138,7 @@ const NAVIGATION = [
       { path: "/laboratorio", label: "Monte seu laboratorio", icon: Code },
       { path: "/adcs", label: "ADCS / Certipy", icon: Code },
       { path: "/recon-moderno", label: "Recon moderno", icon: Network },
+      { path: "/delegacoes-ad", label: "Delegacoes AD + Relay", icon: Code },
       { path: "/lfi-rfi", label: "LFI & RFI", icon: FolderOpen },
       { path: "/nikto", label: "Nikto", icon: AlertTriangle },
       { path: "/gobuster", label: "Gobuster", icon: Search },
