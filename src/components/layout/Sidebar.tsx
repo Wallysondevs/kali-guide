@@ -140,6 +140,7 @@ const NAVIGATION = [
       { path: "/recon-moderno", label: "Recon moderno", icon: Network },
       { path: "/delegacoes-ad", label: "Delegacoes AD + Relay", icon: Code },
       { path: "/owasp-llm", label: "OWASP LLM Top 10", icon: Code },
+      { path: "/trilhas", label: "Trilhas de estudo", icon: Code },
       { path: "/lfi-rfi", label: "LFI & RFI", icon: FolderOpen },
       { path: "/nikto", label: "Nikto", icon: AlertTriangle },
       { path: "/gobuster", label: "Gobuster", icon: Search },

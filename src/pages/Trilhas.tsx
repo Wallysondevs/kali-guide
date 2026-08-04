@@ -1,0 +1,130 @@
+import { Link } from "wouter";
+import { PageContainer } from "@/components/layout/PageContainer";
+import { AlertBox } from "@/components/ui/AlertBox";
+import { OutputBlock } from "@/components/ui/OutputBlock";
+
+type Passo = { path: string; label: string; nota: string };
+
+function Trilha({ titulo, resumo, passos }: { titulo: string; resumo: string; passos: Passo[] }) {
+  return (
+    <OutputBlock type="info" label={titulo}>
+      <p>{resumo}</p>
+      <ol>
+        {passos.map((p, i) => (
+          <li key={i}>
+            <Link href={p.path}>{p.label}</Link> — {p.nota}
+          </li>
+        ))}
+      </ol>
+    </OutputBlock>
+  );
+}
+
+export default function Trilhas() {
+  return (
+    <PageContainer
+      title="Trilhas de estudo"
+      subtitle="Roteiros ordenados por objetivo — saiba o que estudar e em que ordem, usando os tópicos deste guia"
+      difficulty="iniciante"
+      timeToRead="12 min"
+    >
+      <h2>Como usar as trilhas</h2>
+      <p>
+        O guia tem muitos tópicos e é fácil se perder. Cada trilha abaixo é uma
+        <strong> sequência recomendada</strong>: siga na ordem, sem pular etapas.
+        Comece sempre pela trilha de <em>Fundamentos</em> antes de ir para uma
+        especialização.
+      </p>
+      <AlertBox type="info" title="Dica">
+        Não tente decorar comandos. Monte o <Link href="/laboratorio">laboratório</Link>{" "}
+        primeiro e repita cada técnica na sua máquina até virar natural.
+      </AlertBox>
+
+      <Trilha
+        titulo="Trilha 0 — Fundamentos (obrigatória)"
+        resumo="Antes de qualquer coisa: ética, terminal e o básico do sistema. Sem isso, o resto não gruda."
+        passos={[
+          { path: "/aviso-legal", label: "Aviso Legal & Ética", nota: "o que é e o que não é legal fazer" },
+          { path: "/comece-aqui", label: "Do Zero Absoluto", nota: "nunca usou Linux? comece aqui" },
+          { path: "/instalacao", label: "Instalação", nota: "Kali em VM, do jeito certo" },
+          { path: "/terminal", label: "Terminal Essencial", nota: "os comandos que você vai usar todo dia" },
+          { path: "/permissoes", label: "Permissões", nota: "usuários, grupos e o modelo de arquivos" },
+          { path: "/shell-bash", label: "Shell Bash", nota: "pipes, redirecionamento e lógica de shell" },
+          { path: "/metodologia", label: "Metodologia de Pentest", nota: "as fases de um teste de intrusão" },
+        ]}
+      />
+
+      <Trilha
+        titulo="Trilha 1 — Reconhecimento & enumeração"
+        resumo="Aprender a mapear o alvo: do OSINT passivo à varredura ativa de portas e serviços."
+        passos={[
+          { path: "/osint", label: "OSINT — Visão Geral", nota: "coletar informação sem tocar no alvo" },
+          { path: "/theharvester", label: "theHarvester", nota: "e-mails, subdomínios e hosts" },
+          { path: "/nmap", label: "Nmap", nota: "a ferramenta de varredura que você precisa dominar" },
+          { path: "/recon-moderno", label: "Recon moderno", nota: "esteira subfinder → httpx → katana → nuclei" },
+          { path: "/enum4linux", label: "Enum4linux", nota: "enumerar SMB/Windows" },
+        ]}
+      />
+
+      <Trilha
+        titulo="Trilha 2 — Pentest Web"
+        resumo="A especialização mais procurada. Do OWASP Top 10 às injeções mais avançadas."
+        passos={[
+          { path: "/owasp-top10", label: "OWASP Top 10", nota: "o mapa das vulnerabilidades web" },
+          { path: "/burpsuite", label: "Burp Suite", nota: "o canivete suíço do pentest web" },
+          { path: "/sqlmap", label: "SQLMap", nota: "SQL injection na prática" },
+          { path: "/xss", label: "XSS Manual", nota: "injetar e executar script no navegador da vítima" },
+          { path: "/ssti", label: "SSTI", nota: "template injection → RCE" },
+          { path: "/ssrf", label: "SSRF", nota: "fazer o servidor requisitar por você" },
+          { path: "/api-pentest", label: "Pentest de APIs", nota: "onde as falhas modernas vivem" },
+          { path: "/owasp-llm", label: "OWASP LLM Top 10", nota: "segurança de apps com IA" },
+        ]}
+      />
+
+      <Trilha
+        titulo="Trilha 3 — Active Directory"
+        resumo="O coração das redes corporativas. Do mapeamento com BloodHound às delegações."
+        passos={[
+          { path: "/bloodhound", label: "BloodHound", nota: "enxergar caminhos de ataque no domínio" },
+          { path: "/impacket", label: "Impacket", nota: "a caixa de ferramentas de AD" },
+          { path: "/kerberoasting", label: "Kerberoasting & PtH", nota: "abusar de tickets e hashes" },
+          { path: "/crackmapexec", label: "CrackMapExec / NetExec", nota: "movimentação lateral em escala" },
+          { path: "/adcs", label: "ADCS / Certipy", nota: "abusar da autoridade certificadora" },
+          { path: "/delegacoes-ad", label: "Delegações AD + Relay", nota: "RBCD e NTLM relay para o takeover final" },
+        ]}
+      />
+
+      <Trilha
+        titulo="Trilha 4 — Exploração & pós-exploração"
+        resumo="Da senha quebrada ao shell, e do shell ao root/Domain Admin."
+        passos={[
+          { path: "/hydra", label: "Hydra", nota: "força bruta em serviços" },
+          { path: "/hashcat", label: "Hashcat", nota: "quebra de hashes com GPU" },
+          { path: "/metasploit", label: "Metasploit", nota: "o framework de exploração" },
+          { path: "/privesc-linux", label: "PrivEsc — Linux", nota: "de usuário a root" },
+          { path: "/privesc-windows", label: "PrivEsc — Windows", nota: "de usuário a SYSTEM" },
+          { path: "/pos-exploracao", label: "Pós-Exploração", nota: "persistência e coleta" },
+        ]}
+      />
+
+      <Trilha
+        titulo="Trilha 5 — Red team & evasão"
+        resumo="Simular um adversario real: C2, pivoting e fugir da detecção."
+        passos={[
+          { path: "/sliver", label: "Sliver C2", nota: "comando e controle moderno" },
+          { path: "/ssh-tunneling", label: "SSH Tunneling & Chisel", nota: "pivotar para redes internas" },
+          { path: "/proxychains", label: "Proxychains", nota: "rotear ferramentas pelo pivot" },
+          { path: "/payload-obfuscation", label: "Evasão de AV", nota: "não ser pego pelo antivírus" },
+          { path: "/evilginx", label: "Evilginx2", nota: "phishing que rouba sessão (MFA bypass)" },
+        ]}
+      />
+
+      <h2>E depois?</h2>
+      <OutputBlock type="success" label="Consolidar">
+        <p>Monte um <Link href="/laboratorio">laboratório</Link> e refaça cada trilha na prática.</p>
+        <p>Pegue máquinas em plataformas (HTB, TryHackMe) que exercitem a trilha que você acabou de estudar.</p>
+        <p>Documente tudo: um bom pentester é medido pelo relatório, não pelo shell.</p>
+      </OutputBlock>
+    </PageContainer>
+  );
+}

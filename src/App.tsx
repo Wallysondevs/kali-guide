@@ -94,6 +94,7 @@ const ADCS = lazy(() => import("@/pages/ADCS"));
 const ReconModerno = lazy(() => import("@/pages/ReconModerno"));
 const Delegacoes = lazy(() => import("@/pages/Delegacoes"));
 const OwaspLLM = lazy(() => import("@/pages/OwaspLLM"));
+const Trilhas = lazy(() => import("@/pages/Trilhas"));
 const CSRF = lazy(() => import("@/pages/CSRF"));
 const CommandInjection = lazy(() => import("@/pages/CommandInjection"));
 const WebShells = lazy(() => import("@/pages/WebShells"));
@@ -327,6 +328,7 @@ function Router() {
         <Route path="/recon-moderno" component={ReconModerno} />
         <Route path="/delegacoes-ad" component={Delegacoes} />
         <Route path="/owasp-llm" component={OwaspLLM} />
+        <Route path="/trilhas" component={Trilhas} />
         <Route path="/csrf" component={CSRF} />
         <Route path="/command-injection" component={CommandInjection} />
         <Route path="/webshells" component={WebShells} />
