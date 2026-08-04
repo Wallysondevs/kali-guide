@@ -87,6 +87,7 @@ const OpenVAS = lazy(() => import("@/pages/OpenVAS"));
 const SSRF = lazy(() => import("@/pages/SSRF"));
 const SSTI = lazy(() => import("@/pages/SSTI"));
 const XXE = lazy(() => import("@/pages/XXE"));
+const JWT = lazy(() => import("@/pages/JWT"));
 const CSRF = lazy(() => import("@/pages/CSRF"));
 const CommandInjection = lazy(() => import("@/pages/CommandInjection"));
 const WebShells = lazy(() => import("@/pages/WebShells"));
@@ -313,6 +314,7 @@ function Router() {
         <Route path="/ssrf" component={SSRF} />
         <Route path="/ssti" component={SSTI} />
         <Route path="/xxe" component={XXE} />
+        <Route path="/jwt" component={JWT} />
         <Route path="/csrf" component={CSRF} />
         <Route path="/command-injection" component={CommandInjection} />
         <Route path="/webshells" component={WebShells} />

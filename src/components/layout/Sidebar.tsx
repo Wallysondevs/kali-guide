@@ -133,6 +133,7 @@ const NAVIGATION = [
       { path: "/xss", label: "XSS Manual", icon: Code },
       { path: "/ssti", label: "SSTI (Templates)", icon: Code },
       { path: "/xxe", label: "XXE (XML)", icon: Code },
+      { path: "/jwt", label: "JWT (Tokens)", icon: Code },
       { path: "/lfi-rfi", label: "LFI & RFI", icon: FolderOpen },
       { path: "/nikto", label: "Nikto", icon: AlertTriangle },
       { path: "/gobuster", label: "Gobuster", icon: Search },

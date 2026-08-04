@@ -117,6 +117,7 @@ export const MODULES: Module[] = [
       { path: "/xss", label: "XSS Manual" },
       { path: "/ssti", label: "SSTI (Templates)" },
       { path: "/xxe", label: "XXE (XML)" },
+      { path: "/jwt", label: "JWT (Tokens)" },
       { path: "/lfi-rfi", label: "LFI & RFI" },
       { path: "/nikto", label: "Nikto" },
       { path: "/gobuster", label: "Gobuster" },
