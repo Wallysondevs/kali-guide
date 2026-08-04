@@ -125,6 +125,7 @@ export const MODULES: Module[] = [
       { path: "/delegacoes-ad", label: "Delegacoes AD + Relay" },
       { path: "/owasp-llm", label: "OWASP LLM Top 10" },
       { path: "/trilhas", label: "Trilhas de estudo" },
+      { path: "/web-extras", label: "Web: falhas modernas" },
       { path: "/lfi-rfi", label: "LFI & RFI" },
       { path: "/nikto", label: "Nikto" },
       { path: "/gobuster", label: "Gobuster" },
