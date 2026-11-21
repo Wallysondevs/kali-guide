@@ -116,7 +116,7 @@ pkg.kali.org`,
         variations={[
           { cmd: "theHarvester", desc: "Emails, subdomínios, hosts a partir de search engines.", output: "Página dedicada: theHarvester" },
           { cmd: "shodan / censys", desc: "Mecanismos de busca de hosts/serviços expostos na internet.", output: "Página: Shodan" },
-          { cmd: "sherlock", desc: "Busca o mesmo username em centenas de redes sociais.", output: "sherlock wallysondevs" },
+          { cmd: "sherlock", desc: "Busca o mesmo username em centenas de redes sociais.", output: "sherlock ana-exemplo123" },
           { cmd: "h8mail", desc: "Procura emails em vazamentos públicos (HIBP, Snusbase).", output: "h8mail -t alvo@empresa.com" },
           { cmd: "spiderfoot", desc: "Plataforma OSINT all-in-one (200+ módulos).", output: "spiderfoot -l 127.0.0.1:5001" },
           { cmd: "recon-ng", desc: "Framework modular tipo Metasploit, mas para OSINT.", output: "Página: Recon-ng" },
@@ -165,14 +165,14 @@ site:empresa.com intitle:"Index of /"`}
         lines={[
           {
             comment: "username em 400+ redes sociais",
-            cmd: "sherlock wallysondevs --print-found",
-            out: `[*] Checking username wallysondevs on:
-[+] GitHub: https://github.com/wallysondevs
-[+] LinkedIn: https://linkedin.com/in/wallysondevs
-[+] X (Twitter): https://x.com/wallysondevs
-[+] Instagram: https://instagram.com/wallysondevs
-[+] Replit: https://replit.com/@wallysondevs
-[+] Reddit: https://reddit.com/user/wallysondevs
+            cmd: "sherlock ana-exemplo123 --print-found",
+            out: `[*] Checking username ana-exemplo123 on:
+[+] GitHub: https://github.com/ana-exemplo123
+[+] LinkedIn: https://linkedin.com/in/ana-exemplo123
+[+] X (Twitter): https://x.com/ana-exemplo123
+[+] Instagram: https://instagram.com/ana-exemplo123
+[+] Replit: https://replit.com/@ana-exemplo123
+[+] Reddit: https://reddit.com/user/ana-exemplo123
 
 [*] Search completed with 6 results`,
             outType: "info",
