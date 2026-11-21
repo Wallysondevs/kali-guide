@@ -217,7 +217,7 @@ role                    [Status: 200, Size: 1284, Words: 89, Lines: 23]
             cmd: "curl 'https://app.local/api/user?isAdmin=true' -H 'Authorization: Bearer xxx'",
             out: `{
   "id": 99,
-  "name": "wallyson",
+  "name": "ana",
   "role": "admin",            ← agora vê o role admin!
   "permissions": ["read", "write", "delete"]
 }`,

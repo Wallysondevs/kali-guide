@@ -53,7 +53,7 @@ Acquiry parameters required, please provide the necessary input
 Image path and filename: evidencia
 Case number: 001-2026
 Description: Disco do suspeito X
-Examiner name: Wallyson Lopes
+Examiner name: Ana Lopes
 Evidence number: E001
 Notes: Disco extraído do laptop XYZ em 2026-04-03 14:00
 Media type (auto, fixed, removable, optical, memory, [auto]): fixed
@@ -226,7 +226,7 @@ Audit File
 
 Foremost started at Fri Apr 3 14:43:11 2026
 Invocation: foremost -i evidencia.dd -o saida_foremost 
-Output directory: /home/wallyson/casos/caso-001/saida_foremost
+Output directory: /home/ana/casos/caso-001/saida_foremost
 Configuration file: /etc/foremost.conf
 
 File: evidencia.dd

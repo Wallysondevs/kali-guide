@@ -185,9 +185,9 @@ After=network.target
 
 [Service]
 Type=simple
-User=wallyson
-WorkingDirectory=/home/wallyson/tools/listener
-ExecStart=/usr/bin/python3 /home/wallyson/tools/listener/server.py
+User=ana
+WorkingDirectory=/home/ana/tools/listener
+ExecStart=/usr/bin/python3 /home/ana/tools/listener/server.py
 Restart=on-failure
 RestartSec=5
 StandardOutput=journal
@@ -220,7 +220,7 @@ WantedBy=multi-user.target`}
       Tasks: 1
      Memory: 9.4M
      CGroup: /system.slice/meu-listener.service
-             └─13412 /usr/bin/python3 /home/wallyson/tools/listener/server.py`,
+             └─13412 /usr/bin/python3 /home/ana/tools/listener/server.py`,
             outType: "info",
           },
         ]}

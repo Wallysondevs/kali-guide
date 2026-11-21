@@ -107,16 +107,16 @@ config.status: creating src/Makefile`,
           {
             comment: "compilar usando todos os cores",
             cmd: "make -j$(nproc)",
-            out: `make[1]: Entering directory '/home/wallyson/build/aircrack-ng/src'
+            out: `make[1]: Entering directory '/home/ana/build/aircrack-ng/src'
   CC       aircrack-ng.o
   CC       cowpatty.o
   [...]
-make[1]: Leaving directory '/home/wallyson/build/aircrack-ng/src'`,
+make[1]: Leaving directory '/home/ana/build/aircrack-ng/src'`,
             outType: "warning",
           },
           {
             cmd: "sudo make install",
-            out: `make[1]: Entering directory '/home/wallyson/build/aircrack-ng/src'
+            out: `make[1]: Entering directory '/home/ana/build/aircrack-ng/src'
   /usr/bin/install -c aircrack-ng /opt/aircrack-ng/bin/aircrack-ng
   /usr/bin/install -c airdecap-ng /opt/aircrack-ng/bin/airdecap-ng
   [...]`,
@@ -161,7 +161,7 @@ https://www.aircrack-ng.org`,
           },
           {
             comment: "no lugar de 'sudo make install', rode:",
-            cmd: "sudo checkinstall --pkgname=aircrack-ng-custom --pkgversion=1.7.0+custom --maintainer=wallyson@kali",
+            cmd: "sudo checkinstall --pkgname=aircrack-ng-custom --pkgversion=1.7.0+custom --maintainer=ana@kali",
             out: `checkinstall 1.6.2
 
 The package documentation directory ./doc-pak does not exist.
@@ -169,7 +169,7 @@ Should I create a default set of package docs?  [y]: y
 [...]
 
 This package will be built according to these values:
-0 -  Maintainer: [ wallyson@kali ]
+0 -  Maintainer: [ ana@kali ]
 1 -  Summary: [ Custom build of aircrack-ng ]
 2 -  Name:    [ aircrack-ng-custom ]
 3 -  Version: [ 1.7.0+custom ]
@@ -186,7 +186,7 @@ Enter a number to change any of them or press ENTER to continue:
 **********************************************************************
  Done. The new package has been installed and saved to
 
- /home/wallyson/build/aircrack-ng/aircrack-ng-custom_1.7.0+custom-1_amd64.deb
+ /home/ana/build/aircrack-ng/aircrack-ng-custom_1.7.0+custom-1_amd64.deb
 
  You can remove it from your system anytime using:
 
@@ -444,7 +444,7 @@ sudo dpkg -r tree-custom`}
 [...]
 **********************************************************************
  Done. The new package has been installed and saved to
- /home/wallyson/build/tree-2.2.1/tree-custom_2.2.1+custom-1_amd64.deb
+ /home/ana/build/tree-2.2.1/tree-custom_2.2.1+custom-1_amd64.deb
 **********************************************************************
 
 ii  tree-custom  2.2.1+custom-1  amd64  Custom build

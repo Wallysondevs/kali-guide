@@ -57,7 +57,7 @@ drwxr-xr-x  13 root root  4.0K Mar 12 14:02 var`,
           { cmd: "/bin", desc: "Binários essenciais (ls, cat, cp). Hoje é symlink para /usr/bin.", output: "lrwxrwxrwx /bin -> usr/bin" },
           { cmd: "/sbin", desc: "Binários administrativos (fdisk, iptables). Symlink → /usr/sbin.", output: "lrwxrwxrwx /sbin -> usr/sbin" },
           { cmd: "/etc", desc: "Configurações do sistema (passwd, network, services).", output: "/etc/passwd /etc/shadow /etc/hosts /etc/ssh/" },
-          { cmd: "/home", desc: "Pasta pessoal de cada usuário não-root.", output: "/home/wallyson/  /home/maria/" },
+          { cmd: "/home", desc: "Pasta pessoal de cada usuário não-root.", output: "/home/ana/  /home/maria/" },
           { cmd: "/root", desc: "Home do superusuário root (NÃO fica em /home).", output: "drwx------ 10 root root /root" },
           { cmd: "/var", desc: "Dados variáveis: logs, cache, mail, web.", output: "/var/log/  /var/www/  /var/cache/" },
           { cmd: "/var/log", desc: "Logs do sistema (auth.log, syslog, apache2/).", output: "auth.log  syslog  kern.log" },
@@ -67,7 +67,7 @@ drwxr-xr-x  13 root root  4.0K Mar 12 14:02 var`,
           { cmd: "/usr", desc: "Programas instalados (bin, lib, share, local).", output: "/usr/bin/nmap  /usr/share/wordlists/" },
           { cmd: "/opt", desc: "Software de terceiros (BurpSuite, ferramentas custom).", output: "/opt/burpsuite/  /opt/metasploit-framework/" },
           { cmd: "/dev", desc: "Arquivos de dispositivos (sda, tty, null, random).", output: "/dev/sda /dev/null /dev/random /dev/tty0" },
-          { cmd: "/mnt /media", desc: "Pontos de montagem (pendrives, partições extras).", output: "/media/wallyson/USB/" },
+          { cmd: "/mnt /media", desc: "Pontos de montagem (pendrives, partições extras).", output: "/media/ana/USB/" },
         ]}
       />
 
@@ -77,7 +77,7 @@ drwxr-xr-x  13 root root  4.0K Mar 12 14:02 var`,
         lines={[
           {
             cmd: "pwd",
-            out: "/home/wallyson",
+            out: "/home/ana",
             outType: "info",
           },
           {
@@ -88,7 +88,7 @@ drwxr-xr-x  13 root root  4.0K Mar 12 14:02 var`,
           {
             comment: "voltar pro home com til (~) ou só 'cd' sem argumento",
             cmd: "cd ~ && pwd",
-            out: "/home/wallyson",
+            out: "/home/ana",
             outType: "default",
           },
           {
@@ -100,7 +100,7 @@ drwxr-xr-x  13 root root  4.0K Mar 12 14:02 var`,
           {
             comment: "voltar para o último diretório",
             cmd: "cd - ",
-            out: "/home/wallyson",
+            out: "/home/ana",
             outType: "muted",
           },
         ]}
@@ -112,8 +112,8 @@ drwxr-xr-x  13 root root  4.0K Mar 12 14:02 var`,
         variations={[
           { cmd: "ls", desc: "Lista simples (sem ocultos).", output: "Documents  Downloads  Pictures  tools" },
           { cmd: "ls -a", desc: "Inclui arquivos ocultos (que começam com .).", output: ".bashrc  .config  .ssh  Documents" },
-          { cmd: "ls -l", desc: "Formato longo: permissões, dono, tamanho, data.", output: "-rw-r--r-- 1 wallyson wallyson 220 Jan 14 09:11 .bashrc" },
-          { cmd: "ls -lh", desc: "Tamanhos legíveis (K, M, G).", output: "-rw-r--r-- 1 wallyson wallyson 4.2K Mar 12 .zshrc" },
+          { cmd: "ls -l", desc: "Formato longo: permissões, dono, tamanho, data.", output: "-rw-r--r-- 1 ana ana 220 Jan 14 09:11 .bashrc" },
+          { cmd: "ls -lh", desc: "Tamanhos legíveis (K, M, G).", output: "-rw-r--r-- 1 ana ana 4.2K Mar 12 .zshrc" },
           { cmd: "ls -lt", desc: "Ordena por data (mais recente primeiro).", output: "Útil para achar o último arquivo modificado." },
           { cmd: "ls -lhS", desc: "Ordena por tamanho.", output: "Mostra arquivos grandes primeiro." },
           { cmd: "ls -laR /etc/ssh", desc: "Recursivo: entra em todos os subdiretórios.", output: "Lista a árvore inteira da pasta." },
@@ -209,8 +209,8 @@ bin:x:2:2:bin:/bin:/usr/sbin/nologin`,
           },
           {
             cmd: "tail -2 /var/log/auth.log",
-            out: `2026-04-03T08:33:14.121Z kali sshd[2103]: Accepted publickey for wallyson from 192.168.1.5
-2026-04-03T08:33:14.245Z kali systemd-logind[718]: New session 4 of user wallyson.`,
+            out: `2026-04-03T08:33:14.121Z kali sshd[2103]: Accepted publickey for ana from 192.168.1.5
+2026-04-03T08:33:14.245Z kali systemd-logind[718]: New session 4 of user ana.`,
             outType: "default",
           },
           {
@@ -312,7 +312,7 @@ tmpfs           781M   72K  781M   1% /run/user/1000`,
         ]}
         command={`mkdir -p ~/pentest/{lab-htb,lab-thm,cliente-acme}/{scans,loot,reports,screenshots}
 tree ~/pentest -L 2`}
-        expected={`/home/wallyson/pentest
+        expected={`/home/ana/pentest
 ├── cliente-acme
 │   ├── loot
 │   ├── reports

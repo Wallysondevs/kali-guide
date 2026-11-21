@@ -171,7 +171,7 @@ proxychains bloodhound-python -u jsmith -p 'P@ssw0rd!' -d acme.corp \\
           {
             comment: "no navegador → File Ingest → arrastar engagement01.zip",
             cmd: "ls -lh ~/loot/*.zip",
-            out: `-rw-r--r-- 1 wallyson wallyson 4.2M Apr  3 11:42 engagement01.zip`,
+            out: `-rw-r--r-- 1 ana ana 4.2M Apr  3 11:42 engagement01.zip`,
             outType: "info",
           },
           {

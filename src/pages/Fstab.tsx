@@ -238,8 +238,8 @@ no label, UUID=cc31aaee-7b62-4c2a-9a31-7d1f6e2a85d0`,
       <CodeBlock
         language="ini"
         title="/etc/fstab (bind mount exemplo)"
-        code={`# expor /home/wallyson/loot dentro de chroot de teste em /srv/chroot/loot
-/home/wallyson/loot   /srv/chroot/loot   none   bind,nofail   0  0`}
+        code={`# expor /home/ana/loot dentro de chroot de teste em /srv/chroot/loot
+/home/ana/loot   /srv/chroot/loot   none   bind,nofail   0  0`}
       />
 
       <PracticeBox

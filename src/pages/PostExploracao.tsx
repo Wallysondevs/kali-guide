@@ -27,7 +27,7 @@ boot  home  media opt   run   srv   usr`,
           {
             comment: "1) upgrade para PTY com python",
             cmd: "python3 -c 'import pty;pty.spawn(\"/bin/bash\")'",
-            out: "wallyson@target:~$ ",
+            out: "ana@target:~$ ",
             outType: "info",
           },
           {

@@ -130,8 +130,8 @@ Is the information correct? [Y/n] Y`,
       <CommandTable
         title="Operações comuns com usermod"
         variations={[
-          { cmd: "sudo usermod -aG sudo wallyson", desc: "Adiciona ao grupo 'sudo' (poder de virar root).", output: "wallyson agora pode usar sudo." },
-          { cmd: "sudo usermod -aG docker,wireshark wallyson", desc: "Adiciona a vários grupos de uma vez (-a = append, -G = grupos).", output: "Sem -a, ele REMOVE dos outros grupos." },
+          { cmd: "sudo usermod -aG sudo ana", desc: "Adiciona ao grupo 'sudo' (poder de virar root).", output: "ana agora pode usar sudo." },
+          { cmd: "sudo usermod -aG docker,wireshark ana", desc: "Adiciona a vários grupos de uma vez (-a = append, -G = grupos).", output: "Sem -a, ele REMOVE dos outros grupos." },
           { cmd: "sudo usermod -L maria", desc: "Trava (lock) a conta — não pode mais logar com senha.", output: "passwd entry vira !$y$... em /etc/shadow." },
           { cmd: "sudo usermod -U maria", desc: "Desbloqueia.", output: "Remove o ! do shadow." },
           { cmd: "sudo usermod -s /usr/sbin/nologin maria", desc: "Bloqueia shell de login (mas não outros serviços).", output: "Login responde 'This account is currently not available.'" },
@@ -144,13 +144,13 @@ Is the information correct? [Y/n] Y`,
         path="~"
         lines={[
           {
-            cmd: "groups wallyson",
-            out: "wallyson : wallyson sudo audio video plugdev kali-trusted netdev wireshark",
+            cmd: "groups ana",
+            out: "ana : ana sudo audio video plugdev kali-trusted netdev wireshark",
             outType: "info",
           },
           {
-            cmd: "id wallyson",
-            out: `uid=1000(wallyson) gid=1000(wallyson) groups=1000(wallyson),27(sudo),29(audio),44(video),46(plugdev),113(wireshark)`,
+            cmd: "id ana",
+            out: `uid=1000(ana) gid=1000(ana) groups=1000(ana),27(sudo),29(audio),44(video),46(plugdev),113(wireshark)`,
             outType: "default",
           },
           {
@@ -160,7 +160,7 @@ Is the information correct? [Y/n] Y`,
             outType: "muted",
           },
           {
-            cmd: "sudo usermod -aG pentesters wallyson",
+            cmd: "sudo usermod -aG pentesters ana",
             out: "(precisa fazer logout/login para o grupo entrar em vigor)",
             outType: "warning",
           },
@@ -196,18 +196,18 @@ Is the information correct? [Y/n] Y`,
         lines={[
           {
             cmd: "sudo whoami",
-            out: `[sudo] password for wallyson: 
+            out: `[sudo] password for ana: 
 root`,
             outType: "info",
           },
           {
             comment: "ver TUDO que você pode fazer com sudo",
             cmd: "sudo -l",
-            out: `Matching Defaults entries for wallyson on kali:
+            out: `Matching Defaults entries for ana on kali:
     env_reset, mail_badpass,
     secure_path=/usr/local/sbin\\:/usr/local/bin\\:/usr/sbin\\:/usr/bin\\:/sbin\\:/bin
 
-User wallyson may run the following commands on kali:
+User ana may run the following commands on kali:
     (ALL : ALL) ALL`,
             outType: "warning",
           },
@@ -261,7 +261,7 @@ backup  ALL=(root) NOPASSWD: /usr/bin/rsync, /bin/tar
         lines={[
           {
             cmd: "passwd",
-            out: `Changing password for wallyson.
+            out: `Changing password for ana.
 Current password: 
 New password: 
 Retype new password: 
@@ -270,7 +270,7 @@ passwd: password updated successfully`,
           },
           {
             comment: "info de expiração da conta",
-            cmd: "sudo chage -l wallyson",
+            cmd: "sudo chage -l ana",
             out: `Last password change                                    : Mar 12, 2026
 Password expires                                       : never
 Password inactive                                      : never

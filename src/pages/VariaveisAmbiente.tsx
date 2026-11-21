@@ -62,12 +62,12 @@ export default function VariaveisAmbiente() {
       <CommandTable
         title="ferramentas para inspecionar"
         variations={[
-          { cmd: "env", desc: "Variáveis exportadas no shell atual.", output: "PATH=...\nHOME=/home/wallyson\nSHELL=/usr/bin/zsh\nUSER=wallyson" },
+          { cmd: "env", desc: "Variáveis exportadas no shell atual.", output: "PATH=...\nHOME=/home/ana\nSHELL=/usr/bin/zsh\nUSER=ana" },
           { cmd: "printenv PATH", desc: "Imprime UMA variável (igual env | grep, mas mais limpo).", output: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" },
           { cmd: "set", desc: "TUDO: vars exportadas + locais + funções shell.", output: "Saída longa — combine com less ou grep." },
           { cmd: "set | head", desc: "Só as primeiras (alfabético).", output: "BASH=/usr/bin/bash\nBASHOPTS=...\nBASH_ALIASES=()..." },
           { cmd: "declare -p FOO", desc: "Mostra como FOO está declarada (atributos).", output: "declare -- FOO=\"bar\"        ↳ -- = simples\ndeclare -x FOO=\"bar\"        ↳ -x = exportada\ndeclare -i FOO=\"42\"         ↳ -i = inteiro" },
-          { cmd: "declare -x", desc: "Lista TODAS as exportadas (= export sem args).", output: "declare -x HOME=\"/home/wallyson\"\ndeclare -x PATH=\"/usr/local/sbin:...\"" },
+          { cmd: "declare -x", desc: "Lista TODAS as exportadas (= export sem args).", output: "declare -x HOME=\"/home/ana\"\ndeclare -x PATH=\"/usr/local/sbin:...\"" },
           { cmd: "unset FOO", desc: "Remove a variável (local OU exportada).", output: "echo $FOO depois retorna vazio." },
           { cmd: "env -i bash", desc: "Inicia bash COM AMBIENTE LIMPO (zero variáveis herdadas).", output: "Reproduz comportamento mínimo (cron, systemd)." },
           { cmd: "env FOO=hack ./script.sh", desc: "Define vars SÓ para esse comando.", output: "FOO existe dentro do script, some depois." },
@@ -78,12 +78,12 @@ export default function VariaveisAmbiente() {
       <CodeBlock
         language="bash"
         title="as essenciais"
-        code={`HOME       # /home/wallyson  -- diretório do usuário
-USER       # wallyson        -- nome do usuário corrente
-LOGNAME    # wallyson        -- igual USER, vem do login
+        code={`HOME       # /home/ana  -- diretório do usuário
+USER       # ana        -- nome do usuário corrente
+LOGNAME    # ana        -- igual USER, vem do login
 SHELL      # /usr/bin/zsh    -- shell padrão (NÃO o atual)
 PWD        # /tmp/loot       -- diretório atual
-OLDPWD     # /home/wallyson  -- diretório anterior (cd - usa)
+OLDPWD     # /home/ana  -- diretório anterior (cd - usa)
 PATH       # onde o shell procura executáveis
 LD_LIBRARY_PATH  # onde o ld procura .so adicionais (PrivEsc!)
 LD_PRELOAD       # força carregar .so antes de qualquer outra (PrivEsc!)
@@ -109,7 +109,7 @@ $_         # último argumento do último comando`}
         lines={[
           {
             cmd: "echo \"PID=$$  USER=$USER  PWD=$PWD\"",
-            out: "PID=8421  USER=wallyson  PWD=/home/wallyson",
+            out: "PID=8421  USER=ana  PWD=/home/ana",
             outType: "info",
           },
           {
@@ -151,7 +151,7 @@ $_         # último argumento do último comando`}
 /usr/bin
 /sbin
 /bin
-/home/wallyson/.local/bin`,
+/home/ana/.local/bin`,
             outType: "info",
           },
           {

@@ -165,8 +165,8 @@ Status: Downloaded newer image for vulnerables/web-dvwa:latest
       <CommandTable
         title="-v / --mount"
         variations={[
-          { cmd: "-v /home/wallyson/loot:/data", desc: "Bind mount: pasta do host visível no container.", output: "Útil para passar wordlists / receber output." },
-          { cmd: "-v /home/wallyson/loot:/data:ro", desc: "Read-only — container não escreve.", output: "Defesa contra container malicioso editar seus arquivos." },
+          { cmd: "-v /home/ana/loot:/data", desc: "Bind mount: pasta do host visível no container.", output: "Útil para passar wordlists / receber output." },
+          { cmd: "-v /home/ana/loot:/data:ro", desc: "Read-only — container não escreve.", output: "Defesa contra container malicioso editar seus arquivos." },
           { cmd: "-v meuvolume:/var/lib/mysql", desc: "Volume nomeado (gerenciado).", output: "Persiste após docker rm." },
           { cmd: "docker volume ls", desc: "Lista volumes.", output: "DRIVER VOLUME NAME" },
           { cmd: "docker volume inspect meuvolume", desc: "Mostra Mountpoint real no host.", output: '"Mountpoint": "/var/lib/docker/volumes/meuvolume/_data"' },
@@ -218,7 +218,7 @@ Status: Downloaded newer image for vulnerables/web-dvwa:latest
         title="Dockerfile (recon-scanner)"
         code={`FROM kalilinux/kali-rolling
 
-LABEL maintainer="wallyson"
+LABEL maintainer="ana"
 
 RUN apt update && apt install -y --no-install-recommends \\
       nmap \\
@@ -239,7 +239,7 @@ CMD ["--help"]`}
         path="~/scanner"
         lines={[
           {
-            cmd: "docker build -t wallyson/scanner:latest .",
+            cmd: "docker build -t ana/scanner:latest .",
             out: `[+] Building 42.7s (8/8) FINISHED
  => [internal] load build definition from Dockerfile
  => [1/4] FROM docker.io/kalilinux/kali-rolling
@@ -248,11 +248,11 @@ CMD ["--help"]`}
  => [4/4] COPY scanner.py .
  => exporting to image
  => => writing image sha256:7a8b9c0d1e2f...
- => => naming to docker.io/wallyson/scanner:latest`,
+ => => naming to docker.io/ana/scanner:latest`,
             outType: "info",
           },
           {
-            cmd: "docker run --rm wallyson/scanner:latest 192.168.56.0/24",
+            cmd: "docker run --rm ana/scanner:latest 192.168.56.0/24",
             out: `[+] Scan iniciado em 192.168.56.0/24
 [+] 192.168.56.10  - tcp/22 ssh
 [+] 192.168.56.10  - tcp/80 http

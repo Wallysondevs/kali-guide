@@ -41,7 +41,7 @@ export default function Rubeus() {
           },
           {
             cmd: "git clone https://github.com/GhostPack/Rubeus ~/tools/Rubeus",
-            out: "Cloning into '/home/wallyson/tools/Rubeus'...",
+            out: "Cloning into '/home/ana/tools/Rubeus'...",
             outType: "info",
           },
           {
@@ -49,7 +49,7 @@ export default function Rubeus() {
             out: `Microsoft (R) Build Engine version 16.10.1 for Mono
 Build started 4/3/2026 14:51:00.
 
-CSC : Rubeus -> /home/wallyson/tools/Rubeus/Rubeus/bin/Release/Rubeus.exe
+CSC : Rubeus -> /home/ana/tools/Rubeus/Rubeus/bin/Release/Rubeus.exe
 
 Build succeeded.
     0 Warning(s)
@@ -59,7 +59,7 @@ Build succeeded.
           {
             comment: "alternativa: pegar pré-compilado do release oficial (assinatura conhecida AV)",
             cmd: "ls -la ~/tools/Rubeus/Rubeus/bin/Release/Rubeus.exe",
-            out: "-rw-r--r-- 1 wallyson wallyson 482304 Apr  3 14:51 Rubeus.exe",
+            out: "-rw-r--r-- 1 ana ana 482304 Apr  3 14:51 Rubeus.exe",
             outType: "default",
           },
         ]}

@@ -404,13 +404,13 @@ MSSQL  192.168.50.40  1433  SQL01  nt service\\mssqlserver`,
         lines={[
           {
             cmd: "ls -la ~/.nxc/",
-            out: `drwxr-xr-x 6 wallyson wallyson  4096 Apr  3 23:42 .
-drwxr-xr-x 1 wallyson wallyson   228 Apr  3 23:42 ..
--rw-r--r-- 1 wallyson wallyson 18421 Apr  3 23:42 nxc.conf
-drwxr-xr-x 2 wallyson wallyson  4096 Apr  3 23:42 logs
-drwxr-xr-x 2 wallyson wallyson  4096 Apr  3 23:42 modules
-drwxr-xr-x 2 wallyson wallyson  4096 Apr  3 23:42 screenshots
-drwxr-xr-x 5 wallyson wallyson  4096 Apr  3 23:42 workspaces`,
+            out: `drwxr-xr-x 6 ana ana  4096 Apr  3 23:42 .
+drwxr-xr-x 1 ana ana   228 Apr  3 23:42 ..
+-rw-r--r-- 1 ana ana 18421 Apr  3 23:42 nxc.conf
+drwxr-xr-x 2 ana ana  4096 Apr  3 23:42 logs
+drwxr-xr-x 2 ana ana  4096 Apr  3 23:42 modules
+drwxr-xr-x 2 ana ana  4096 Apr  3 23:42 screenshots
+drwxr-xr-x 5 ana ana  4096 Apr  3 23:42 workspaces`,
             outType: "default",
           },
           {

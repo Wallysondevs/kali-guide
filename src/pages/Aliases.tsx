@@ -33,7 +33,7 @@ export default function Aliases() {
             out: `total 24K
 drwxrwxrwt  6 root     root     180 abr  3 15:42 .
 drwxr-xr-x 19 root     root    4.0K mar  1 09:11 ..
--rw-r--r--  1 wallyson wallyson  17 abr  3 15:42 nota.txt`,
+-rw-r--r--  1 ana ana  17 abr  3 15:42 nota.txt`,
             outType: "info",
           },
           {

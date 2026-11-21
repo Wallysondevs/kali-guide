@@ -280,10 +280,10 @@ MaxLevelStore=info`}
           {
             comment: "logs de login (wtmp), logins falhos (btmp), último login por user (lastlog)",
             cmd: "last -n 5",
-            out: `wallyson pts/1        10.10.14.5       Fri Apr  3 14:50   still logged in
-wallyson pts/0        :0               Fri Apr  3 08:43   still logged in
+            out: `ana pts/1        10.10.14.5       Fri Apr  3 14:50   still logged in
+ana pts/0        :0               Fri Apr  3 08:43   still logged in
 reboot   system boot  6.16.0-kali1-amd Fri Apr  3 08:42   still running
-wallyson pts/0        :0               Thu Apr  2 09:11 - 23:48 (14:37)`,
+ana pts/0        :0               Thu Apr  2 09:11 - 23:48 (14:37)`,
             outType: "default",
           },
           {
@@ -355,7 +355,7 @@ Apr 03 09:34:18 kali sshd[12947]: Disconnecting invalid user admin
 10.10.14.5
 
 === Sudo na janela ===
-Apr 03 09:51:22 kali sudo[14102]: wallyson : TTY=pts/1 ; PWD=/tmp ; USER=root ; COMMAND=/bin/bash
+Apr 03 09:51:22 kali sudo[14102]: ana : TTY=pts/1 ; PWD=/tmp ; USER=root ; COMMAND=/bin/bash
 
 === Segfaults no kernel ===
 Apr 03 09:48:11 kali kernel: pwn[14081]: segfault at 0 ip 00007f...`}

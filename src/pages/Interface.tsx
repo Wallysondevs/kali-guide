@@ -295,7 +295,7 @@ history = 50000`}
             comment: "qual shell estou usando?",
             cmd: "echo $SHELL && cat /etc/passwd | grep $(whoami)",
             out: `/usr/bin/zsh
-wallyson:x:1000:1000:Wallyson,,,:/home/wallyson:/usr/bin/zsh`,
+ana:x:1000:1000:Ana,,,:/home/ana:/usr/bin/zsh`,
             outType: "info",
           },
           {
@@ -348,7 +348,7 @@ Looking for an existing zsh config...
           {
             comment: "2) clonar powerlevel10k",
             cmd: "git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k",
-            out: `Cloning into '/home/wallyson/.oh-my-zsh/custom/themes/powerlevel10k'...
+            out: `Cloning into '/home/ana/.oh-my-zsh/custom/themes/powerlevel10k'...
 remote: Enumerating objects: 1342, done.
 Receiving objects: 100% (1342/1342), 882.42 KiB | 4.21 MiB/s, done.
 Resolving deltas: 100% (612/612), done.`,

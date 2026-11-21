@@ -27,7 +27,7 @@ pip 24.2 from /usr/lib/python3/dist-packages/pip (python 3.12)`,
           {
             comment: "isolar deps: SEMPRE use venv (PEP 668 bloqueia pip global)",
             cmd: "python3 -m venv ~/.venv-pentest && source ~/.venv-pentest/bin/activate",
-            out: "(venv) wallyson@kali:~$",
+            out: "(venv) ana@kali:~$",
             outType: "muted",
           },
           {

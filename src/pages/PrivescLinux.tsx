@@ -332,7 +332,7 @@ uid=0(root) gid=0(root) groups=0(root)`,
             out: `cd /var/www
 sudo nano /etc/mysql/my.cnf
 mysql -u root -p'R00tDB!2024'
-ssh wallyson@10.10.10.42
+ssh ana@10.10.10.42
 cat /root/api_key.txt
 exit`,
             outType: "error",

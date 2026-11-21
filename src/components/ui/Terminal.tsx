@@ -2,7 +2,7 @@ import { ReactNode, useState } from "react";
 import { Check, Copy, TerminalSquare } from "lucide-react";
 
 export interface TerminalLine {
-  /** Prompt user shown before the command. Default: "wallyson" */
+  /** Prompt user shown before the command. Default: "ana" */
   user?: string;
   /** Prompt host shown after the user. Default: "kali" */
   host?: string;
@@ -55,7 +55,7 @@ const outColor: Record<NonNullable<TerminalLine["outType"]>, string> = {
  */
 export function Terminal({
   title,
-  user = "wallyson",
+  user = "ana",
   host = "kali",
   path = "~",
   lines,

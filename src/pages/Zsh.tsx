@@ -37,7 +37,7 @@ export default function Zsh() {
           },
           {
             cmd: "cat /etc/passwd | grep $USER",
-            out: "wallyson:x:1000:1000:Wallyson,,,:/home/wallyson:/usr/bin/zsh",
+            out: "ana:x:1000:1000:Ana,,,:/home/ana:/usr/bin/zsh",
             outType: "default",
           },
         ]}
@@ -241,8 +241,8 @@ labs/htb/blue/poc.py`,
           {
             comment: "qualifiers: arquivos modificados nos últimos 2 dias",
             cmd: "ls -l **/*(.m-2)",
-            out: `-rw-r--r-- 1 wallyson wallyson 1247 Apr  3 09:12 nmap.gnmap
--rw-r--r-- 1 wallyson wallyson 8294 Apr  4 14:33 web.txt`,
+            out: `-rw-r--r-- 1 ana ana 1247 Apr  3 09:12 nmap.gnmap
+-rw-r--r-- 1 ana ana 8294 Apr  4 14:33 web.txt`,
             outType: "default",
           },
           {
@@ -262,7 +262,7 @@ labs/htb/blue/poc.py`,
           { cmd: "Ctrl+R", desc: "Fuzzy search no histórico (com plugin fzf).", output: "Lista interativa, type para filtrar." },
           { cmd: "Tab Tab", desc: "Autocomplete de flags com descrição: nmap -<TAB><TAB>.", output: "-A  enable OS detection, version, script scanning..." },
           { cmd: "Esc Esc", desc: "Plugin sudo: prepende sudo no último comando.", output: "Esqueceu sudo? duas teclas." },
-          { cmd: "z htb", desc: "Plugin z: pula para diretório frequente cujo nome contém 'htb'.", output: "/home/wallyson/labs/htb" },
+          { cmd: "z htb", desc: "Plugin z: pula para diretório frequente cujo nome contém 'htb'.", output: "/home/ana/labs/htb" },
           { cmd: "Alt+.", desc: "Insere o último argumento do comando anterior.", output: "Igual Bash, útil em sequência cd /tmp/foo; ls Alt+." },
           { cmd: "take novodir", desc: "mkdir + cd em um comando.", output: "(plugin built-in OMZ)" },
         ]}

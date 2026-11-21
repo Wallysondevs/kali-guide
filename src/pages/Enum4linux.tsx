@@ -301,7 +301,7 @@ Default password reset = "Welcome2024!"`,
  [+] Found user: 'msantos' (RID 1109)
  [+] Found user: 'svc_backup' (RID 1110)  ← service account!
  [+] Found user: 'svc_sql' (RID 1111)
- [+] Found user: 'wallyson.test' (RID 1150)`,
+ [+] Found user: 'ana.test' (RID 1150)`,
             outType: "warning",
           },
         ]}
@@ -325,7 +325,7 @@ jsmith
 msantos
 svc_backup
 svc_sql
-wallyson.test`,
+ana.test`,
             outType: "default",
           },
           {
@@ -334,7 +334,7 @@ wallyson.test`,
             out: `2026/04/03 12:01:23 >  Using KDC(s):
 2026/04/03 12:01:23 >       10.10.10.5:88
 
-2026/04/03 12:01:24 >  [+] VALID LOGIN:	wallyson.test@hackthebox.local:Welcome2024!
+2026/04/03 12:01:24 >  [+] VALID LOGIN:	ana.test@hackthebox.local:Welcome2024!
 
 2026/04/03 12:01:24 >  Done! Tested 7 logins (1 successes) in 0.421 seconds`,
             outType: "success",

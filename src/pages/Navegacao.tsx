@@ -21,7 +21,7 @@ export default function Navegacao() {
           { cmd: "cd -", desc: "Volta para o diretório anterior (toggle).", output: "/var/www → /tmp → cd - → /var/www" },
           { cmd: "cd ..", desc: "Sobe um nível.", output: "cd ../.. sobe dois." },
           { cmd: "cd ~user", desc: "Vai para o HOME de outro usuário.", output: "cd ~root → /root (se permitido)" },
-          { cmd: "pwd", desc: "Print working directory.", output: "/home/wallyson/labs/htb" },
+          { cmd: "pwd", desc: "Print working directory.", output: "/home/ana/labs/htb" },
           { cmd: "pwd -P", desc: "Resolve symlinks (caminho REAL no disco).", output: "/mnt/nvme/labs/htb (se /home/.../labs era symlink)" },
           { cmd: "ls -lah", desc: "Long, all (inclui ocultos), human-readable.", output: "drwxr-xr-x ... 4.2K Apr 3 09:12 .git" },
           { cmd: "ls -lt | head", desc: "Ordena por data, mais recente primeiro.", output: "Útil para ver o que foi modificado." },
@@ -97,7 +97,7 @@ export CDPATH=".:$HOME:$HOME/labs:$HOME/tools:/opt"
         lines={[
           {
             cmd: "cd htb",
-            out: "/home/wallyson/labs/htb",
+            out: "/home/ana/labs/htb",
             outType: "info",
           },
           {
@@ -212,14 +212,14 @@ export CDPATH=".:$HOME:$HOME/labs:$HOME/tools:/opt"
           },
           {
             cmd: "z labs",
-            out: "/home/wallyson/labs",
+            out: "/home/ana/labs",
             outType: "success",
           },
           {
             cmd: "zi",
             out: `> blue
-  /home/wallyson/labs/htb/blue
-  /home/wallyson/labs/htb/forge
+  /home/ana/labs/htb/blue
+  /home/ana/labs/htb/forge
   (interactive selection com fzf)`,
             outType: "default",
           },
@@ -328,12 +328,12 @@ Successfully installed.`,
           },
           {
             cmd: "ls -l ~/msf",
-            out: "lrwxrwxrwx 1 wallyson wallyson 26 Apr 3 09:12 /home/wallyson/msf -> /opt/metasploit-framework",
+            out: "lrwxrwxrwx 1 ana ana 26 Apr 3 09:12 /home/ana/msf -> /opt/metasploit-framework",
             outType: "info",
           },
           {
             cmd: "cd ~/msf && pwd",
-            out: "/home/wallyson/msf",
+            out: "/home/ana/msf",
             outType: "default",
           },
           {
@@ -379,7 +379,7 @@ EOF
 exec bash
 cd htb && pwd
 fd -e conf . /etc | head -5`}
-        expected={`/home/wallyson/labs/htb
+        expected={`/home/ana/labs/htb
 /etc/nginx/nginx.conf
 /etc/wpa_supplicant/wpa_supplicant.conf
 /etc/dpkg/dpkg.cfg.d/...`}

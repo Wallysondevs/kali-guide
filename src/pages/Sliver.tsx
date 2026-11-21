@@ -373,7 +373,7 @@ ls /etc`}
 
 sliver (MASTERFUL_RAINBOW) > info
         Hostname: kali
-        Username: wallyson
+        Username: ana
               OS: linux
             Arch: amd64
         Working Dir: /tmp

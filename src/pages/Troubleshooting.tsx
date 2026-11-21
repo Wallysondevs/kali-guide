@@ -179,13 +179,13 @@ openat(AT_FDCWD, "/var/log/meu-tool/", O_RDWR|O_CREAT) = -1 EACCES (Permission d
             cmd: "ltrace -e 'strcmp+strncmp+memcmp' ./checa-senha",
             out: `(./checa-senha "admin")
 strcmp("admin", "root") = -1
-strcmp("admin", "wallyson") = -19
+strcmp("admin", "ana") = -19
 strcmp("admin", "h4xx0r_pass") = -32
 +++ exited (status 1) +++
 
 (./checa-senha "h4xx0r_pass")
 strcmp("h4xx0r_pass", "root") = 4
-strcmp("h4xx0r_pass", "wallyson") = -15
+strcmp("h4xx0r_pass", "ana") = -15
 strcmp("h4xx0r_pass", "h4xx0r_pass") = 0   # <- senha correta
 +++ exited (status 0) +++`,
             outType: "success",
@@ -244,7 +244,7 @@ gdb ./crashbin core         # análise post-mortem`}
       <CommandTable
         title="lsof — files e sockets"
         variations={[
-          { cmd: "sudo lsof -i :8080", desc: "Quem está escutando (ou conectado em) a porta 8080.", output: "node 12847 wallyson 22u IPv4 ... TCP *:8080 (LISTEN)" },
+          { cmd: "sudo lsof -i :8080", desc: "Quem está escutando (ou conectado em) a porta 8080.", output: "node 12847 ana 22u IPv4 ... TCP *:8080 (LISTEN)" },
           { cmd: "sudo lsof -i tcp -sTCP:LISTEN", desc: "Todos os listeners TCP.", output: "Lista de daemons + portas." },
           { cmd: "sudo lsof -p 12847", desc: "Tudo aberto pelo PID 12847.", output: "Bibliotecas, FDs, sockets, mmap..." },
           { cmd: "sudo lsof /var/log/auth.log", desc: "Quem abriu este arquivo agora?", output: "Útil pra saber se safe deletar." },

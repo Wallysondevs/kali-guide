@@ -42,7 +42,7 @@ export default function GPG() {
             cmd: "gpg --version",
             out: `gpg (GnuPG) 2.4.5
 libgcrypt 1.10.3
-Home: /home/wallyson/.gnupg
+Home: /home/ana/.gnupg
 Supported algorithms:
 Pubkey: RSA, ELG, DSA, ECDH, ECDSA, EDDSA
 Cipher: IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH, CAMELLIA128, CAMELLIA192, CAMELLIA256
@@ -64,18 +64,18 @@ Please specify how long the key should be valid.
          0 = key does not expire
         2y = key expires in 2 years
 Key is valid for? (0) 2y
-Real name: Wallyson Pentest
-Email address: wallyson@redteam.local
+Real name: Ana Pentest
+Email address: ana@redteam.local
 Comment: ops-key-2026
 You selected this USER-ID:
-    "Wallyson Pentest (ops-key-2026) <wallyson@redteam.local>"
+    "Ana Pentest (ops-key-2026) <ana@redteam.local>"
 
-gpg: revocation certificate stored as '/home/wallyson/.gnupg/openpgp-revocs.d/AB1C23DE45F6...rev'
+gpg: revocation certificate stored as '/home/ana/.gnupg/openpgp-revocs.d/AB1C23DE45F6...rev'
 public and secret key created and signed.
 
 pub   ed25519 2026-04-03 [SC] [expires: 2028-04-03]
       AB1C23DE45F6789012345678901234567890ABCD
-uid                      Wallyson Pentest (ops-key-2026) <wallyson@redteam.local>
+uid                      Ana Pentest (ops-key-2026) <ana@redteam.local>
 sub   cv25519 2026-04-03 [E] [expires: 2028-04-03]`,
             outType: "success",
           },
@@ -98,10 +98,10 @@ sub   cv25519 2026-04-03 [E] [expires: 2028-04-03]`,
       <CommandTable
         title="Operações de keyring"
         variations={[
-          { cmd: "gpg --list-keys", desc: "Lista chaves públicas que você conhece.", output: "pub ed25519 ... uid Wallyson <...>" },
+          { cmd: "gpg --list-keys", desc: "Lista chaves públicas que você conhece.", output: "pub ed25519 ... uid Ana <...>" },
           { cmd: "gpg --list-secret-keys --keyid-format LONG", desc: "Suas privadas com IDs longos (úteis pra scripts).", output: "sec ed25519/AB1C23DE45F67890 ..." },
-          { cmd: "gpg --fingerprint wallyson@redteam.local", desc: "Mostra fingerprint completa pra verificar com o dono.", output: "AB1C 23DE 45F6 7890 ..." },
-          { cmd: "gpg --export -a wallyson@redteam.local > pub.asc", desc: "Exporta pública em ASCII (compartilhar).", output: "-----BEGIN PGP PUBLIC KEY BLOCK-----" },
+          { cmd: "gpg --fingerprint ana@redteam.local", desc: "Mostra fingerprint completa pra verificar com o dono.", output: "AB1C 23DE 45F6 7890 ..." },
+          { cmd: "gpg --export -a ana@redteam.local > pub.asc", desc: "Exporta pública em ASCII (compartilhar).", output: "-----BEGIN PGP PUBLIC KEY BLOCK-----" },
           { cmd: "gpg --export-secret-keys -a > backup-priv.asc", desc: "Exporta PRIVADA. Trate como joia da coroa.", output: "-----BEGIN PGP PRIVATE KEY BLOCK-----" },
           { cmd: "gpg --import cliente.asc", desc: "Importa chave pública de outra pessoa.", output: "gpg: key ABCD: public key 'Cliente <c@x.com>' imported" },
           { cmd: "gpg --delete-key 'Cliente'", desc: "Remove pública.", output: "Confirma e apaga." },
@@ -124,9 +124,9 @@ gpg:               imported: 1`,
           {
             cmd: "ls -lh",
             out: `total 14M
--rw------- 1 wallyson wallyson  47K Apr  3 18:21 ntds_dump.txt
--rw------- 1 wallyson wallyson  12M Apr  3 18:22 relatorio_final.pdf
--rw------- 1 wallyson wallyson 1.8M Apr  3 18:22 screenshots_loot.tar.gz`,
+-rw------- 1 ana ana  47K Apr  3 18:21 ntds_dump.txt
+-rw------- 1 ana ana  12M Apr  3 18:22 relatorio_final.pdf
+-rw------- 1 ana ana 1.8M Apr  3 18:22 screenshots_loot.tar.gz`,
             outType: "default",
           },
           {
@@ -145,7 +145,7 @@ gpg:               imported: 1`,
             comment: "encripta E assina ao mesmo tempo (autoria + sigilo)",
             cmd: "gpg --sign --encrypt --armor -r sec@acme.corp screenshots_loot.tar.gz",
             out: `You need a passphrase to unlock the secret key for
-user: "Wallyson Pentest <wallyson@redteam.local>"
+user: "Ana Pentest <ana@redteam.local>"
 [passphrase]
 (cria screenshots_loot.tar.gz.asc — sigilo + autenticidade)`,
             outType: "warning",
@@ -173,7 +173,7 @@ screenshots_loot.tar.gz.asc`,
             comment: "auto-detecta destinatário e usa sua privada",
             cmd: "gpg --output credenciais_handoff.txt --decrypt credenciais_handoff.txt.gpg",
             out: `gpg: encrypted with cv25519 key, ID AB1C23DE45F67890, created 2026-04-03
-      "Wallyson Pentest (ops-key-2026) <wallyson@redteam.local>"
+      "Ana Pentest (ops-key-2026) <ana@redteam.local>"
 [passphrase]
 gpg: Signature made Fri 03 Apr 2026 19:14:02 -03
 gpg:                using EDDSA key 9F8E7D6C5B4A3210
@@ -240,7 +240,7 @@ Primary key fingerprint: 7A1B 2C3D 4E5F 6A7B ...`,
           { cmd: "gpg --keyserver keys.openpgp.org --search-keys joaohacker@x.com", desc: "Busca chave por email no keyserver moderno (sem SKS).", output: "(1) João Hacker <joaohacker@x.com> 2048R/ABCD..." },
           { cmd: "gpg --keyserver hkps://keys.openpgp.org --recv-keys 7A1B2C3D4E5F6A7B", desc: "Importa direto pelo fingerprint.", output: "gpg: key ...: public key imported" },
           { cmd: "gpg --send-keys AB1C23DE45F67890", desc: "Publica sua pública pro keyserver default.", output: "gpg: sending key ... to hkps://keys.openpgp.org" },
-          { cmd: "curl https://github.com/wallyson.gpg | gpg --import", desc: "GitHub publica chave em /<user>.gpg — atalho prático.", output: "gpg: imported." },
+          { cmd: "curl https://github.com/ana.gpg | gpg --import", desc: "GitHub publica chave em /<user>.gpg — atalho prático.", output: "gpg: imported." },
         ]}
       />
 
@@ -249,7 +249,7 @@ Primary key fingerprint: 7A1B 2C3D 4E5F 6A7B ...`,
         path="~"
         lines={[
           {
-            cmd: "gpg --edit-key wallyson@redteam.local",
+            cmd: "gpg --edit-key ana@redteam.local",
             out: `gpg> trust
 Please decide how far you trust this user...
    1 = I don't know
@@ -262,7 +262,7 @@ gpg> save`,
           },
           {
             comment: "se chave foi comprometida → publique revogação imediatamente",
-            cmd: "gpg --output revoke.asc --gen-revoke wallyson@redteam.local",
+            cmd: "gpg --output revoke.asc --gen-revoke ana@redteam.local",
             out: `Create a revocation certificate for this key? (y/N) y
 Please select the reason for the revocation:
   0 = No reason specified
@@ -276,7 +276,7 @@ Revocation certificate created.`,
           },
           {
             cmd: "gpg --import revoke.asc && gpg --send-keys AB1C23DE45F67890",
-            out: "gpg: key AB1C...: \"Wallyson Pentest\" revocation certificate imported",
+            out: "gpg: key AB1C...: \"Ana Pentest\" revocation certificate imported",
             outType: "warning",
           },
         ]}

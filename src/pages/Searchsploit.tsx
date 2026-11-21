@@ -130,7 +130,7 @@ Copied EDB-ID #50406's path to the clipboard.`,
      Path: /usr/share/exploitdb/exploits/multiple/webapps/50406.sh
 File Type: Bourne-Again shell script, ASCII text executable
 
-Copied to: /home/wallyson/50406.sh`,
+Copied to: /home/ana/50406.sh`,
             outType: "success",
           },
           {
@@ -273,7 +273,7 @@ cat 12345.* | head -50
         expected={`(linha de exploits sugeridos baseados em versão exata)
 Exploit: Apache 2.4.49 - Path Traversal (CVE-2021-41773)
 Path:    /usr/share/exploitdb/exploits/multiple/webapps/50438.py
-Copied to: /home/wallyson/50438.py`}
+Copied to: /home/ana/50438.py`}
         verify="NUNCA rode um exploit sem ler primeiro. Pode haver código malicioso plantado no PoC."
       />
 

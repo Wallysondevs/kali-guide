@@ -120,9 +120,9 @@ bash é hashed (/usr/bin/bash)`,
 ++ for i in /etc/profile.d/*.sh
 ++ . /etc/profile.d/bash_completion.sh
 ++ . /etc/profile.d/locale.sh
-+ . /home/wallyson/.bash_profile
-++ test -f /home/wallyson/.bashrc
-++ . /home/wallyson/.bashrc
++ . /home/ana/.bash_profile
+++ test -f /home/ana/.bashrc
+++ . /home/ana/.bashrc
 + exit`,
             outType: "info",
           },

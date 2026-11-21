@@ -93,7 +93,7 @@ LISTEN  0  4096  127.0.0.1:9051  0.0.0.0:*  users:(("tor",pid=4421))`,
           },
           {
             cmd: "curl -s ifconfig.io",
-            out: "187.84.42.108         (seu IP real)",
+            out: "203.0.113.42         (seu IP real)",
             outType: "muted",
           },
           {
@@ -129,7 +129,7 @@ LISTEN  0  4096  127.0.0.1:9051  0.0.0.0:*  users:(("tor",pid=4421))`,
         lines={[
           {
             comment: "abrir SOCKS5 no jumphost da DMZ",
-            cmd: "ssh -D 1080 -N -f wallyson@jumphost.empresa.com",
+            cmd: "ssh -D 1080 -N -f ana@jumphost.empresa.com",
             out: "(silencioso, vai pra background)",
             outType: "muted",
           },

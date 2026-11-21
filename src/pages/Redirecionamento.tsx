@@ -241,7 +241,7 @@ PORT     STATE SERVICE VERSION
           },
           {
             cmd: "ls -la /tmp/pipe",
-            out: "prw-r--r-- 1 wallyson wallyson 0 abr  3 16:01 /tmp/pipe",
+            out: "prw-r--r-- 1 ana ana 0 abr  3 16:01 /tmp/pipe",
             outType: "info",
           },
           {
@@ -354,8 +354,8 @@ export TERM=xterm-256color
 stty rows 40 cols 120`}
         expected={`listening on [any] 4444 ...
 connect to [127.0.0.1] from (UNKNOWN) [127.0.0.1] 51221
-wallyson@kali:~$ id
-uid=1000(wallyson) gid=1000(wallyson) ...`}
+ana@kali:~$ id
+uid=1000(ana) gid=1000(ana) ...`}
         verify="O listener mostra 'connect to ... from ... ' e você consegue rodar comandos remotos. Após o upgrade do PTY, Ctrl+C, tab e setas funcionam normalmente."
       />
 

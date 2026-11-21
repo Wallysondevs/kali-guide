@@ -32,7 +32,7 @@ export default function AmbienteGrafico() {
             outType: "info",
           },
           {
-            cmd: "loginctl show-session $(loginctl | awk '/wallyson/{print $1}') -p Type -p Desktop",
+            cmd: "loginctl show-session $(loginctl | awk '/ana/{print $1}') -p Type -p Desktop",
             out: `Type=x11
 Desktop=xfce`,
             outType: "default",
@@ -143,7 +143,7 @@ xfce.desktop`,
           },
           {
             comment: "qual sessão você usa por padrão (lightdm)",
-            cmd: "cat /var/cache/lightdm/dmrc/wallyson.dmrc 2>/dev/null",
+            cmd: "cat /var/cache/lightdm/dmrc/ana.dmrc 2>/dev/null",
             out: `[Desktop]
 Session=xfce`,
             outType: "default",
@@ -170,7 +170,7 @@ Session=xfce`,
 Type=Application
 Name=Burp Suite (auto)
 Comment=Sobe o Burp em background no login
-Exec=/usr/bin/burpsuite --user-config-file=/home/wallyson/.BurpSuite/UserConfigCommunity.json
+Exec=/usr/bin/burpsuite --user-config-file=/home/ana/.BurpSuite/UserConfigCommunity.json
 Icon=/opt/BurpSuite/burpsuite_community.svg
 Terminal=false
 X-GNOME-Autostart-enabled=true
@@ -320,7 +320,7 @@ sudo systemctl enable --now xrdp
 sudo ufw allow 3389/tcp
 
 # do Windows: mstsc → Kali_IP:3389 → user/senha
-# do Linux:   xfreerdp /u:wallyson /p:'senha' /v:kali.local /size:1600x900 +clipboard
+# do Linux:   xfreerdp /u:ana /p:'senha' /v:kali.local /size:1600x900 +clipboard
 
 # IMPORTANTE: você não pode estar logado fisicamente no Xfce ao mesmo tempo
 # que se conecta por XRDP — a sessão entra em conflito. Faça logout local antes.`}

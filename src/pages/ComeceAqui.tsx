@@ -26,9 +26,9 @@ export default function ComeceAqui() {
         . É curto, mas obrigatório.
       </AlertBox>
 
-      <h2>Quem é o Wallyson — e por que esse guia existe</h2>
+      <h2>Quem é o Ana — e por que esse guia existe</h2>
       <p>
-        Oi. Eu sou o <strong>Wallyson</strong>, dev brasileiro, e venho usando
+        Oi. Eu sou o <strong>Ana</strong>, dev brasileiro, e venho usando
         Linux há mais de uma década. Comecei como muita gente: medo de quebrar
         o sistema, traumatizado pelas telas pretas dos filmes, achando que
         "hacker" era coisa de gênio. <strong>Não é.</strong> É método, repetição
@@ -175,10 +175,10 @@ export default function ComeceAqui() {
 
       <h2>Anatomia do prompt do Kali</h2>
       <OutputBlock label="prompt padrão do Kali Zsh" type="info">
-{`┌──(wallyson㉿kali)-[~]
+{`┌──(ana㉿kali)-[~]
 └─$ 
 
-   wallyson  → seu nome de usuário (quem está logado)
+   ana  → seu nome de usuário (quem está logado)
    ㉿        → separador decorativo (Kali usa esse caractere)
    kali      → nome do computador (hostname)
    [~]       → diretório onde você está agora (~ = sua pasta pessoal)
@@ -205,13 +205,13 @@ export default function ComeceAqui() {
           {
             comment: "1) descobrir o nome de usuário logado",
             cmd: "whoami",
-            out: "wallyson",
+            out: "ana",
             outType: "info",
           },
           {
             comment: "2) descobrir onde você está no filesystem",
             cmd: "pwd",
-            out: "/home/wallyson",
+            out: "/home/ana",
             outType: "info",
           },
           {
@@ -295,18 +295,18 @@ VERSION_CODENAME="kali-rolling"`,
       <p>
         O Linux organiza tudo em uma <strong>árvore de diretórios</strong>. A
         raiz se chama <code>/</code> (uma única barra). Sua pasta pessoal é{" "}
-        <code>/home/wallyson</code>. Você navega com três comandos:
+        <code>/home/ana</code>. Você navega com três comandos:
       </p>
 
       <CommandTable
         title="Navegação básica"
         variations={[
-          { cmd: "pwd", desc: "Mostra o diretório onde você está agora.", output: "/home/wallyson" },
+          { cmd: "pwd", desc: "Mostra o diretório onde você está agora.", output: "/home/ana" },
           { cmd: "ls", desc: "Lista o conteúdo do diretório atual.", output: "Desktop  Documents  Downloads  Pictures" },
-          { cmd: "ls -la", desc: "Lista incluindo arquivos ocultos (que começam com '.') e detalhes.", output: "drwxr-xr-x 18 wallyson wallyson 4096 Apr 25 15:42 ." },
+          { cmd: "ls -la", desc: "Lista incluindo arquivos ocultos (que começam com '.') e detalhes.", output: "drwxr-xr-x 18 ana ana 4096 Apr 25 15:42 ." },
           { cmd: "cd /etc", desc: "Entra na pasta de configurações do sistema.", output: "(silencioso. Use pwd para confirmar.)" },
           { cmd: "cd ..", desc: "Sobe um nível na árvore (para a pasta pai).", output: "Se estava em /etc/apache2 → vai para /etc." },
-          { cmd: "cd ~", desc: "Volta para sua pasta pessoal (/home/wallyson).", output: "Atalho universal. Funciona de qualquer lugar." },
+          { cmd: "cd ~", desc: "Volta para sua pasta pessoal (/home/ana).", output: "Atalho universal. Funciona de qualquer lugar." },
           { cmd: "cd -", desc: "Volta para o ÚLTIMO diretório onde você esteve.", output: "Como Alt+Tab entre janelas, mas para pastas." },
         ]}
       />
@@ -491,8 +491,8 @@ Sempre       ▸ Relatórios → Metodologia → Referências`}
 pwd
 uname -r
 history | tail -5`}
-        expected={`wallyson
-/home/wallyson
+        expected={`ana
+/home/ana
 6.16.0-kali1-amd64
   101  whoami
   102  pwd

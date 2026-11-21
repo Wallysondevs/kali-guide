@@ -171,7 +171,7 @@ echo "[OK] snapshot $TODAY criado em $NEW"`}
         path="~"
         lines={[
           {
-            cmd: "chmod +x ~/bin/snapshot-loot.sh && (crontab -l; echo '0 3 * * * /home/wallyson/bin/snapshot-loot.sh >> /home/wallyson/.snapshot.log 2>&1') | crontab -",
+            cmd: "chmod +x ~/bin/snapshot-loot.sh && (crontab -l; echo '0 3 * * * /home/ana/bin/snapshot-loot.sh >> /home/ana/.snapshot.log 2>&1') | crontab -",
             out: "(silencioso = cron diário às 3h da manhã)",
             outType: "success",
           },
@@ -276,7 +276,7 @@ engagement-acme-2026-04-04T14:25:01  Sat, 2026-04-04 14:25:01 [b1c9...]`,
           },
           {
             comment: "restaurar arquivo específico de archive específico",
-            cmd: "borg extract /mnt/loot/borgrepo::engagement-acme-2026-04-03T14:22:18 home/wallyson/loot/dumps/ntds.dit",
+            cmd: "borg extract /mnt/loot/borgrepo::engagement-acme-2026-04-03T14:22:18 home/ana/loot/dumps/ntds.dit",
             out: "(extrai mantendo a estrutura relativa)",
             outType: "muted",
           },
@@ -331,12 +331,12 @@ snapshot 8e2f5a91 saved`,
             cmd: "restic snapshots --tag engagement-acme",
             out: `ID        Time                 Host         Tags               Paths
 ----------------------------------------------------------------------
-8e2f5a91  2026-04-03 14:30:15  kali-laptop  engagement-acme    /home/wallyson/loot
-                                                               /home/wallyson/notes`,
+8e2f5a91  2026-04-03 14:30:15  kali-laptop  engagement-acme    /home/ana/loot
+                                                               /home/ana/notes`,
             outType: "default",
           },
           {
-            cmd: "restic restore 8e2f5a91 --target /tmp/restore --include /home/wallyson/loot/dumps",
+            cmd: "restic restore 8e2f5a91 --target /tmp/restore --include /home/ana/loot/dumps",
             out: `restoring <Snapshot 8e2f5a91> to /tmp/restore
 [0:08] 100.00%  84 files  84.2 MiB, total 84.2 MiB`,
             outType: "warning",

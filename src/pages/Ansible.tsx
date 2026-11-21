@@ -64,7 +64,7 @@ Setting up ansible-lint (24.10.0-1) ...`,
             cmd: "ansible --version",
             out: `ansible [core 2.18.1]
   config file = /etc/ansible/ansible.cfg
-  configured module search path = ['/home/wallyson/.ansible/plugins/modules']
+  configured module search path = ['/home/ana/.ansible/plugins/modules']
   ansible python module location = /usr/lib/python3/dist-packages/ansible
   python version = 3.12.7
   jinja version = 3.1.4`,

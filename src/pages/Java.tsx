@@ -308,7 +308,7 @@ HackvertorBurpPlugin-1.8.0.jar`,
           {
             comment: "Burp aceita extensões Python via Jython — baixe jython-standalone.jar",
             cmd: "ls ~/.BurpSuite/jython-standalone-2.7.3.jar",
-            out: "/home/wallyson/.BurpSuite/jython-standalone-2.7.3.jar",
+            out: "/home/ana/.BurpSuite/jython-standalone-2.7.3.jar",
             outType: "default",
           },
         ]}
@@ -377,7 +377,7 @@ echo "Main-Class: Pwn" > manifest.txt
 jar cfm pwn.jar manifest.txt Pwn.class
 
 java -jar pwn.jar id`}
-        expected={`uid=1000(wallyson) gid=1000(wallyson) groups=1000(wallyson),27(sudo)`}
+        expected={`uid=1000(ana) gid=1000(ana) groups=1000(ana),27(sudo)`}
         verify="Se o id rodou via JAR, você acabou de provar o ciclo completo: source → bytecode → JAR executável. Esse mesmo fluxo gera gadgets custom para ysoserial e payloads de Cobalt."
       />
 

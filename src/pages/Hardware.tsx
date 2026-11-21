@@ -302,7 +302,7 @@ echo "=== USB ===" >> /tmp/inventory.txt && lsusb >> /tmp/inventory.txt
 echo "=== DMI ===" >> /tmp/inventory.txt && sudo dmidecode -t system -t baseboard -t bios >> /tmp/inventory.txt
 gzip /tmp/inventory.txt
 ls -lh /tmp/inventory.txt.gz`}
-        expected={`-rw-r--r-- 1 wallyson wallyson 4.7K Apr  3 09:55 /tmp/inventory.txt.gz`}
+        expected={`-rw-r--r-- 1 ana ana 4.7K Apr  3 09:55 /tmp/inventory.txt.gz`}
         verify="Arquivo .gz com inventário completo, pronto para anexar ao relatório."
       />
     </PageContainer>

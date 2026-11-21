@@ -40,7 +40,7 @@ export default function Havoc() {
           },
           {
             cmd: "git clone https://github.com/HavocFramework/Havoc.git ~/Havoc",
-            out: `Cloning into '/home/wallyson/Havoc'...
+            out: `Cloning into '/home/ana/Havoc'...
 remote: Counting objects: 4827, done.
 Receiving objects: 100% (4827/4827), 32.41 MiB | 8.12 MiB/s, done.`,
             outType: "info",
@@ -79,7 +79,7 @@ make -j$(nproc)
 }
 
 Operators {
-    user "wallyson" {
+    user "ana" {
         Password = "T3amS3rverPass!2026"
     }
     user "jsmith" {
@@ -123,7 +123,7 @@ Listeners {
             out: `      ┐ ┬ ┬ ┐ ┐ ┌ ┌
       Havoc Framework
       [*] Starting Havoc Teamserver
-      [+] Loaded operator: wallyson
+      [+] Loaded operator: ana
       [+] Loaded operator: jsmith
       [+] Started Listener: Listener-HTTPS [https://0.0.0.0:443]
       [+] Teamserver started on 0.0.0.0:40056`,
@@ -140,7 +140,7 @@ Listeners {
             cmd: "./havoc client",
             out: `[Havoc client GUI abre]
 Endpoint:  127.0.0.1:40056
-User:      wallyson
+User:      ana
 Password:  ********`,
             outType: "info",
           },
@@ -324,7 +324,7 @@ sudo ./havoc server --profile ./profiles/havoc.yaotl -v
 ./havoc client
 # (logar com user do profile e gerar payload pelo menu)`}
         expected={`[+] Teamserver started on 127.0.0.1:40056
-[+] Loaded operator: wallyson
+[+] Loaded operator: ana
 [+] Started Listener: Listener-HTTPS [https://127.0.0.1:443]
 
 (client) Payload gerado: data/payloads/demon-x64.exe (146432 bytes)`}

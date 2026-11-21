@@ -209,9 +209,9 @@ MEDIUM: BOLA — /api/orders/{id} (acesso a outros usuários)`,
           method: "response"
           loggedInRegex: "logout"
       users:
-        - name: "wallyson"
+        - name: "ana"
           credentials:
-            username: "wallyson"
+            username: "ana"
             password: "Senha@123"
 
 jobs:
@@ -219,7 +219,7 @@ jobs:
   - type: "spider"
     parameters:
       context: "prod"
-      user: "wallyson"
+      user: "ana"
       maxDuration: 5
   - type: "spiderAjax"
     parameters:
@@ -228,7 +228,7 @@ jobs:
   - type: "activeScan"
     parameters:
       context: "prod"
-      user: "wallyson"
+      user: "ana"
   - type: "report"
     parameters:
       template: "modern"

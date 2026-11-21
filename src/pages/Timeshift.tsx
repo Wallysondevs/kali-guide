@@ -200,8 +200,8 @@ Restore completed without errors. Rebooting...`,
         title="/etc/timeshift/timeshift.json (trecho)"
         code={`{
   "exclude": [
-    "/home/wallyson/loot/**",
-    "/home/wallyson/.cache/**",
+    "/home/ana/loot/**",
+    "/home/ana/.cache/**",
     "+ /etc/**",
     "+ /usr/local/bin/**"
   ],
@@ -344,7 +344,7 @@ sudo timeshift --rsync --snapshot-device /dev/sdb1 --check
 sudo timeshift --create --comments 'baseline pre-experiment' --tags O
 
 # 3) sabotar (CUIDADO: faça em VM!)
-echo 'wallyson ALL=(ALL) GARBAGE_TOKEN_HERE' | sudo tee -a /etc/sudoers
+echo 'ana ALL=(ALL) GARBAGE_TOKEN_HERE' | sudo tee -a /etc/sudoers
 
 # 4) confirmar quebra
 sudo -k && sudo whoami

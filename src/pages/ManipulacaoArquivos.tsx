@@ -35,7 +35,7 @@ export default function ManipulacaoArquivos() {
         lines={[
           {
             comment: "exfiltrar /etc/* preservando permissões originais para análise forense em casa",
-            cmd: "sudo cp -a /etc /home/wallyson/loot/etc-snapshot",
+            cmd: "sudo cp -a /etc /home/ana/loot/etc-snapshot",
             out: "(silencioso = sucesso)",
             outType: "muted",
           },
@@ -156,9 +156,9 @@ export default function ManipulacaoArquivos() {
           },
           {
             cmd: "ls -li original.txt hard soft",
-            out: `2097152 -rw-r--r-- 2 wallyson wallyson 8 Apr 3 09:12 hard
-2097152 -rw-r--r-- 2 wallyson wallyson 8 Apr 3 09:12 original.txt
-2097158 lrwxrwxrwx 1 wallyson wallyson 12 Apr 3 09:12 soft -> original.txt`,
+            out: `2097152 -rw-r--r-- 2 ana ana 8 Apr 3 09:12 hard
+2097152 -rw-r--r-- 2 ana ana 8 Apr 3 09:12 original.txt
+2097158 lrwxrwxrwx 1 ana ana 12 Apr 3 09:12 soft -> original.txt`,
             outType: "info",
           },
           {
@@ -391,8 +391,8 @@ diff <(find /tmp/target -printf '%p %m\\n' | sort) \\
 
 shred -uvz /tmp/target/.ssh/id_rsa /tmp/target/.env
 ls -la /tmp/target/.ssh/ /tmp/target/`}
-        expected={`/tmp/target/.ssh/id_rsa 600 wallyson:wallyson
-/tmp/loot/.ssh/id_rsa 600 wallyson:wallyson
+        expected={`/tmp/target/.ssh/id_rsa 600 ana:ana
+/tmp/loot/.ssh/id_rsa 600 ana:ana
 [+] estrutura idêntica
 shred: /tmp/target/.ssh/id_rsa: pass 1/4 (random)...
 shred: /tmp/target/.ssh/id_rsa: removing

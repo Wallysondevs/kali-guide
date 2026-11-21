@@ -61,7 +61,7 @@ Press <enter> to keep the current choice[*], or type selection number:`,
 
       <h2>Listener simples (chat TCP)</h2>
       <Terminal
-        user="wallyson"
+        user="ana"
         host="kali"
         path="~"
         lines={[
@@ -76,7 +76,7 @@ oi servidor`,
         ]}
       />
       <Terminal
-        user="wallyson"
+        user="ana"
         host="cliente"
         path="~"
         lines={[
@@ -153,7 +153,7 @@ Connection to 192.168.1.50 123 port [udp/ntp] succeeded!`,
 
       <h2>Transferir arquivos</h2>
       <Terminal
-        user="wallyson"
+        user="ana"
         host="kali"
         path="~"
         lines={[
@@ -167,7 +167,7 @@ Connection received on 192.168.1.108 51445`,
         ]}
       />
       <Terminal
-        user="wallyson"
+        user="ana"
         host="alvo"
         path="~"
         lines={[
@@ -199,7 +199,7 @@ e8a7b2c4d3...  loot.zip`,
       </p>
 
       <Terminal
-        user="wallyson"
+        user="ana"
         host="kali"
         path="~"
         lines={[
@@ -288,7 +288,7 @@ $client.Close()`}
 
       <h2>Bind shell (porta no alvo)</h2>
       <Terminal
-        user="wallyson"
+        user="ana"
         host="alvo"
         path="~"
         lines={[
@@ -301,7 +301,7 @@ $client.Close()`}
         ]}
       />
       <Terminal
-        user="wallyson"
+        user="ana"
         host="kali"
         path="~"
         lines={[
@@ -355,8 +355,8 @@ export TERM=xterm-256color
 id`}
         expected={`Listening on 0.0.0.0 4444
 Connection received on 127.0.0.1 51234
-wallyson@kali:~$ id
-uid=1000(wallyson) gid=1000(wallyson) groups=1000(wallyson),27(sudo)`}
+ana@kali:~$ id
+uid=1000(ana) gid=1000(ana) groups=1000(ana),27(sudo)`}
         verify="A shell deve aceitar TAB completion, setas (histórico), Ctrl+C sem matar a sessão."
       />
 

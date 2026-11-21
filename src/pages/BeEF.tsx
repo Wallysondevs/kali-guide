@@ -101,7 +101,7 @@ Webcam Available:    Yes (1 device)
 Microphone Avail:    Yes (1 device)
 
 Local IP:            192.168.1.50
-Public IP:           201.83.42.108  (via WebRTC leak)
+Public IP:           203.0.113.43  (via WebRTC leak)
 Geolocation:         São Paulo, BR
 
 Cookies (this site):

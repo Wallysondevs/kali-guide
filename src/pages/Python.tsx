@@ -63,7 +63,7 @@ export default function Python() {
           },
           {
             cmd: "source .venv/bin/activate",
-            out: "(prompt muda: (.venv) ┌──(wallyson㉿kali)-[~/exploits])",
+            out: "(prompt muda: (.venv) ┌──(ana㉿kali)-[~/exploits])",
             outType: "info",
           },
           {
@@ -105,7 +105,7 @@ Successfully installed beautifulsoup4-4.12.3 requests-2.32.3 scapy-2.5.0 ...`,
           {
             cmd: "sudo apt install pipx -y && pipx ensurepath",
             out: `Setting up pipx (1.6.0-1) ...
-Success! Added /home/wallyson/.local/bin to PATH`,
+Success! Added /home/ana/.local/bin to PATH`,
             outType: "info",
           },
           {
@@ -131,8 +131,8 @@ done! ✨ 🌟 ✨`,
           },
           {
             cmd: "pipx list",
-            out: `venvs are in /home/wallyson/.local/share/pipx/venvs
-apps are exposed on your $PATH at /home/wallyson/.local/bin
+            out: `venvs are in /home/ana/.local/share/pipx/venvs
+apps are exposed on your $PATH at /home/ana/.local/bin
 
   package crackmapexec 5.4.0
   package impacket 0.12.0
@@ -153,12 +153,12 @@ apps are exposed on your $PATH at /home/wallyson/.local/bin
         lines={[
           {
             cmd: "curl -LsSf https://astral.sh/uv/install.sh | sh",
-            out: "installing to /home/wallyson/.local/bin",
+            out: "installing to /home/ana/.local/bin",
             outType: "info",
           },
           {
             cmd: "uv init && uv add requests scapy",
-            out: `Initialized project at /home/wallyson/exploit-novo
+            out: `Initialized project at /home/ana/exploit-novo
 Resolved 18 packages in 312ms
 Downloaded 18 packages in 0.84s
 Installed 18 packages in 21ms`,

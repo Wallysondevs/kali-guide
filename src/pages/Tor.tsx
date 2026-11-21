@@ -75,7 +75,7 @@ Apr 03 23:14:27.000 [notice] Bootstrapped 100% (done): Done   ← pronto!`,
         lines={[
           {
             cmd: "curl -s ifconfig.io",
-            out: "187.84.42.108            (seu IP REAL — direto, sem Tor)",
+            out: "203.0.113.42            (seu IP REAL — direto, sem Tor)",
             outType: "muted",
           },
           {
@@ -188,7 +188,7 @@ CookieAuthentication 1`,
             cmd: "sudo nyx",
             out: `┌─ Tor 0.4.8.10 ──────────────────────────────────────────────────────────┐
 │ Tor (pid 4421)        Bandwidth (KiB/s):   ▁▂▃▅▇█▇▅▃▂▁                  │
-│ wallyson@kali         Recv:  142.3 KiB/s   Sent:  31.8 KiB/s             │
+│ ana@kali         Recv:  142.3 KiB/s   Sent:  31.8 KiB/s             │
 │ Sock OK   ControlOK   Total:  84.2 MiB     32.1 MiB                       │
 └──────────────────────────────────────────────────────────────────────────┘
 ┌─ Connections (24 active) ──────────────────────────────────────────────┐

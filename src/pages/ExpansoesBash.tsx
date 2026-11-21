@@ -25,7 +25,7 @@ export default function ExpansoesBash() {
         language="bash"
         title="ordem de expansão (memorize)"
         code={`# 1. brace expansion              {a,b,c}        →  a b c
-# 2. tilde expansion               ~              →  /home/wallyson
+# 2. tilde expansion               ~              →  /home/ana
 # 3. parameter / variable          \${var}, $var
 # 4. command substitution          $(cmd) ou \`cmd\`
 # 5. arithmetic expansion          $((1+1))       →  2
@@ -95,11 +95,11 @@ UP 10.10.10.220`,
       <CommandTable
         title="formas do ~"
         variations={[
-          { cmd: "~", desc: "Seu HOME.", output: "/home/wallyson" },
+          { cmd: "~", desc: "Seu HOME.", output: "/home/ana" },
           { cmd: "~root", desc: "Home do user root.", output: "/root" },
           { cmd: "~+", desc: "$PWD (diretório atual).", output: "/tmp/loot" },
           { cmd: "~-", desc: "$OLDPWD (anterior).", output: "Útil pra alternar com cd -." },
-          { cmd: "cd ~/tools", desc: "Vai para /home/wallyson/tools.", output: "Funciona em qualquer comando." },
+          { cmd: "cd ~/tools", desc: "Vai para /home/ana/tools.", output: "Funciona em qualquer comando." },
         ]}
       />
 
@@ -193,7 +193,7 @@ arquivo="/var/log/nginx/access.log"
           {
             comment: "aninhamento múltiplo (só $() permite)",
             cmd: "echo \"você é $(whoami) no $(uname -s)/$(uname -m)\"",
-            out: "você é wallyson no Linux/x86_64",
+            out: "você é ana no Linux/x86_64",
             outType: "success",
           },
           {
@@ -414,7 +414,7 @@ daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin`,
             outType: "warning",
           },
           {
-            cmd: "echo wallyson | rev",
+            cmd: "echo ana | rev",
             out: "nosyllaw",
             outType: "info",
           },

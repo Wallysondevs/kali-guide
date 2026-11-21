@@ -45,7 +45,7 @@ bin:x:2:2:bin:/bin:/usr/sbin/nologin
 sys:x:3:3:sys:/dev:/usr/sbin/nologin
 www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
 mysql:x:113:117:MySQL Server,,,:/nonexistent:/bin/false
-wallyson:x:1000:1000:Wallyson,,,:/home/wallyson:/bin/bash`,
+ana:x:1000:1000:Ana,,,:/home/ana:/bin/bash`,
             outType: "warning",
           },
         ]}

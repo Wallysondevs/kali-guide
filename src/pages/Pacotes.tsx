@@ -170,7 +170,7 @@ After this operation, 1,847 MB of additional disk space will be used.`,
             outType: "muted",
           },
           {
-            user: "wallyson",
+            user: "ana",
             host: "kali",
             path: "~/projetos/lab",
             cmd: "pip install impacket pwntools scapy",

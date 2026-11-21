@@ -35,8 +35,8 @@ export default function NodeJS() {
           {
             comment: "instale nvm (gerenciador de versões)",
             cmd: "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash",
-            out: `=> Downloading nvm from git to '/home/wallyson/.nvm'
-=> Appending nvm source string to /home/wallyson/.bashrc
+            out: `=> Downloading nvm from git to '/home/ana/.nvm'
+=> Appending nvm source string to /home/ana/.bashrc
 => Close and reopen your terminal to start using nvm`,
             outType: "info",
           },
@@ -95,7 +95,7 @@ node -> stable (-> v22.11.0)`,
           {
             cmd: "npm install -g pnpm",
             out: `added 1 package in 2s
-/home/wallyson/.nvm/versions/node/v22.11.0/bin/pnpm`,
+/home/ana/.nvm/versions/node/v22.11.0/bin/pnpm`,
             outType: "info",
           },
           {
@@ -282,7 +282,7 @@ list
         lines={[
           {
             cmd: "pnpm create electron-app fake-client && cd fake-client",
-            out: "✓ Created project at /home/wallyson/fake-client",
+            out: "✓ Created project at /home/ana/fake-client",
             outType: "info",
           },
           {

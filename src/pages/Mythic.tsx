@@ -40,7 +40,7 @@ export default function Mythic() {
           },
           {
             cmd: "git clone https://github.com/its-a-feature/Mythic.git ~/Mythic && cd ~/Mythic",
-            out: `Cloning into '/home/wallyson/Mythic'...
+            out: `Cloning into '/home/ana/Mythic'...
 remote: Total 24812 (delta 142), reused 187`,
             outType: "info",
           },

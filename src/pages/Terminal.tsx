@@ -44,7 +44,7 @@ export default function TerminalPage() {
           },
           {
             comment: "verificar shell padrão do usuário",
-            cmd: "getent passwd wallyson | cut -d: -f7",
+            cmd: "getent passwd ana | cut -d: -f7",
             out: "/usr/bin/zsh",
             outType: "default",
           },
@@ -66,7 +66,7 @@ export default function TerminalPage() {
           },
           {
             comment: "trocar shell em definitivo",
-            cmd: "chsh -s /bin/bash wallyson",
+            cmd: "chsh -s /bin/bash ana",
             out: "Senha: \nShell alterado.",
             outType: "success",
           },
@@ -88,12 +88,12 @@ export default function TerminalPage() {
         lines={[
           {
             cmd: "cd ~ && mkdir -p lab && cd lab",
-            out: "(silencioso — você está em /home/wallyson/lab)",
+            out: "(silencioso — você está em /home/ana/lab)",
             outType: "muted",
           },
           {
             comment: "criar 4 usuários (alguns repetidos para uniq)",
-            cmd: "printf 'kali\\nroot\\nadmin\\nwallyson\\nana.silva\\njoao.lopes\\nana.silva\\nkali\\n' > usuarios.txt",
+            cmd: "printf 'kali\\nroot\\nadmin\\nana\\nana.silva\\njoao.lopes\\nana.silva\\nkali\\n' > usuarios.txt",
             out: "(silencioso)",
             outType: "muted",
           },
@@ -102,7 +102,7 @@ export default function TerminalPage() {
             out: `kali
 root
 admin
-wallyson
+ana
 ana.silva
 joao.lopes
 ana.silva
@@ -128,8 +128,8 @@ EOF`,
           {
             cmd: "ls -lh",
             out: `total 8.0K
--rw-r--r-- 1 wallyson wallyson 472 Apr 25 16:30 log.txt
--rw-r--r-- 1 wallyson wallyson  62 Apr 25 16:30 usuarios.txt`,
+-rw-r--r-- 1 ana ana 472 Apr 25 16:30 log.txt
+-rw-r--r-- 1 ana ana  62 Apr 25 16:30 usuarios.txt`,
             outType: "info",
           },
         ]}
@@ -139,7 +139,7 @@ EOF`,
       <Terminal
         path="~/lab"
         lines={[
-          { cmd: "pwd", out: "/home/wallyson/lab", outType: "info" },
+          { cmd: "pwd", out: "/home/ana/lab", outType: "info" },
           {
             cmd: "ls",
             out: "log.txt  usuarios.txt",
@@ -159,19 +159,19 @@ EOF`,
           {
             comment: "voltar para o diretório anterior",
             cmd: "cd -",
-            out: "/home/wallyson/lab",
+            out: "/home/ana/lab",
             outType: "info",
           },
           {
             comment: "subir um nível",
             cmd: "cd .. && pwd",
-            out: "/home/wallyson",
+            out: "/home/ana",
             outType: "default",
           },
           {
             comment: "atalho ~ = home; cd sem nada também volta pra home",
             cmd: "cd ~ && pwd",
-            out: "/home/wallyson",
+            out: "/home/ana",
             outType: "default",
           },
           {
@@ -186,8 +186,8 @@ EOF`,
       <CommandTable
         title="ls — flags essenciais"
         variations={[
-          { cmd: "ls -l", desc: "Formato longo com permissões, dono, tamanho.", output: "-rw-r--r-- 1 wallyson wallyson 472 Apr 25 16:30 log.txt" },
-          { cmd: "ls -la", desc: "Inclui ocultos (.bashrc, .ssh, ...).", output: "drwxr-xr-x 2 wallyson wallyson 4096 Apr 25 16:30 .\ndrwx------ 18 wallyson wallyson 4096 Apr 25 16:30 .." },
+          { cmd: "ls -l", desc: "Formato longo com permissões, dono, tamanho.", output: "-rw-r--r-- 1 ana ana 472 Apr 25 16:30 log.txt" },
+          { cmd: "ls -la", desc: "Inclui ocultos (.bashrc, .ssh, ...).", output: "drwxr-xr-x 2 ana ana 4096 Apr 25 16:30 .\ndrwx------ 18 ana ana 4096 Apr 25 16:30 .." },
           { cmd: "ls -lh", desc: "Tamanhos legíveis (K, M, G).", output: "472   62" },
           { cmd: "ls -lhS", desc: "Ordena por tamanho (maior primeiro).", output: "log.txt  472\nusuarios.txt 62" },
           { cmd: "ls -lt", desc: "Ordena por data de modificação.", output: "Mais novo primeiro." },
@@ -323,9 +323,9 @@ Apr 25 16:42:15 kali sshd[4421]: Failed password for ana.silva from 200.158.42.1
           {
             comment: "por nome (aspas evitam expansão pelo shell)",
             cmd: "find ~ -name '*.txt' 2>/dev/null",
-            out: `/home/wallyson/lab/log.txt
-/home/wallyson/lab/usuarios.txt
-/home/wallyson/Documents/notas.txt`,
+            out: `/home/ana/lab/log.txt
+/home/ana/lab/usuarios.txt
+/home/ana/Documents/notas.txt`,
             outType: "info",
           },
           {
@@ -371,22 +371,22 @@ Apr 25 16:42:15 kali sshd[4421]: Failed password for ana.silva from 200.158.42.1
           {
             comment: "por tamanho",
             cmd: "find ~ -size +10M 2>/dev/null",
-            out: `/home/wallyson/Downloads/kali-linux-2026.1-installer.iso
-/home/wallyson/.cache/mozilla/firefox/abc.profile/cache2/entries/0E3A7B.bin`,
+            out: `/home/ana/Downloads/kali-linux-2026.1-installer.iso
+/home/ana/.cache/mozilla/firefox/abc.profile/cache2/entries/0E3A7B.bin`,
             outType: "default",
           },
           {
             comment: "-exec executa comando em cada resultado ({} = nome)",
             cmd: "find ~/lab -name '*.txt' -exec wc -l {} \\;",
-            out: `9 /home/wallyson/lab/log.txt
-8 /home/wallyson/lab/usuarios.txt`,
+            out: `9 /home/ana/lab/log.txt
+8 /home/ana/lab/usuarios.txt`,
             outType: "info",
           },
           {
             comment: "+ é mais eficiente que ; (passa todos juntos)",
             cmd: "find ~/lab -name '*.txt' -exec wc -l {} +",
-            out: ` 9 /home/wallyson/lab/log.txt
- 8 /home/wallyson/lab/usuarios.txt
+            out: ` 9 /home/ana/lab/log.txt
+ 8 /home/ana/lab/usuarios.txt
 17 total`,
             outType: "success",
           },
@@ -401,7 +401,7 @@ Apr 25 16:42:15 kali sshd[4421]: Failed password for ana.silva from 200.158.42.1
           { cmd: "-type X", desc: "f=arquivo, d=dir, l=link, b=block.", output: "find /etc -type f" },
           { cmd: "-perm -4000", desc: "SUID — busca binários executáveis como root.", output: "/usr/bin/sudo, /usr/bin/passwd" },
           { cmd: "-perm -2000", desc: "SGID — executa com grupo dono.", output: "/usr/bin/wall" },
-          { cmd: "-user nome", desc: "Arquivos de um usuário específico.", output: "find / -user wallyson" },
+          { cmd: "-user nome", desc: "Arquivos de um usuário específico.", output: "find / -user ana" },
           { cmd: "-group nome", desc: "Arquivos de um grupo.", output: "find /var -group www-data" },
           { cmd: "-size +N[ckMG]", desc: "Maiores (+) ou menores (-) que N.", output: "find / -size +100M" },
           { cmd: "-mtime ±N", desc: "Modificados há N dias.", output: "find /var -mtime -1" },
@@ -473,11 +473,11 @@ Apr 25 16:42:15 kali sshd[4421]: Failed password for ana.silva from 200.158.42.1
           },
           {
             comment: "só nomes de arquivos que batem",
-            cmd: "grep -rl 'wallyson' ~ 2>/dev/null | head -5",
-            out: `/home/wallyson/.bashrc
-/home/wallyson/.zshrc
-/home/wallyson/.gitconfig
-/home/wallyson/lab/usuarios.txt`,
+            cmd: "grep -rl 'ana' ~ 2>/dev/null | head -5",
+            out: `/home/ana/.bashrc
+/home/ana/.zshrc
+/home/ana/.gitconfig
+/home/ana/lab/usuarios.txt`,
             outType: "default",
           },
         ]}
@@ -567,8 +567,8 @@ find: '/root': Permission denied`,
             comment: "tee — mostra na tela E salva no arquivo",
             cmd: "ls -la | tee saida.txt | head -3",
             out: `total 24
-drwxr-xr-x 2 wallyson wallyson 4096 Apr 25 16:30 .
-drwx------ 18 wallyson wallyson 4096 Apr 25 16:30 ..`,
+drwxr-xr-x 2 ana ana 4096 Apr 25 16:30 .
+drwx------ 18 ana ana 4096 Apr 25 16:30 ..`,
             outType: "default",
           },
           {
@@ -627,7 +627,7 @@ ana.silva
 joao.lopes
 kali
 root
-wallyson`,
+ana`,
             outType: "default",
           },
           {
@@ -635,7 +635,7 @@ wallyson`,
             cmd: "sort usuarios.txt | uniq -c | sort -rn",
             out: `      2 kali
       2 ana.silva
-      1 wallyson
+      1 ana
       1 root
       1 joao.lopes
       1 admin`,
@@ -652,7 +652,7 @@ wallyson`,
           {
             comment: "contar processos por usuário",
             cmd: "ps aux | awk 'NR>1 {print $1}' | sort | uniq -c | sort -rn | head -5",
-            out: `     142 wallyson
+            out: `     142 ana
       48 root
       12 systemd+
        8 messagebus
@@ -686,7 +686,7 @@ wallyson`,
           {
             comment: "salvar saída em variável",
             cmd: 'IP=$(curl -s ifconfig.io) && echo "Meu IP: $IP"',
-            out: "Meu IP: 187.84.42.108",
+            out: "Meu IP: 203.0.113.42",
             outType: "info",
           },
           {
@@ -698,7 +698,7 @@ wallyson`,
           {
             comment: "backticks — sintaxe antiga (evite, não aninha bem)",
             cmd: "echo `whoami`",
-            out: "wallyson",
+            out: "ana",
             outType: "muted",
           },
           {
@@ -721,9 +721,9 @@ wallyson`,
           {
             comment: "ls não lê stdin — xargs resolve",
             cmd: "find . -name '*.txt' | xargs ls -lh",
-            out: `-rw-r--r-- 1 wallyson wallyson  62 Apr 25 16:30 ./usuarios.txt
--rw-r--r-- 1 wallyson wallyson 472 Apr 25 16:30 ./log.txt
--rw-r--r-- 1 wallyson wallyson  35 Apr 25 16:33 ./lista.txt`,
+            out: `-rw-r--r-- 1 ana ana  62 Apr 25 16:30 ./usuarios.txt
+-rw-r--r-- 1 ana ana 472 Apr 25 16:30 ./log.txt
+-rw-r--r-- 1 ana ana  35 Apr 25 16:33 ./lista.txt`,
             outType: "default",
           },
           {
@@ -1057,9 +1057,9 @@ lp 7`,
           {
             comment: "habilitar globstar e usar **",
             cmd: "shopt -s globstar && ls -d ~/lab/**/*.txt 2>/dev/null",
-            out: `/home/wallyson/lab/lista.txt
-/home/wallyson/lab/log.txt
-/home/wallyson/lab/usuarios.txt`,
+            out: `/home/ana/lab/lista.txt
+/home/ana/lab/log.txt
+/home/ana/lab/usuarios.txt`,
             outType: "success",
           },
         ]}
@@ -1096,7 +1096,7 @@ lp 7`,
           {
             cmd: "sudo !!",
             out: `sudo apt update
-[sudo] senha para wallyson: 
+[sudo] senha para ana: 
 Hit:1 http://kali.download/kali kali-rolling InRelease`,
             outType: "success",
           },
@@ -1197,20 +1197,20 @@ nohup: redirecting stderr to stdout`,
             out: `USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 root           1  0.0  0.1 168432 12244 ?        Ss   16:00   0:01 /sbin/init splash
 root           2  0.0  0.0      0     0 ?        S    16:00   0:00 [kthreadd]
-wallyson    1421  1.2  3.4 894212 138224 ?       Sl   16:01   0:42 /usr/lib/firefox/firefox
-wallyson    1842  0.4  1.1 142884 44120 pts/0    Ss   16:14   0:02 zsh`,
+ana    1421  1.2  3.4 894212 138224 ?       Sl   16:01   0:42 /usr/lib/firefox/firefox
+ana    1842  0.4  1.1 142884 44120 pts/0    Ss   16:14   0:02 zsh`,
             outType: "default",
           },
           {
             comment: "filtrar por nome",
             cmd: "ps aux | grep -i firefox | grep -v grep",
-            out: `wallyson    1421  1.2  3.4 894212 138224 ?  Sl  16:01  0:42 /usr/lib/firefox/firefox
-wallyson    1488  0.6  2.1 612442  88122 ?  Sl  16:01  0:18 /usr/lib/firefox/firefox -contentproc -childID 1`,
+            out: `ana    1421  1.2  3.4 894212 138224 ?  Sl  16:01  0:42 /usr/lib/firefox/firefox
+ana    1488  0.6  2.1 612442  88122 ?  Sl  16:01  0:18 /usr/lib/firefox/firefox -contentproc -childID 1`,
             outType: "info",
           },
           {
             comment: "tree — árvore de processos",
-            cmd: "pstree -p wallyson | head -8",
+            cmd: "pstree -p ana | head -8",
             out: `zsh(1842)─┬─firefox(1421)─┬─Web Content(1488)
           │                ├─Web Content(1502)
           │                └─{firefox}(1422)

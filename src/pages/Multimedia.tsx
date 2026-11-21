@@ -165,7 +165,7 @@ rh-admin`,
           },
           {
             cmd: "ls -lah evidencias-pentest.pdf",
-            out: "-rw-r--r-- 1 wallyson wallyson 11M Apr  5 15:42 evidencias-pentest.pdf",
+            out: "-rw-r--r-- 1 ana ana 11M Apr  5 15:42 evidencias-pentest.pdf",
             outType: "success",
           },
         ]}
@@ -215,8 +215,8 @@ video:7912kB audio:0kB muxing overhead: 1.221%`,
           },
           {
             cmd: "ls -lah demo.gif cut-poc.mp4",
-            out: `-rw-r--r-- 1 wallyson wallyson 5.9M Apr  5 15:55 demo.gif
--rw-r--r-- 1 wallyson wallyson 7.7M Apr  5 15:54 cut-poc.mp4`,
+            out: `-rw-r--r-- 1 ana ana 5.9M Apr  5 15:55 demo.gif
+-rw-r--r-- 1 ana ana 7.7M Apr  5 15:54 cut-poc.mp4`,
             outType: "success",
           },
         ]}
@@ -281,7 +281,7 @@ sox in.wav -r 16000 -c 1 stt-input.wav`}
             comment: "cover.jpg parece intacta — mas tem dados escondidos",
             cmd: "file cover.jpg && ls -l cover.jpg",
             out: `cover.jpg: JPEG image data, JFIF standard 1.01, ..., 1920x1080
--rw-r--r-- 1 wallyson wallyson 487231 Apr  5 16:10 cover.jpg`,
+-rw-r--r-- 1 ana ana 487231 Apr  5 16:10 cover.jpg`,
             outType: "info",
           },
           {

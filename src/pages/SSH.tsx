@@ -19,16 +19,16 @@ export default function SSH() {
         path="~"
         lines={[
           {
-            cmd: "ssh wallyson@192.168.1.50",
+            cmd: "ssh ana@192.168.1.50",
             out: `The authenticity of host '192.168.1.50 (192.168.1.50)' can't be established.
 ED25519 key fingerprint is SHA256:XKF/4xXp8aQRSm8mLZ9rz7qVKKLZxX9...
 Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
 Warning: Permanently added '192.168.1.50' (ED25519) to the list of known hosts.
-wallyson@192.168.1.50's password: 
+ana@192.168.1.50's password: 
 Linux target 6.1.0-23-amd64 #1 SMP Debian 6.1.99-1 (2024-07-15) x86_64
 
 Last login: Fri Apr  3 09:58:24 2026 from 192.168.1.42
-wallyson@target:~$`,
+ana@target:~$`,
             outType: "info",
           },
           {
@@ -38,7 +38,7 @@ wallyson@target:~$`,
             outType: "muted",
           },
           {
-            cmd: "ssh wallyson@bastion.cliente.com -i ~/.ssh/cliente_ed25519",
+            cmd: "ssh ana@bastion.cliente.com -i ~/.ssh/cliente_ed25519",
             out: "(usando chave privada específica com -i)",
             outType: "muted",
           },
@@ -66,15 +66,15 @@ wallyson@target:~$`,
         lines={[
           {
             comment: "ED25519 é o algoritmo moderno recomendado",
-            cmd: "ssh-keygen -t ed25519 -C \"wallyson@kali\"",
+            cmd: "ssh-keygen -t ed25519 -C \"ana@kali\"",
             out: `Generating public/private ed25519 key pair.
-Enter file in which to save the key (/home/wallyson/.ssh/id_ed25519): 
+Enter file in which to save the key (/home/ana/.ssh/id_ed25519): 
 Enter passphrase (empty for no passphrase): ********
 Enter same passphrase again: ********
-Your identification has been saved in /home/wallyson/.ssh/id_ed25519
-Your public key has been saved in /home/wallyson/.ssh/id_ed25519.pub
+Your identification has been saved in /home/ana/.ssh/id_ed25519
+Your public key has been saved in /home/ana/.ssh/id_ed25519.pub
 The key fingerprint is:
-SHA256:Pj9aPxX7kKKxLZ9mqRSm8mLZ9rz7qVKK wallyson@kali
+SHA256:Pj9aPxX7kKKxLZ9mqRSm8mLZ9rz7qVKK ana@kali
 The key's randomart image is:
 +--[ED25519 256]--+
 |    .o.+oE.      |
@@ -91,14 +91,14 @@ The key's randomart image is:
           },
           {
             cmd: "ls -l ~/.ssh/",
-            out: `-rw------- 1 wallyson wallyson  411 Apr  3 10:05 id_ed25519
--rw-r--r-- 1 wallyson wallyson   95 Apr  3 10:05 id_ed25519.pub
--rw-r--r-- 1 wallyson wallyson  178 Apr  3 09:55 known_hosts`,
+            out: `-rw------- 1 ana ana  411 Apr  3 10:05 id_ed25519
+-rw-r--r-- 1 ana ana   95 Apr  3 10:05 id_ed25519.pub
+-rw-r--r-- 1 ana ana  178 Apr  3 09:55 known_hosts`,
             outType: "info",
           },
           {
             cmd: "cat ~/.ssh/id_ed25519.pub",
-            out: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPj9aPxX7kKKxLZ9mqRSm8mLZ9rz7qVKK wallyson@kali",
+            out: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPj9aPxX7kKKxLZ9mqRSm8mLZ9rz7qVKK ana@kali",
             outType: "default",
           },
         ]}
@@ -110,23 +110,23 @@ The key's randomart image is:
         lines={[
           {
             comment: "ssh-copy-id automatiza tudo",
-            cmd: "ssh-copy-id -i ~/.ssh/id_ed25519.pub wallyson@192.168.1.50",
-            out: `/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/wallyson/.ssh/id_ed25519.pub"
+            cmd: "ssh-copy-id -i ~/.ssh/id_ed25519.pub ana@192.168.1.50",
+            out: `/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/ana/.ssh/id_ed25519.pub"
 /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
 /usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
-wallyson@192.168.1.50's password: 
+ana@192.168.1.50's password: 
 
 Number of key(s) added: 1
 
-Now try logging into the machine, with: "ssh 'wallyson@192.168.1.50'"
+Now try logging into the machine, with: "ssh 'ana@192.168.1.50'"
 and check to make sure that only the key(s) you wanted were added.`,
             outType: "success",
           },
           {
-            cmd: "ssh wallyson@192.168.1.50",
-            out: `Enter passphrase for key '/home/wallyson/.ssh/id_ed25519': 
+            cmd: "ssh ana@192.168.1.50",
+            out: `Enter passphrase for key '/home/ana/.ssh/id_ed25519': 
 Linux target 6.1.0-23-amd64 ...
-wallyson@target:~$`,
+ana@target:~$`,
             outType: "info",
           },
         ]}
@@ -143,19 +143,19 @@ wallyson@target:~$`,
           },
           {
             cmd: "ssh-add ~/.ssh/id_ed25519",
-            out: `Enter passphrase for /home/wallyson/.ssh/id_ed25519: 
-Identity added: /home/wallyson/.ssh/id_ed25519 (wallyson@kali)`,
+            out: `Enter passphrase for /home/ana/.ssh/id_ed25519: 
+Identity added: /home/ana/.ssh/id_ed25519 (ana@kali)`,
             outType: "success",
           },
           {
             cmd: "ssh-add -l",
-            out: "256 SHA256:Pj9aPxX7kKKxLZ9mqRSm8mLZ9rz7qVKK wallyson@kali (ED25519)",
+            out: "256 SHA256:Pj9aPxX7kKKxLZ9mqRSm8mLZ9rz7qVKK ana@kali (ED25519)",
             outType: "info",
           },
           {
             comment: "agora as próximas conexões não pedem passphrase",
-            cmd: "ssh wallyson@192.168.1.50 'whoami'",
-            out: "wallyson",
+            cmd: "ssh ana@192.168.1.50 'whoami'",
+            out: "ana",
             outType: "default",
           },
         ]}
@@ -167,26 +167,26 @@ Identity added: /home/wallyson/.ssh/id_ed25519 (wallyson@kali)`,
         lines={[
           {
             comment: "enviar arquivo local → remoto",
-            cmd: "scp loot.zip wallyson@192.168.1.50:/tmp/",
+            cmd: "scp loot.zip ana@192.168.1.50:/tmp/",
             out: `loot.zip                                100%   42MB  18.4MB/s   00:02`,
             outType: "info",
           },
           {
             comment: "baixar remoto → local",
-            cmd: "scp wallyson@192.168.1.50:/etc/passwd ./passwd_target",
+            cmd: "scp ana@192.168.1.50:/etc/passwd ./passwd_target",
             out: `passwd_target                           100% 2147     1.2MB/s   00:00`,
             outType: "default",
           },
           {
             comment: "diretório inteiro (-r)",
-            cmd: "scp -r reports/ wallyson@192.168.1.50:/home/wallyson/",
+            cmd: "scp -r reports/ ana@192.168.1.50:/home/ana/",
             out: `report1.pdf                             100%  1.2MB  ...
 report2.pdf                             100%  876KB ...`,
             outType: "default",
           },
           {
             comment: "rsync é mais rápido para muitos arquivos",
-            cmd: "rsync -avz --progress reports/ wallyson@192.168.1.50:/home/wallyson/reports/",
+            cmd: "rsync -avz --progress reports/ ana@192.168.1.50:/home/ana/reports/",
             out: `sending incremental file list
 report1.pdf
       1,234,567 100%  18.42MB/s    0:00:00 (xfr#1, to-chk=1/2)
@@ -250,7 +250,7 @@ ClientAliveInterval 300
 ClientAliveCountMax 2
 
 # Restringir usuários
-AllowUsers wallyson admin
+AllowUsers ana admin
 # Ou por grupo:
 # AllowGroups ssh-users
 
@@ -286,7 +286,7 @@ LogLevel VERBOSE`}
           },
           {
             comment: "testar de outro terminal SEM fechar a sessão atual!",
-            cmd: "ssh -p 2222 wallyson@192.168.1.50",
+            cmd: "ssh -p 2222 ana@192.168.1.50",
             out: "Welcome to Kali ...",
             outType: "success",
           },
@@ -308,7 +308,7 @@ LogLevel VERBOSE`}
         lines={[
           {
             comment: "exemplo prático: acessar painel HTTP interno via SSH",
-            cmd: "ssh -L 8080:192.168.10.5:80 -N -f wallyson@bastion.empresa.com",
+            cmd: "ssh -L 8080:192.168.10.5:80 -N -f ana@bastion.empresa.com",
             out: "(roda em background. agora curl http://localhost:8080 vai pro 192.168.10.5:80)",
             outType: "success",
           },
@@ -353,11 +353,11 @@ Host htb
 # Bastion + ProxyJump
 Host bastion
     HostName bastion.acme.com
-    User wallyson
+    User ana
     IdentityFile ~/.ssh/acme_ed25519
 
 Host interno-*
-    User wallyson
+    User ana
     ProxyJump bastion
     IdentityFile ~/.ssh/acme_ed25519
 
@@ -375,16 +375,16 @@ Host interno-*
           "Teste o login com a nova porta. Tente login com senha — deve falhar.",
         ]}
         command={`ssh-keygen -t ed25519 -C "$(whoami)@kali"
-ssh-copy-id -i ~/.ssh/id_ed25519.pub wallyson@servidor.com
+ssh-copy-id -i ~/.ssh/id_ed25519.pub ana@servidor.com
 sudo sed -i 's/^#Port 22/Port 2222/' /etc/ssh/sshd_config
 sudo sed -i 's/^#PermitRootLogin .*/PermitRootLogin no/' /etc/ssh/sshd_config
 sudo sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
 sudo sshd -t && sudo systemctl restart ssh
-ssh -p 2222 wallyson@servidor.com`}
+ssh -p 2222 ana@servidor.com`}
         expected={`Linux servidor 6.1.0-23-amd64 ...
 Last login: Fri Apr  3 10:31:14 2026 from 192.168.1.42
-wallyson@servidor:~$`}
-        verify="Tente ssh -o PreferredAuthentications=password wallyson@servidor.com — deve recusar com 'Permission denied (publickey)'."
+ana@servidor:~$`}
+        verify="Tente ssh -o PreferredAuthentications=password ana@servidor.com — deve recusar com 'Permission denied (publickey)'."
       />
 
       <AlertBox type="danger" title="Não trave seu SSH antes de testar">

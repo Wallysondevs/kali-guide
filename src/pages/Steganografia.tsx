@@ -38,7 +38,7 @@ export default function Steganografia() {
           },
           {
             cmd: "ls -la foto.jpg",
-            out: `-rw-r--r-- 1 wallyson wallyson 482841 Apr  3 15:14 foto.jpg
+            out: `-rw-r--r-- 1 ana ana 482841 Apr  3 15:14 foto.jpg
 (arquivo praticamente do mesmo tamanho — diferença ~ tamanho do secret.txt)`,
             outType: "info",
           },

@@ -32,7 +32,7 @@ export default function Git() {
           },
           {
             comment: "config global obrigatória",
-            cmd: "git config --global user.name 'Wallyson' && git config --global user.email 'pentest@local'",
+            cmd: "git config --global user.name 'Ana' && git config --global user.email 'pentest@local'",
             out: "(silencioso)",
             outType: "muted",
           },
@@ -43,7 +43,7 @@ export default function Git() {
           },
           {
             cmd: "git config --global --list",
-            out: `user.name=Wallyson
+            out: `user.name=Ana
 user.email=pentest@local
 init.defaultbranch=main
 pull.rebase=true
@@ -77,7 +77,7 @@ color.ui=auto`,
         lines={[
           {
             cmd: "git init pentest-acme-2026 && cd pentest-acme-2026",
-            out: "Initialized empty Git repository in /home/wallyson/notes/pentest-acme-2026/.git/",
+            out: "Initialized empty Git repository in /home/ana/notes/pentest-acme-2026/.git/",
             outType: "info",
           },
           {
@@ -101,7 +101,7 @@ color.ui=auto`,
           },
           {
             comment: "remote privado em Gitea local (preferível a GitHub pra dados sensíveis)",
-            cmd: "git remote add origin git@gitea.local:wallyson/pentest-acme-2026.git",
+            cmd: "git remote add origin git@gitea.local:ana/pentest-acme-2026.git",
             out: "(silencioso)",
             outType: "muted",
           },
@@ -111,7 +111,7 @@ color.ui=auto`,
 Counting objects: 100% (4/4), done.
 Writing objects: 100% (4/4), 412 bytes | 412.00 KiB/s, done.
 Total 4 (delta 0), reused 0 (delta 0)
-To gitea.local:wallyson/pentest-acme-2026.git
+To gitea.local:ana/pentest-acme-2026.git
  * [new branch]      main -> main`,
             outType: "success",
           },
@@ -359,14 +359,14 @@ Host gitea.local
           {
             cmd: "ssh-keygen -t ed25519 -C 'pentest-2026' -f ~/.ssh/id_ed25519_pentest -N ''",
             out: `Generating public/private ed25519 key pair.
-Your identification has been saved in /home/wallyson/.ssh/id_ed25519_pentest
-Your public key has been saved in /home/wallyson/.ssh/id_ed25519_pentest.pub
+Your identification has been saved in /home/ana/.ssh/id_ed25519_pentest
+Your public key has been saved in /home/ana/.ssh/id_ed25519_pentest.pub
 The key fingerprint is:
 SHA256:XYZabc123... pentest-2026`,
             outType: "info",
           },
           {
-            cmd: "git clone git@github-pentest:wallyson/red-team-notes.git",
+            cmd: "git clone git@github-pentest:ana/red-team-notes.git",
             out: `Cloning into 'red-team-notes'...
 warning: You appear to have cloned an empty repository.`,
             outType: "success",

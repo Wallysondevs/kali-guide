@@ -54,7 +54,7 @@ krb5tgs, kerberoasted, RAR5, raw-MD4, raw-MD5, raw-SHA1, raw-SHA256, raw-SHA512`
             cmd: "head -3 shadow.txt",
             out: `root:$y$j9T$6hL...:0:0:root:/root:/usr/bin/zsh
 daemon:*:1:1:daemon:/usr/sbin:/usr/sbin/nologin
-wallyson:$y$j9T$Z6F8pQa.../...:1000:1000:Wallyson Lopes,,,:/home/wallyson:/usr/bin/zsh`,
+ana:$y$j9T$Z6F8pQa.../...:1000:1000:Ana Lopes,,,:/home/ana:/usr/bin/zsh`,
             outType: "info",
           },
           {
@@ -68,7 +68,7 @@ Cost 3 (p) is 1 for all loaded hashes
 Will run 8 OpenMP threads
 Press 'q' or Ctrl-C to abort, almost any other key for status
 
-Senha@123      (wallyson)
+Senha@123      (ana)
 1g 0:00:00:14 DONE (2026-04-03 14:21) 0.06992g/s 287.4p/s 287.4c/s 574.8C/s 123456..whatever
 Use the "--show" option to display all of the cracked passwords reliably
 Session completed.`,
@@ -76,7 +76,7 @@ Session completed.`,
           },
           {
             cmd: "john --show shadow.txt",
-            out: `wallyson:Senha@123:1000:1000:Wallyson Lopes,,,:/home/wallyson:/usr/bin/zsh
+            out: `ana:Senha@123:1000:1000:Ana Lopes,,,:/home/ana:/usr/bin/zsh
 
 1 password hash cracked, 1 left`,
             outType: "info",
@@ -95,7 +95,7 @@ Session completed.`,
           { cmd: "--incremental=Lower", desc: "Brute force só letras minúsculas.", output: "Combinatório." },
           { cmd: "--incremental=Alnum", desc: "Letras + dígitos.", output: "Próximo passo." },
           { cmd: "--mask=?l?l?l?d?d?d", desc: "Máscara estrutural (3 letras + 3 dígitos).", output: "Quando você sabe o formato." },
-          { cmd: "--single", desc: "Tenta variações do username/GECOS.", output: "wallyson → Wallyson, wallyson123, wallyson!." },
+          { cmd: "--single", desc: "Tenta variações do username/GECOS.", output: "ana → Ana, ana123, ana!." },
           { cmd: "--show", desc: "Mostra senhas já crackeadas.", output: "Não recracka, lê do pot file." },
           { cmd: "--show=left", desc: "Mostra hashes ainda NÃO crackeados.", output: "Para continuar trabalhando neles." },
         ]}
@@ -130,7 +130,7 @@ SpiderLab, hashcat, dive, OneRuleToRuleThemAllRules, leetspeak, append_digit_3, 
       <CodeBlock
         language="ini"
         title="/etc/john/john.conf — adicionar regras minhas"
-        code={`[List.Rules:Wallyson]
+        code={`[List.Rules:Ana]
 # capitaliza primeira letra + append 1 dígito
 c $0
 c $1
@@ -161,7 +161,7 @@ $! $0 $!`}
         path="~"
         lines={[
           {
-            cmd: "john --wordlist=base.txt --rules=Wallyson hashes.txt",
+            cmd: "john --wordlist=base.txt --rules=Ana hashes.txt",
             out: "(usa as suas regras)",
             outType: "default",
           },

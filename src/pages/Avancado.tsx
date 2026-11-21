@@ -267,7 +267,7 @@ sed '50,$ s/old/new/g' arquivo`}
       <CommandTable
         title="o exército suíço de manipulação de texto"
         variations={[
-          { cmd: "cut -d: -f1,5 /etc/passwd", desc: "Coluna 1 e 5 separadas por :.", output: "root:root\nwallyson:Wallyson Dev" },
+          { cmd: "cut -d: -f1,5 /etc/passwd", desc: "Coluna 1 e 5 separadas por :.", output: "root:root\nana:Ana Dev" },
           { cmd: "cut -c1-10 arquivo", desc: "Caracteres 1 a 10 de cada linha.", output: "Útil pra colunas de largura fixa." },
           { cmd: "tr 'a-z' 'A-Z'", desc: "Substitui chars (translate).", output: "echo hello | tr 'a-z' 'A-Z' → HELLO" },
           { cmd: "tr -d '\\r'", desc: "Remove o \\r de arquivos Windows.", output: "Salva sua sanity." },

@@ -55,8 +55,8 @@ Setting up winetricks (20240105-1) ...`,
           {
             comment: "primeira execução cria ~/.wine/ e baixa Mono+Gecko",
             cmd: "wine cmd /c ver",
-            out: `wine: created the configuration directory '/home/wallyson/.wine'
-wine: configuration in L"\\\\?\\\\C:\\\\users\\\\wallyson\\\\AppData\\\\Local\\\\wine" has been updated.
+            out: `wine: created the configuration directory '/home/ana/.wine'
+wine: configuration in L"\\\\?\\\\C:\\\\users\\\\ana\\\\AppData\\\\Local\\\\wine" has been updated.
 
 Microsoft Windows 10.0.19045 (10.0.19045)`,
             outType: "success",
@@ -85,7 +85,7 @@ Microsoft Windows 10.0.19045 (10.0.19045)`,
 │   │   └── syswow64/
 │   ├── Program Files/
 │   ├── Program Files (x86)/
-│   └── users/wallyson/
+│   └── users/ana/
 ├── system.reg     # HKLM
 ├── user.reg       # HKCU
 └── userdef.reg    # HKEY_USERS\\.Default
@@ -179,8 +179,8 @@ Saved as: stage1.exe`,
 Microsoft Windows [Version 10.0.19045]
 (c) Microsoft Corporation. All rights reserved.
 
-Z:\\home\\wallyson\\payloads> whoami
-wine\\wallyson`,
+Z:\\home\\ana\\payloads> whoami
+wine\\ana`,
             outType: "success",
           },
         ]}
@@ -188,8 +188,8 @@ wine\\wallyson`,
 
       <AlertBox type="warning" title="Z:\\ é o Linux! Não confunda os mundos">
         <p>
-          Note no exemplo acima: <code>Z:\\home\\wallyson\\payloads</code>. Isso é
-          literalmente <code>/home/wallyson/payloads</code> do Kali. Se você pedir o shell
+          Note no exemplo acima: <code>Z:\\home\\ana\\payloads</code>. Isso é
+          literalmente <code>/home/ana/payloads</code> do Kali. Se você pedir o shell
           pra apagar <code>C:\\Windows</code> ele apaga só do prefix; mas se pedir pra
           apagar <code>Z:\\etc</code> ele tenta apagar <code>/etc</code> do seu Kali (sem
           permissão, ufa). <strong>Cuidado com payloads que enumeram drives</strong>.

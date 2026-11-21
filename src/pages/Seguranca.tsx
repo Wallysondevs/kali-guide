@@ -163,7 +163,7 @@ Firewall is active and enabled on system startup`,
           },
           {
             cmd: "sudo -l",
-            out: `User wallyson may run the following commands on kali:
+            out: `User ana may run the following commands on kali:
     (ALL : ALL) ALL
     (root) NOPASSWD: /usr/bin/tcpdump
     (root) NOPASSWD: /usr/sbin/wireshark`,
@@ -174,16 +174,16 @@ Firewall is active and enabled on system startup`,
 
       <CodeBlock
         language="bash"
-        title="/etc/sudoers.d/wallyson-pentest"
+        title="/etc/sudoers.d/ana-pentest"
         code={`# Drop-in (NÃO edite /etc/sudoers diretamente)
 # Permite ferramentas de captura sem senha — workflow ágil
-wallyson ALL=(root) NOPASSWD: /usr/bin/tcpdump
-wallyson ALL=(root) NOPASSWD: /usr/sbin/wireshark
-wallyson ALL=(root) NOPASSWD: /usr/sbin/airodump-ng
-wallyson ALL=(root) NOPASSWD: /usr/sbin/airmon-ng
+ana ALL=(root) NOPASSWD: /usr/bin/tcpdump
+ana ALL=(root) NOPASSWD: /usr/sbin/wireshark
+ana ALL=(root) NOPASSWD: /usr/sbin/airodump-ng
+ana ALL=(root) NOPASSWD: /usr/sbin/airmon-ng
 
 # Bloqueia explicitamente edição da própria policy (anti-tamper)
-wallyson ALL=(ALL) !/usr/sbin/visudo, !/bin/su
+ana ALL=(ALL) !/usr/sbin/visudo, !/bin/su
 
 # Audit: tudo que rodar com sudo vai pro syslog
 Defaults logfile=/var/log/sudo.log
@@ -323,8 +323,8 @@ Child process initialized in 22.4 ms`,
           {
             comment: "ver o que rodou em sandbox",
             cmd: "firejail --list",
-            out: `12420:wallyson:firejail firefox
-13001:wallyson:firejail --net=none --private ./suspicious_binary`,
+            out: `12420:ana:firejail firefox
+13001:ana:firejail --net=none --private ./suspicious_binary`,
             outType: "default",
           },
         ]}
@@ -345,7 +345,7 @@ PermitEmptyPasswords no
 UsePAM yes
 
 # Lista branca de usuários
-AllowUsers wallyson@10.10.0.* operador@*
+AllowUsers ana@10.10.0.* operador@*
 
 # Algoritmos modernos só
 HostKeyAlgorithms ssh-ed25519,rsa-sha2-512

@@ -95,7 +95,7 @@ cvss: "9.8 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)"
 componente: /api/v1/auth/login
 status: Aberto
 data: 2026-04-03
-autor: Wallyson Lopes
+autor: Ana Lopes
 ---
 
 ## Descrição
@@ -204,7 +204,7 @@ Recomendamos:
 Próximos passos detalhados na Seção 5 (Findings) e roadmap (Anexo A).
 
 ________________________
-Wallyson Lopes (OSCP, OSCE)
+Ana Lopes (OSCP, OSCE)
 Líder técnico do engagement
 3 de abril de 2026`}
       </OutputBlock>
@@ -267,7 +267,7 @@ pandoc _full.md \\
   --toc --toc-depth=3 \\
   --highlight-style=monochrome \\
   --metadata title="Pentest Relatório — Cliente X" \\
-  --metadata author="Wallyson Lopes" \\
+  --metadata author="Ana Lopes" \\
   --metadata date="$(date +%Y-%m-%d)" \\
   -o relatorio-final-$(date +%Y%m%d).pdf
 
@@ -277,7 +277,7 @@ echo "[+] gerado: relatorio-final-$(date +%Y%m%d).pdf"`,
           {
             cmd: "./build.sh",
             out: `[+] gerado: relatorio-final-20260403.pdf
--rw-r--r-- 1 wallyson wallyson 4.2M Apr  3 23:14 relatorio-final-20260403.pdf`,
+-rw-r--r-- 1 ana ana 4.2M Apr  3 23:14 relatorio-final-20260403.pdf`,
             outType: "success",
           },
           {
@@ -348,7 +348,7 @@ pandoc F-001-xss-stored.md \\
   --pdf-engine=xelatex \\
   --highlight-style=monochrome \\
   -o F-001-finding.pdf`}
-        expected={`-rw-r--r-- 1 wallyson wallyson 312K Apr  3 23:42 F-001-finding.pdf`}
+        expected={`-rw-r--r-- 1 ana ana 312K Apr  3 23:42 F-001-finding.pdf`}
         verify="Abra o PDF: deve ter sumário, formatação consistente, código colorido, screenshots embutidos. Esse é o nível mínimo profissional."
       />
 

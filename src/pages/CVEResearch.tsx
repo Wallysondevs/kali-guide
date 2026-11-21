@@ -95,7 +95,7 @@ Apache HTTP Server 2.4.49 - Path Traversal (CVE-2021-41773) | multiple/webapps/5
             cmd: "searchsploit -m 50438 && cat 50438.py | head -30",
             out: `Exploit: Apache HTTP Server 2.4.49 - Path Traversal (CVE-2021-41773)
 Path: /usr/share/exploitdb/exploits/multiple/webapps/50438.py
-Copied to: /home/wallyson/50438.py
+Copied to: /home/ana/50438.py
 
 #!/usr/bin/env python3
 # Exploit Title: Apache HTTP Server 2.4.49 - Path Traversal & Remote Code Execution
@@ -242,7 +242,7 @@ http://atk.evil.ru/                       ← MALICIOSO!`,
 
 info:
   name: "Empresa-X RCE via header injection"
-  author: wallyson
+  author: ana
   severity: critical
   description: |
     Empresa-X 2.4.x permite RCE via header X-Custom-Cmd.

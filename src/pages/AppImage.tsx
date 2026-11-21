@@ -186,8 +186,8 @@ appimaged is now monitoring: ~/Applications, ~/Downloads, ~/Desktop`,
         code={`[Desktop Entry]
 Name=Bitwarden
 Comment=Password Manager
-Exec=/home/wallyson/Applications/Bitwarden-2024.11.0-x86_64.AppImage
-Icon=/home/wallyson/Applications/icons/bitwarden.png
+Exec=/home/ana/Applications/Bitwarden-2024.11.0-x86_64.AppImage
+Icon=/home/ana/Applications/icons/bitwarden.png
 Terminal=false
 Type=Application
 Categories=Utility;Security;
@@ -278,7 +278,7 @@ Child process initialized in 28.41 ms`,
           {
             comment: "auditoria das permissoes que firejail aplicou",
             cmd: "firejail --appimage --debug ./Bitwarden.AppImage 2>&1 | grep -i 'mounting\\|seccomp'",
-            out: `Mounting tmpfs on /home/wallyson/.cache
+            out: `Mounting tmpfs on /home/ana/.cache
 Mounting read-only /etc/...
 Seccomp list: @default-keep`,
             outType: "default",
@@ -400,7 +400,7 @@ Reading profile /etc/firejail/default.profile
 Parent pid 18432, child pid 18434
 Child process initialized in 31.2 ms
 
-18432:wallyson::firejail --appimage --blacklist=~/.ssh ...`}
+18432:ana::firejail --appimage --blacklist=~/.ssh ...`}
         verify="A janela do Joplin abre normalmente, e firejail --list mostra o processo isolado. Tentar abrir ~/.ssh/id_rsa pelo file picker do app deve mostrar 'Permission denied'."
       />
 

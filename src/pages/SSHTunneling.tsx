@@ -35,10 +35,10 @@ export default function SSHTunneling() {
         lines={[
           {
             comment: "cenário: você acessa SSH em jumphost. DB roda em interno-db:5432 que SÓ jumphost vê",
-            cmd: "ssh -L 5432:interno-db.lab:5432 wallyson@jumphost.empresa.com",
+            cmd: "ssh -L 5432:interno-db.lab:5432 ana@jumphost.empresa.com",
             out: `Linux jumphost 5.15.0-91 #101 SMP x86_64 GNU/Linux
-Last login: Wed Apr  3 19:42:11 2026 from 187.84.42.108
-wallyson@jumphost:~$ `,
+Last login: Wed Apr  3 19:42:11 2026 from 203.0.113.42
+ana@jumphost:~$ `,
             outType: "info",
           },
           {
@@ -66,13 +66,13 @@ producao=> SELECT email, password_hash FROM users LIMIT 3;
           },
           {
             comment: "variação: bind-address — se quiser que outros da SUA LAN acessem",
-            cmd: "ssh -L 0.0.0.0:5432:interno-db.lab:5432 wallyson@jumphost",
+            cmd: "ssh -L 0.0.0.0:5432:interno-db.lab:5432 ana@jumphost",
             out: "(qualquer um na sua LAN pode psql -h SEU_IP_KALI)",
             outType: "muted",
           },
           {
             comment: "múltiplas portas em 1 só comando",
-            cmd: "ssh -L 5432:db:5432 -L 6379:redis:6379 -L 9200:elastic:9200 wallyson@jump",
+            cmd: "ssh -L 5432:db:5432 -L 6379:redis:6379 -L 9200:elastic:9200 ana@jump",
             out: "(3 services internos expostos local)",
             outType: "default",
           },
@@ -91,10 +91,10 @@ producao=> SELECT email, password_hash FROM users LIMIT 3;
           },
           {
             comment: "agora no SEU kali: SSH no port 9999 LOCAL = vai pro alvo!",
-            cmd: "ssh -p 9999 wallyson@127.0.0.1",
+            cmd: "ssh -p 9999 ana@127.0.0.1",
             out: `Linux target-atras-de-nat 5.4.0-91 x86_64
-wallyson@target-atras-de-nat:~$ id
-uid=1000(wallyson) gid=1000(wallyson)`,
+ana@target-atras-de-nat:~$ id
+uid=1000(ana) gid=1000(ana)`,
             outType: "warning",
           },
           {
@@ -118,7 +118,7 @@ uid=1000(wallyson) gid=1000(wallyson)`,
         lines={[
           {
             comment: "abre SOCKS5 local na 1080 — todas as suas tools podem usar pra acessar a rede do jump",
-            cmd: "ssh -D 1080 -N -f wallyson@jumphost.empresa.com",
+            cmd: "ssh -D 1080 -N -f ana@jumphost.empresa.com",
             out: "(silencioso, vai pra background. -N=sem comando, -f=fork)",
             outType: "muted",
           },
@@ -172,8 +172,8 @@ PORT     STATE    SERVICE
           },
           {
             comment: "moderno: -J jumphost",
-            cmd: "ssh -J wallyson@jumphost.empresa.com deploy@interno-srv.lab",
-            out: `wallyson@jumphost.empresa.com's password: 
+            cmd: "ssh -J ana@jumphost.empresa.com deploy@interno-srv.lab",
+            out: `ana@jumphost.empresa.com's password: 
 deploy@interno-srv.lab's password: 
 
 Linux interno-srv 5.4 #1 SMP
@@ -192,7 +192,7 @@ deploy@interno-srv:~$`,
             cmd: "cat ~/.ssh/config",
             out: `Host jumphost
   HostName jumphost.empresa.com
-  User wallyson
+  User ana
   Port 22
 
 Host interno
@@ -221,7 +221,7 @@ ssh interno`,
             outType: "muted",
           },
           {
-            cmd: "sshuttle -r wallyson@jumphost.empresa.com 192.168.50.0/24 --dns",
+            cmd: "sshuttle -r ana@jumphost.empresa.com 192.168.50.0/24 --dns",
             out: `client: Connected.
 client: Routes added: 192.168.50.0/24 via 192.168.1.1
 fw: shadowing target /etc/resolv.conf
@@ -312,7 +312,7 @@ Host htb
 # === cliente cliente_x ===
 Host cx-jump
   HostName jumphost.cliente.com.br
-  User wallyson
+  User ana
   Port 22
   IdentityFile ~/.ssh/clientex_jump
   
@@ -348,11 +348,11 @@ Host *
 docker network create labnet
 docker run -d --name db --network labnet -e POSTGRES_PASSWORD=lab postgres:15
 docker run -d --name jump --network labnet -p 2222:22 \\
-  -e USER_NAME=wallyson -e USER_PASSWORD=lab \\
+  -e USER_NAME=ana -e USER_PASSWORD=lab \\
   ghcr.io/linuxserver/openssh-server
 
 # tunel (sua máquina)
-ssh -L 5432:db:5432 -p 2222 wallyson@127.0.0.1
+ssh -L 5432:db:5432 -p 2222 ana@127.0.0.1
 # (em outro terminal)
 psql -h 127.0.0.1 -p 5432 -U postgres
 # senha: lab`}

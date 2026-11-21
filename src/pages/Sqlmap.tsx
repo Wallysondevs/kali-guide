@@ -163,7 +163,7 @@ Table: users
 | 3  | maria@app.local   | Maria  | $2y$10$abc...xyz                                             | user  | 2024-03-08 18:42:15 |
 +----+-------------------+--------+--------------------------------------------------------------+-------+---------------------+
 
-[12:18:14] [INFO] fetched data logged to text files under '/home/wallyson/.local/share/sqlmap/output/app.local'`,
+[12:18:14] [INFO] fetched data logged to text files under '/home/ana/.local/share/sqlmap/output/app.local'`,
             outType: "warning",
           },
         ]}
@@ -346,7 +346,7 @@ Table: users
 | smithy | 5f4dcc3b5aa765d61d8327deb882cf99 |
 +--------+----------------------------------+
 
-[INFO] table 'dvwa.users' dumped to CSV file '/home/wallyson/.local/share/sqlmap/output/...'`}
+[INFO] table 'dvwa.users' dumped to CSV file '/home/ana/.local/share/sqlmap/output/...'`}
         verify="O hash do admin (5f4dcc3b...) é MD5 de 'password'. Confirme com `echo -n password | md5sum`."
       />
 

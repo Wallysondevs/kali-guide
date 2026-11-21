@@ -32,7 +32,7 @@ export default function PrimeirosArquivos() {
 drwxr-xr-x   4 root root  4096 Apr  4 09:12 boot    → kernel (vmlinuz), initrd, GRUB
 drwxr-xr-x  20 root root  4500 Apr  4 14:21 dev     → arquivos-dispositivo (/dev/sda, /dev/null, /dev/random)
 drwxr-xr-x 134 root root 12288 Apr  4 14:18 etc     → configuração SYSTEM-WIDE (passwd, hosts, ssh, apache2)
-drwxr-xr-x   3 root root  4096 Apr  4 09:14 home    → /home/wallyson, /home/ana — pastas pessoais
+drwxr-xr-x   3 root root  4096 Apr  4 09:14 home    → /home/ana, /home/ana — pastas pessoais
 drwxr-xr-x  19 root root  4096 Apr  4 09:12 lib     → bibliotecas .so usadas por /bin e /sbin
 drwx------   2 root root 16384 Apr  4 09:11 lost+found
 drwxr-xr-x   3 root root  4096 Apr  4 09:12 media   → mounts removíveis (USB, CD-ROM)
@@ -103,7 +103,7 @@ drwxr-xr-x  14 root root  4096 Apr  4 09:14 var     → dados que MUDAM (logs, m
           {
             comment: "pwd — print working directory (onde você está)",
             cmd: "pwd",
-            out: "/home/wallyson",
+            out: "/home/ana",
             outType: "info",
           },
           {
@@ -114,13 +114,13 @@ drwxr-xr-x  14 root root  4096 Apr  4 09:14 var     → dados que MUDAM (logs, m
           },
           {
             cmd: "cd && pwd",
-            out: "/home/wallyson",
+            out: "/home/ana",
             outType: "info",
           },
           {
             comment: "cd - volta para o diretório ANTERIOR",
             cmd: "cd /etc && cd - ",
-            out: "/home/wallyson",
+            out: "/home/ana",
             outType: "muted",
           },
           {
@@ -140,17 +140,17 @@ bash: cd: /home/ana: Permission denied`,
           {
             cmd: "ls -l",
             desc: "Long format — permissões, dono, tamanho, data.",
-            output: "-rw-r--r-- 1 wallyson wallyson  142 Apr  4 14:18 nota.txt",
+            output: "-rw-r--r-- 1 ana ana  142 Apr  4 14:18 nota.txt",
           },
           {
             cmd: "ls -la",
             desc: "Inclui ocultos (dotfiles).",
-            output: "drwx------ 2 wallyson wallyson 4096 Apr  4 09:14 .ssh",
+            output: "drwx------ 2 ana ana 4096 Apr  4 09:14 .ssh",
           },
           {
             cmd: "ls -lh",
             desc: "Tamanhos human-readable (K/M/G).",
-            output: "-rw-r--r-- 1 wallyson wallyson 1.4M Apr  4 14:18 dump.bin",
+            output: "-rw-r--r-- 1 ana ana 1.4M Apr  4 14:18 dump.bin",
           },
           {
             cmd: "ls -lt",
@@ -170,7 +170,7 @@ bash: cd: /home/ana: Permission denied`,
           {
             cmd: "ls -li",
             desc: "Mostra inode (número do arquivo no FS).",
-            output: "12648430 -rw-r--r-- 1 wallyson wallyson 142 nota.txt",
+            output: "12648430 -rw-r--r-- 1 ana ana 142 nota.txt",
           },
         ]}
       />
@@ -181,17 +181,17 @@ bash: cd: /home/ana: Permission denied`,
           {
             cmd: "ls -lah ~",
             out: `total 84K
-drwx------ 18 wallyson wallyson 4.0K Apr  4 14:18 .
+drwx------ 18 ana ana 4.0K Apr  4 14:18 .
 drwxr-xr-x  3 root     root     4.0K Apr  4 09:14 ..
--rw-------  1 wallyson wallyson  214 Apr  4 12:48 .bash_history
--rw-r--r--  1 wallyson wallyson  220 Apr  4 09:14 .bash_logout
--rw-r--r--  1 wallyson wallyson 5.5K Apr  4 09:14 .bashrc
-drwx------  3 wallyson wallyson 4.0K Apr  4 12:11 .config
-drwx------  2 wallyson wallyson 4.0K Apr  4 14:18 .ssh
-drwxr-xr-x  2 wallyson wallyson 4.0K Apr  4 09:14 Documentos
-drwxr-xr-x  2 wallyson wallyson 4.0K Apr  4 09:14 Downloads
-drwxr-xr-x  4 wallyson wallyson 4.0K Apr  4 13:42 lab
--rw-r--r--  1 wallyson wallyson  142 Apr  4 14:18 nota.txt`,
+-rw-------  1 ana ana  214 Apr  4 12:48 .bash_history
+-rw-r--r--  1 ana ana  220 Apr  4 09:14 .bash_logout
+-rw-r--r--  1 ana ana 5.5K Apr  4 09:14 .bashrc
+drwx------  3 ana ana 4.0K Apr  4 12:11 .config
+drwx------  2 ana ana 4.0K Apr  4 14:18 .ssh
+drwxr-xr-x  2 ana ana 4.0K Apr  4 09:14 Documentos
+drwxr-xr-x  2 ana ana 4.0K Apr  4 09:14 Downloads
+drwxr-xr-x  4 ana ana 4.0K Apr  4 13:42 lab
+-rw-r--r--  1 ana ana  142 Apr  4 14:18 nota.txt`,
             outType: "info",
           },
         ]}
@@ -233,8 +233,8 @@ sync:x:4:65534:sync:/bin:/bin/sync`,
           {
             comment: "tail — últimas N (ótimo p/ logs)",
             cmd: "sudo tail -n 3 /var/log/auth.log",
-            out: `Apr  4 14:18:42 kali sshd[4421]: Accepted publickey for wallyson from 192.168.0.42 port 51288 ssh2
-Apr  4 14:18:42 kali sshd[4421]: pam_unix(sshd:session): session opened for user wallyson(uid=1000)
+            out: `Apr  4 14:18:42 kali sshd[4421]: Accepted publickey for ana from 192.168.0.42 port 51288 ssh2
+Apr  4 14:18:42 kali sshd[4421]: pam_unix(sshd:session): session opened for user ana(uid=1000)
 Apr  4 14:19:01 kali CRON[4498]: pam_unix(cron:session): session opened for user root(uid=0)`,
             outType: "warning",
           },
@@ -242,7 +242,7 @@ Apr  4 14:19:01 kali CRON[4498]: pam_unix(cron:session): session opened for user
             comment: "tail -f acompanha em TEMPO REAL (Ctrl+C sai)",
             cmd: "sudo tail -f /var/log/auth.log",
             out: `... (linhas vão aparecendo conforme o sistema escreve)
-Apr  4 14:19:14 kali sudo: wallyson : TTY=pts/0 ; PWD=/home/wallyson ; USER=root ; COMMAND=/usr/bin/cat /etc/shadow
+Apr  4 14:19:14 kali sudo: ana : TTY=pts/0 ; PWD=/home/ana ; USER=root ; COMMAND=/usr/bin/cat /etc/shadow
 ^C`,
             outType: "warning",
           },
@@ -404,7 +404,7 @@ imagem.jpg:     JPEG image data, JFIF standard 1.01, resolution (DPI), density 9
             out: `  File: nota.txt
   Size: 142             Blocks: 8          IO Block: 4096   regular file
 Device: 802h/2050d      Inode: 12648430    Links: 1
-Access: (0644/-rw-r--r--)  Uid: ( 1000/wallyson)   Gid: ( 1000/wallyson)
+Access: (0644/-rw-r--r--)  Uid: ( 1000/ana)   Gid: ( 1000/ana)
 Access: 2026-04-04 14:18:01.234567890 -0300
 Modify: 2026-04-04 14:18:01.234567890 -0300
 Change: 2026-04-04 14:18:01.234567890 -0300
@@ -444,8 +444,8 @@ tmpfs           791M  120K  791M   1% /run/user/1000`,
           {
             comment: "du — tamanho de uma PASTA específica",
             cmd: "du -sh ~/Downloads ~/lab /var/log",
-            out: `1.2G    /home/wallyson/Downloads
-124M    /home/wallyson/lab
+            out: `1.2G    /home/ana/Downloads
+124M    /home/ana/lab
 sudo: 842M /var/log`,
             outType: "info",
           },
@@ -454,7 +454,7 @@ sudo: 842M /var/log`,
             cmd: "du -sh /home/* 2>/dev/null | sort -h",
             out: `42M     /home/joao.lopes
 214M    /home/ana.silva
-1.4G    /home/wallyson`,
+1.4G    /home/ana`,
             outType: "warning",
           },
           {
@@ -554,7 +554,7 @@ tmpfs on /tmp type tmpfs (rw,nosuid,nodev)`,
         lines={[
           {
             cmd: "ls -l script.sh",
-            out: "-rw-r--r-- 1 wallyson wallyson 42 Apr  4 14:32 script.sh",
+            out: "-rw-r--r-- 1 ana ana 42 Apr  4 14:32 script.sh",
             outType: "default",
           },
           {
@@ -566,19 +566,19 @@ tmpfs on /tmp type tmpfs (rw,nosuid,nodev)`,
           {
             comment: "modo NUMÉRICO",
             cmd: "chmod 755 script.sh && ls -l script.sh",
-            out: "-rwxr-xr-x 1 wallyson wallyson 42 Apr  4 14:32 script.sh",
+            out: "-rwxr-xr-x 1 ana ana 42 Apr  4 14:32 script.sh",
             outType: "success",
           },
           {
             comment: "modo SIMBÓLICO — u/g/o (+/-/=) r/w/x",
             cmd: "chmod g-w,o-rx privado.txt && ls -l privado.txt",
-            out: "-rw------- 1 wallyson wallyson 12 Apr  4 14:33 privado.txt",
+            out: "-rw------- 1 ana ana 12 Apr  4 14:33 privado.txt",
             outType: "info",
           },
           {
             comment: "RECURSIVO em pasta",
             cmd: "chmod -R 700 ~/.ssh && ls -ld ~/.ssh",
-            out: "drwx------ 2 wallyson wallyson 4096 Apr  4 14:34 /home/wallyson/.ssh",
+            out: "drwx------ 2 ana ana 4096 Apr  4 14:34 /home/ana/.ssh",
             outType: "success",
           },
           {
@@ -661,7 +661,7 @@ tmpfs on /tmp type tmpfs (rw,nosuid,nodev)`,
           {
             comment: "como user comum — vira root",
             cmd: "/tmp/rootbash -p && id",
-            out: `uid=1000(wallyson) gid=1000(wallyson) euid=0(root) groups=1000(wallyson)`,
+            out: `uid=1000(ana) gid=1000(ana) euid=0(root) groups=1000(ana)`,
             outType: "error",
           },
         ]}
@@ -701,8 +701,8 @@ SYMLINK (ln -s origem destino)
           {
             comment: "HARD LINK",
             cmd: "ln original.txt hard.txt && ls -li original.txt hard.txt",
-            out: `12648430 -rw-r--r-- 2 wallyson wallyson 18 Apr  4 14:50 hard.txt
-12648430 -rw-r--r-- 2 wallyson wallyson 18 Apr  4 14:50 original.txt`,
+            out: `12648430 -rw-r--r-- 2 ana ana 18 Apr  4 14:50 hard.txt
+12648430 -rw-r--r-- 2 ana ana 18 Apr  4 14:50 original.txt`,
             outType: "info",
           },
           {
@@ -714,8 +714,8 @@ SYMLINK (ln -s origem destino)
           {
             comment: "SYM LINK",
             cmd: "echo 'novo' > arquivo.txt && ln -s arquivo.txt sym.txt && ls -li arquivo.txt sym.txt",
-            out: `12648431 -rw-r--r-- 1 wallyson wallyson  5 Apr  4 14:51 arquivo.txt
-12648432 lrwxrwxrwx 1 wallyson wallyson 11 Apr  4 14:51 sym.txt -> arquivo.txt`,
+            out: `12648431 -rw-r--r-- 1 ana ana  5 Apr  4 14:51 arquivo.txt
+12648432 lrwxrwxrwx 1 ana ana 11 Apr  4 14:51 sym.txt -> arquivo.txt`,
             outType: "info",
           },
           {
@@ -727,7 +727,7 @@ SYMLINK (ln -s origem destino)
           {
             comment: "ls -l mostra symlink quebrado",
             cmd: "ls -l sym.txt",
-            out: "lrwxrwxrwx 1 wallyson wallyson 11 Apr  4 14:51 sym.txt -> arquivo.txt",
+            out: "lrwxrwxrwx 1 ana ana 11 Apr  4 14:51 sym.txt -> arquivo.txt",
             outType: "warning",
           },
           {
@@ -967,18 +967,18 @@ chmod 600 ~/lab/secret/segredo.txt
 find ~/lab -type f -perm 600
 stat ~/lab/secret/segredo.txt
 find / -perm -4000 -type f 2>/dev/null | head -5`}
-        expected={`/home/wallyson/lab/secret/segredo.txt
+        expected={`/home/ana/lab/secret/segredo.txt
 
-  File: /home/wallyson/lab/secret/segredo.txt
+  File: /home/ana/lab/secret/segredo.txt
   Size: 33              Blocks: 8          IO Block: 4096   regular file
-Access: (0600/-rw-------)  Uid: ( 1000/wallyson)   Gid: ( 1000/wallyson)
+Access: (0600/-rw-------)  Uid: ( 1000/ana)   Gid: ( 1000/ana)
 
 /usr/bin/sudo
 /usr/bin/su
 /usr/bin/passwd
 /usr/bin/mount
 /usr/bin/umount`}
-        verify="O find achou só o segredo.txt (única perm 600), o stat confirmou dono = wallyson + modo 600, e a lista de SUID veio com sudo, su, passwd, mount, umount."
+        verify="O find achou só o segredo.txt (única perm 600), o stat confirmou dono = ana + modo 600, e a lista de SUID veio com sudo, su, passwd, mount, umount."
       />
 
       <h2>15. Próximo passo</h2>

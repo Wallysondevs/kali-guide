@@ -194,9 +194,9 @@ vboxvideo              45056  2`,
 
       <h2>4. WSL 2 (Windows) — Kali no Windows</h2>
       <Terminal
-        path="C:\\Users\\wallyson"
+        path="C:\\Users\\ana"
         host="WIN11"
-        user="wallyson"
+        user="ana"
         lines={[
           {
             comment: "PowerShell COMO ADMINISTRADOR — instala WSL 2 do zero",
@@ -237,7 +237,7 @@ Distribution successfully installed. It can be launched via 'wsl.exe -d kali-lin
 Installing, this may take a few minutes...
 Please create a default UNIX user account. The username does not need to match your Windows username.
 For more information visit: https://aka.ms/wslusers
-Enter new UNIX username: wallyson
+Enter new UNIX username: ana
 New password: ********
 Retype new password: ********
 passwd: password updated successfully
@@ -553,7 +553,7 @@ Setting up kali-linux-default (2025.2.0) ...`,
           {
             comment: "3) trocar senha padrão (kali/kali → SUA senha forte)",
             cmd: "passwd",
-            out: `Changing password for wallyson.
+            out: `Changing password for ana.
 Current password: ********
 New password: ************
 Retype new password: ************

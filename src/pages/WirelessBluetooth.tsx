@@ -48,7 +48,7 @@ export default function WirelessBluetooth() {
             cmd: "sudo hcitool scan",
             out: `Scanning ...
         AC:67:5D:11:42:F8       JBL Flip 6
-        F8:30:02:8A:21:11       Wallyson's iPhone
+        F8:30:02:8A:21:11       iPhone da Ana
         D4:90:9C:42:88:7E       MX Master 3
         20:34:FB:89:42:01       BT Speaker
         FC:4C:E5:11:22:33       SmartBand_X3`,
@@ -106,14 +106,14 @@ Protocol Descriptor List:
             out: `Discovery started
 [CHG] Controller 5C:F3:70:8A:21:42 Discovering: yes
 [NEW] Device AC:67:5D:11:42:F8 JBL Flip 6
-[NEW] Device F8:30:02:8A:21:11 Wallyson's iPhone
+[NEW] Device F8:30:02:8A:21:11 iPhone da Ana
 [NEW] Device D4:90:9C:42:88:7E MX Master 3`,
             outType: "info",
           },
           {
             cmd: "devices",
             out: `Device AC:67:5D:11:42:F8 JBL Flip 6
-Device F8:30:02:8A:21:11 Wallyson's iPhone
+Device F8:30:02:8A:21:11 iPhone da Ana
 Device D4:90:9C:42:88:7E MX Master 3`,
             outType: "default",
           },

@@ -37,7 +37,7 @@ export default function PersonalizacaoSetup() {
           {
             cmd: "ls -lh ~/backups/",
             out: `total 14M
--rw-r--r-- 1 wallyson wallyson 14M Apr  4 09:42 dotfiles-20260404.tar.gz`,
+-rw-r--r-- 1 ana ana 14M Apr  4 09:42 dotfiles-20260404.tar.gz`,
             outType: "info",
           },
           {
@@ -73,7 +73,7 @@ x11`,
           },
           {
             cmd: "neofetch --stdout | head -12",
-            out: `wallyson@kali
+            out: `ana@kali
 -------------
 OS: Kali GNU/Linux Rolling x86_64
 Host: VirtualBox 1.2
@@ -107,10 +107,10 @@ Icons: Flat-Remix-Blue-Dark [GTK2/3]`,
             comment: "1) instalar oh-my-zsh (não-interativo)",
             cmd: 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended',
             out: `Cloning Oh My Zsh...
-Cloning into '/home/wallyson/.oh-my-zsh'...
+Cloning into '/home/ana/.oh-my-zsh'...
 remote: Enumerating objects: 1421, done.
 Looking for an existing zsh config...
-Using the Oh My Zsh template file and adding it to /home/wallyson/.zshrc.
+Using the Oh My Zsh template file and adding it to /home/ana/.zshrc.
 
          __                                     __
   ____  / /_     ____ ___  __  __   ____  _____/ /_
@@ -123,7 +123,7 @@ Using the Oh My Zsh template file and adding it to /home/wallyson/.zshrc.
           {
             comment: "2) tema powerlevel10k (clone direto no custom themes)",
             cmd: "git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k",
-            out: `Cloning into '/home/wallyson/.oh-my-zsh/custom/themes/powerlevel10k'...
+            out: `Cloning into '/home/ana/.oh-my-zsh/custom/themes/powerlevel10k'...
 remote: Enumerating objects: 1284, done.
 Receiving objects: 100% (1284/1284), 1.42 MiB | 8.21 MiB/s, done.`,
             outType: "info",
@@ -131,13 +131,13 @@ Receiving objects: 100% (1284/1284), 1.42 MiB | 8.21 MiB/s, done.`,
           {
             comment: "3) plugins úteis (autosuggestions + syntax highlighting)",
             cmd: "git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions",
-            out: `Cloning into '/home/wallyson/.oh-my-zsh/custom/plugins/zsh-autosuggestions'...
+            out: `Cloning into '/home/ana/.oh-my-zsh/custom/plugins/zsh-autosuggestions'...
 remote: Enumerating objects: 2412, done.`,
             outType: "muted",
           },
           {
             cmd: "git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting",
-            out: `Cloning into '/home/wallyson/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting'...`,
+            out: `Cloning into '/home/ana/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting'...`,
             outType: "muted",
           },
           {
@@ -225,15 +225,15 @@ Setting up fonts-jetbrains-mono (2.304-1) ...`,
           },
           {
             cmd: "fc-cache -fv | tail -5",
-            out: `/home/wallyson/.local/share/fonts: caching, new cache contents: 14 fonts, 0 dirs
+            out: `/home/ana/.local/share/fonts: caching, new cache contents: 14 fonts, 0 dirs
 fc-cache: succeeded`,
             outType: "info",
           },
           {
             cmd: "fc-list | grep -i 'fira code nerd'",
-            out: `/home/wallyson/.local/share/fonts/FiraCodeNF/FiraCodeNerdFont-Regular.ttf: FiraCode Nerd Font:style=Regular
-/home/wallyson/.local/share/fonts/FiraCodeNF/FiraCodeNerdFont-Bold.ttf: FiraCode Nerd Font:style=Bold
-/home/wallyson/.local/share/fonts/FiraCodeNF/FiraCodeNerdFontMono-Regular.ttf: FiraCode Nerd Font Mono:style=Regular`,
+            out: `/home/ana/.local/share/fonts/FiraCodeNF/FiraCodeNerdFont-Regular.ttf: FiraCode Nerd Font:style=Regular
+/home/ana/.local/share/fonts/FiraCodeNF/FiraCodeNerdFont-Bold.ttf: FiraCode Nerd Font:style=Bold
+/home/ana/.local/share/fonts/FiraCodeNF/FiraCodeNerdFontMono-Regular.ttf: FiraCode Nerd Font Mono:style=Regular`,
             outType: "info",
           },
           {
@@ -275,7 +275,7 @@ alias nmap-full='sudo nmap -T4 -A -p- -sV -sC --min-rate=2000'
 alias nmap-vuln='sudo nmap --script vuln'
 
 # ─── HTB / pentest ───────────────────────────────────
-alias htb-vpn='sudo openvpn ~/HTB/lab_wallyson.ovpn'
+alias htb-vpn='sudo openvpn ~/HTB/lab_ana.ovpn'
 alias htb-ip="ip -4 addr show tun0 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'"
 
 # ─── docker ──────────────────────────────────────────
@@ -300,7 +300,7 @@ alias diskusage='du -sh */ 2>/dev/null | sort -hr | head -20'`}
           },
           {
             cmd: "myip",
-            out: "187.84.42.108",
+            out: "203.0.113.42",
             outType: "default",
           },
           {
@@ -312,13 +312,13 @@ alias diskusage='du -sh */ 2>/dev/null | sort -hr | head -20'`}
           {
             cmd: "ll ~/.config | head -8",
             out: `total 64K
-drwx------ 16 wallyson wallyson 4.0K Apr  4 09:42 .
-drwx------ 32 wallyson wallyson 4.0K Apr  4 09:42 ..
-drwxr-xr-x  2 wallyson wallyson 4.0K Apr  4 09:42 alacritty
-drwxr-xr-x  4 wallyson wallyson 4.0K Apr  4 09:42 BurpSuite
-drwxr-xr-x  3 wallyson wallyson 4.0K Apr  4 09:42 nvim
-drwxr-xr-x  2 wallyson wallyson 4.0K Apr  4 09:42 tmux
-drwxr-xr-x  3 wallyson wallyson 4.0K Apr  4 09:42 xfce4`,
+drwx------ 16 ana ana 4.0K Apr  4 09:42 .
+drwx------ 32 ana ana 4.0K Apr  4 09:42 ..
+drwxr-xr-x  2 ana ana 4.0K Apr  4 09:42 alacritty
+drwxr-xr-x  4 ana ana 4.0K Apr  4 09:42 BurpSuite
+drwxr-xr-x  3 ana ana 4.0K Apr  4 09:42 nvim
+drwxr-xr-x  2 ana ana 4.0K Apr  4 09:42 tmux
+drwxr-xr-x  3 ana ana 4.0K Apr  4 09:42 xfce4`,
             outType: "muted",
           },
         ]}
@@ -415,7 +415,7 @@ run '~/.tmux/plugins/tpm/tpm'`}
           {
             comment: "instalar TPM (gerenciador de plugins)",
             cmd: "git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm",
-            out: `Cloning into '/home/wallyson/.tmux/plugins/tpm'...
+            out: `Cloning into '/home/ana/.tmux/plugins/tpm'...
 remote: Enumerating objects: 142, done.`,
             outType: "muted",
           },
@@ -464,7 +464,7 @@ Setting up ripgrep (14.1.0-1) ...`,
           },
           {
             cmd: "git clone https://github.com/LazyVim/starter ~/.config/nvim",
-            out: `Cloning into '/home/wallyson/.config/nvim'...
+            out: `Cloning into '/home/ana/.config/nvim'...
 remote: Enumerating objects: 1421, done.
 Receiving objects: 100% (1421/1421), 187.42 KiB | 4.20 MiB/s, done.`,
             outType: "info",
@@ -741,7 +741,7 @@ kali-tech-circuit.png`,
           {
             comment: "1) cria bare repo só para tracking de dotfiles",
             cmd: "git init --bare $HOME/.dotfiles",
-            out: `Initialized empty Git repository in /home/wallyson/.dotfiles/`,
+            out: `Initialized empty Git repository in /home/ana/.dotfiles/`,
             outType: "info",
           },
           {
@@ -787,13 +787,13 @@ Changes to be committed:
             outType: "success",
           },
           {
-            cmd: "dot remote add origin git@github.com:wallyson/kali-dotfiles.git && dot push -u origin main",
+            cmd: "dot remote add origin git@github.com:ana/kali-dotfiles.git && dot push -u origin main",
             out: `Enumerating objects: 14, done.
 Counting objects: 100% (14/14), done.
 Delta compression using up to 8 threads
 Compressing objects: 100% (12/12), done.
 Writing objects: 100% (14/14), 14.21 KiB | 4.74 MiB/s, done.
-To github.com:wallyson/kali-dotfiles.git
+To github.com:ana/kali-dotfiles.git
  * [new branch]      main -> main`,
             outType: "warning",
           },
@@ -802,7 +802,7 @@ To github.com:wallyson/kali-dotfiles.git
 
       <AlertBox type="info" title="Restaurar em máquina nova">
         Em outra máquina Kali fresca:{" "}
-        <code>git clone --bare git@github.com:wallyson/kali-dotfiles.git $HOME/.dotfiles</code>
+        <code>git clone --bare git@github.com:ana/kali-dotfiles.git $HOME/.dotfiles</code>
         {" "}+{" "}
         <code>alias dot='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'</code>
         {" "}+{" "}
@@ -820,7 +820,7 @@ To github.com:wallyson/kali-dotfiles.git
 set -euo pipefail
 
 USER_HOME="$HOME"
-DOTFILES_REPO="git@github.com:wallyson/kali-dotfiles.git"
+DOTFILES_REPO="git@github.com:ana/kali-dotfiles.git"
 
 log() { echo -e "\\033[1;34m[+]\\033[0m $*"; }
 warn(){ echo -e "\\033[1;33m[!]\\033[0m $*"; }
@@ -922,7 +922,7 @@ log "Bootstrap completo. Faça logout/login e rode: p10k configure (se quiser re
 [!] oh-my-zsh já instalado, pulando.
 [+] Instalando LazyVim...
 [+] Clonando dotfiles...
-Cloning into bare repository '/home/wallyson/.dotfiles'...
+Cloning into bare repository '/home/ana/.dotfiles'...
 [+] Trocando shell padrão para zsh...
 Senha:
 [+] Bootstrap completo. Faça logout/login e rode: p10k configure (se quiser refazer prompt).`,
@@ -942,7 +942,7 @@ Senha:
         language="yaml"
         title="kali-setup/playbook.yml"
         code={`---
-- name: Provisionar Kali do Wallyson
+- name: Provisionar Kali do Ana
   hosts: localhost
   connection: local
   become: false
@@ -1013,7 +1013,7 @@ Senha:
     # ─── dotfiles ────────────────────────────────────────
     - name: Clonar dotfiles (bare)
       git:
-        repo: "git@github.com:wallyson/kali-dotfiles.git"
+        repo: "git@github.com:ana/kali-dotfiles.git"
         dest: "{{ user_home }}/.dotfiles"
         bare: yes
 
@@ -1041,7 +1041,7 @@ Senha:
           {
             cmd: "ansible-playbook playbook.yml -K",
             out: `BECOME password:
-PLAY [Provisionar Kali do Wallyson] ************************************
+PLAY [Provisionar Kali do Ana] ************************************
 
 TASK [Atualizar índice apt] ********************************************
 ok: [localhost]
@@ -1174,7 +1174,7 @@ Need to get 1.842 MB of archives.`,
           "Snapshot 'after-bootstrap' para reverter rápido se mexer demais.",
         ]}
         command={`# na VM Kali fresca:
-git clone https://github.com/wallyson/kali-bootstrap
+git clone https://github.com/ana/kali-bootstrap
 cd kali-bootstrap
 chmod +x bootstrap.sh
 ./bootstrap.sh

